@@ -125,21 +125,21 @@
         </h2>
       </div>
       <div class="row">
-        {% for sale in latest_sales %}
+        {% for listing in latest_listings %}
         <div class="col-sm-6 col-md-4 col-lg-3">
           <div class="box">
-            <a href="">
+            <a href="{% url "store:listing" id=listing.id %}">
               <div class="img-box">
                 <img src="images/p1.png" alt="">
               </div>
               <div class="detail-box">
                 <h6>
-                  {{sale.inventory.name}}
+                  {{listing.inventory.name}}
                 </h6>
                 <h6>
                   Price
                   <span>
-                    ${{sale.sale_price}}
+                    ${{listing.sale_price}}
                   </span>
                 </h6>
               </div>

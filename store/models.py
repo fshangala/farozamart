@@ -35,6 +35,8 @@ class Sale(models.Model):
   purchase=models.ForeignKey(Purchase,related_name='sales',on_delete=models.CASCADE)
   quantity=models.IntegerField()
   sale_price=models.FloatField()
+  cart=models.BooleanField(default=True)
+  approved=models.BooleanField(default=False)
 
   def __str__(self):
       return f"{self.purchase.inventory.name} -> Sale {self.sale_price}x{self.quantity}"

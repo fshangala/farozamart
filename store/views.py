@@ -237,31 +237,32 @@ class Shop(View):
     context['listings']=listings
     return render(request,self.template_name,context)
 
-class Listing(View):
+class Listing(LoginRequiredMixin,View):
   template_name='store/listing.html'
 
   def get(self,request,id):
     context=shop_context
-    form=forms.ListingForm()
+    listing=models.Purchase.objects.get(pk=id)
+    form=forms.ListingForm(user=request.user,listing=listing)
 
-    context['listing']=models.Purchase.objects.get(pk=id)
+    context['listing']=listing
     context['form']=form
 
     return render(request, self.template_name, context)
   
   def post(self,request,id):
     context=shop_context
-    form=forms.ListingForm(data=request.POST)
-    print(request.POST)
+    listing=models.Purchase.objects.get(pk=id)
+    form=forms.ListingForm(user=request.user,listing=listing,data=request.POST)
     if form.is_valid():
-      if request.POST.get('submit-type') == 'buy':
+      if request.POST.get('submit_type') == 'buy':
         form.buy()
-      elif request.POST.get('submit-type') == 'cart':
+      elif request.POST.get('submit_type') == 'cart':
         form.cart()
       else:
         form.add_error(field=None,error='Invalid request')
 
-    context['listing']=models.Purchase.objects.get(pk=id)
+    context['listing']=listing
     context['form']=form
 
     return render(request, self.template_name, context)

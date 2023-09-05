@@ -112,9 +112,28 @@ class SaleForm(forms.Form):
 class ListingForm(forms.Form):
   quantity=forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
 
+  def __init__(self,user:User,listing:models.Purchase,*args,**kwargs):
+    super().__init__(*args,*kwargs)
+    self.user=user
+    self.listing=listing
+
   def buy(self):
     pass
 
   def cart(self):
-    pass
+    try:
+      current = models.Sale.objects.get(user=self.user,purchase=self.listing,cart=True)
+    except Exception as e:
+      print(e)
+      models.Sale.objects.create(
+        user=self.user,
+        quantity=self.cleaned_data['quantity'],
+        sale_price=self.listing.sale_price,
+        purchase=self.listing,
+        cart=True,
+        approved=False
+      )
+    else:
+      current.quantity += self.cleaned_data['quantity']
+      current.save()
     
