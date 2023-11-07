@@ -1,1 +1,9 @@
-{{form}}
+{% extends "home/base.html" %}
+
+{% block content %}
+<section class="login_section layout_padding">
+  <div class="container">
+    {% include "home/includes/form.html" with form=form method='POST' action='' submitText='Login' %}
+  </div>
+</section>
+{% endblock content %}

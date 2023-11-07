@@ -1,0 +1,12 @@
+{% extends "home/base.html" %}
+
+{% block title %}Farozamart | {{user.username}}{% endblock title %}
+
+{% block content %}
+<section class="layout_padding">
+  <div class="container">
+    {{user.username}}
+    <center><a href="{% url "accounts:logout" %}" class="btn btn-danger">Logout</a></center>
+  </div>
+</section>
+{% endblock content %}
