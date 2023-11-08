@@ -1,0 +1,10 @@
+{% extends "home/base.html" %}
+
+{% block content %}
+<section class="login_section layout_padding">
+  <div class="container">
+    {% include "home/includes/form.html" with form=form method='POST' action='' submitText='Register' %}
+    <a href='{% url "accounts:login" %}' class="btn btn-outline-primary m-4">Aready have an account? Login</a>
+  </div>
+</section>
+{% endblock content %}

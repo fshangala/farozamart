@@ -4,6 +4,7 @@
 <section class="login_section layout_padding">
   <div class="container">
     {% include "home/includes/form.html" with form=form method='POST' action='' submitText='Login' %}
+    <a href='{% url "accounts:register" %}' class="btn btn-outline-primary m-4">Create An Account</a>
   </div>
 </section>
 {% endblock content %}

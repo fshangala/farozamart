@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'farozamart',
     'home',
-    'accounts'
+    'accounts',
+    'dashboard'
 ]
 
 MIDDLEWARE = [
