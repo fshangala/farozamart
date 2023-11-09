@@ -1,9 +1,14 @@
 from django.shortcuts import render
 from django.views.generic import View
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 # Create your views here.
-class Dashboard(View):
-  template_name='dashboard/base.html'
+class Dashboard(LoginRequiredMixin,UserPassesTestMixin,View):
+  template_name='dashboard/dashboard.html'
+  
+  def test_func(self):
+    return self.request.user.profile.is_seller or self.request.user.is_staff
+  
   def get(self, request):
     context={}
     return render(request,self.template_name,context)

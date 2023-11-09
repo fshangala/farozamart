@@ -1,0 +1,28 @@
+<ul class="sidebar-menu">
+  <li class="header">MAIN NAVIGATION</li>
+  <li class="active">
+    <a href="{% url "dashboard:dashboard" %}">
+      <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+    </a>
+  </li>
+
+  {% if user.is_staff %}
+  <li class="header">STAFF</li>
+  {% endif %}
+
+  {% if user.profile.is_seller %}
+  <li class="header">SELLER</li>
+  <li class="">
+    <a href="#">
+      <i class="fa fa-dashboard"></i> <span>Inventory</span>
+    </a>
+  </li>
+  {% endif %}
+
+  <li class="header">PROFILE</li>
+  <li>
+    <a href="{% url "accounts:profile" %}">
+      <i class="fa fa-user"></i> <span>User Profile</span>
+    </a>
+  </li>
+</ul>

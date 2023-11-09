@@ -31,16 +31,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'farozamart',
+    'home',
+    'accounts',
+    'dashboard',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'farozamart',
-    'home',
-    'accounts',
-    'dashboard'
 ]
 
 MIDDLEWARE = [
@@ -126,4 +127,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_URL='/accounts/login'
 LOGOUT_REDIRECT_URL='/'

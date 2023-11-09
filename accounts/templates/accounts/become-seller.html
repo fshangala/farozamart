@@ -1,0 +1,13 @@
+{% extends "home/base.html" %}
+
+{% block title %}Farozamart | Become a seller{% endblock title %}
+
+{% block content %}
+
+<section class="layout_padding">
+  <div class="container">
+  {% include "home/includes/form.html" with method='POST' action='' submitText='Submit' %}
+  </div>
+</section>
+
+{% endblock content %}
