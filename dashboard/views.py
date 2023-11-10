@@ -10,5 +10,7 @@ class Dashboard(LoginRequiredMixin,UserPassesTestMixin,View):
     return self.request.user.profile.is_seller or self.request.user.is_staff
   
   def get(self, request):
-    context={}
+    context={
+      'sidebar_menu_dashboard_class':'active'
+    }
     return render(request,self.template_name,context)

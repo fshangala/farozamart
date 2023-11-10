@@ -1,6 +1,6 @@
 <ul class="sidebar-menu">
   <li class="header">MAIN NAVIGATION</li>
-  <li class="active">
+  <li class="{{sidebar_menu_dashboard_class}}">
     <a href="{% url "dashboard:dashboard" %}">
       <i class="fa fa-dashboard"></i> <span>Dashboard</span>
     </a>
@@ -12,8 +12,8 @@
 
   {% if user.profile.is_seller %}
   <li class="header">SELLER</li>
-  <li class="">
-    <a href="#">
+  <li class="{{sidebar_menu_inventory_class}}">
+    <a href="{% url "store:inventory" %}">
       <i class="fa fa-shopping-cart"></i> <span>Inventory</span>
     </a>
   </li>

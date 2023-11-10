@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import View
 from store import forms
@@ -24,5 +24,14 @@ class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
       return redirect(reverse('dashboard:dashboard'))
     context={
       'form':form
+    }
+    return render(request,self.template_name,context)
+
+class Inventory(LoginRequiredMixin,View):
+  template_name='store/inventory.html'
+  
+  def get(self,request):
+    context={
+      'sidebar_menu_inventory_class':'active'
     }
     return render(request,self.template_name,context)
