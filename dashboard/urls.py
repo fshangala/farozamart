@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from dashboard import views
 
 app_name="dashboard"

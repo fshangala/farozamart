@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'home',
     'accounts',
     'dashboard',
+    'store',
     
     'django.contrib.admin',
     'django.contrib.auth',

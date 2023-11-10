@@ -134,8 +134,9 @@
                 <input type="submit" class="profile-edit-btn mb-2" name="btnAddMore" value="Edit Profile"/>
                 {% if user.is_staff or user.profile.is_seller %}
                 <a href='{% url "dashboard:dashboard" %}' class="btn btn-primary my-2">Dashboard</a>
-                {% else %}
-                <a href='{% url "accounts:become-seller" %}' class="btn btn-secondary my-2">Become a seller</a>
+                {% endif %}
+                {% if not user.profile.is_seller %}
+                <a href='{% url "store:become-seller" %}' class="btn btn-secondary my-2">Become a seller</a>
                 {% endif %}
             </div>
         </div>
