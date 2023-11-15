@@ -6,10 +6,6 @@
     </a>
   </li>
 
-  {% if user.is_staff %}
-  <li class="header">STAFF</li>
-  {% endif %}
-
   {% if user.profile.is_seller %}
   <li class="header">SELLER</li>
   <li class="{{sidebar_menu_inventory_class}}">
@@ -26,6 +22,20 @@
     <a href="{% url "store:sales" %}">
       <i class="fa fa-shopping-cart"></i> <span>Sales</span>
     </a>
+  </li>
+  {% endif %}
+
+  {% if user.is_staff %}
+  <li class="header">STAFF</li>
+  <li class="treeview">
+    <a href="#">
+      <i class="fa fa-gear"></i>
+      <span>Settings</span>
+      <i class="fa fa-angle-left pull-right"></i>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href=""><i class="fa fa-circle-o"></i> General</a></li>
+    </ul>
   </li>
   {% endif %}
 
