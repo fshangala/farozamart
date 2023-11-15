@@ -1,0 +1,45 @@
+{% extends "home/base.html" %}
+
+{% block title %}Farozamart | Shop{% endblock title %}
+
+    <!-- shop section -->
+    {% block content %}
+    <section class="shop_section layout_padding">
+      <div class="container">
+        <div class="heading_container heading_center">
+          <h2>
+            Products
+          </h2>
+        </div>
+        <div class="row">
+          {% for sale in sales %}
+          <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="box">
+              <a href="">
+                <div class="img-box">
+                  <img src="images/p1.png" alt="">
+                </div>
+                <div class="detail-box">
+                  <h6>
+                    {{sale.inventory.name}}
+                  </h6>
+                  <h6>
+                    Price
+                    <span>
+                      ${{sale.sale_price}}
+                    </span>
+                  </h6>
+                </div>
+                <div class="new">
+                  <span>
+                    New
+                  </span>
+                </div>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endblock %}  

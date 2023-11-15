@@ -233,3 +233,16 @@ class DeleteSale(LoginRequiredMixin,View):
     sale = models.Sale.objects.get(pk=id)
     sale.delete()
     return redirect(reverse("store:sales"))
+
+# shop
+shop_context={
+  'nav_shop_class':'active'
+}
+class Shop(LoginRequiredMixin,View):
+  template_name='store/shop.html'
+  def get(self,request):
+    context=shop_context
+
+    sales = models.Sale.objects.all()
+    context['sales']=sales
+    return render(request,self.template_name,context)
