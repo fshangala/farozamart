@@ -162,3 +162,74 @@ class DeletePurchase(LoginRequiredMixin,View):
     purchase = models.Purchase.objects.get(pk=id)
     purchase.delete()
     return redirect(reverse("store:purchases"))
+
+# dashboard sales
+sales_context = {
+  'sidebar_menu_sales_class':'active'
+}
+
+class Sales(LoginRequiredMixin,View):
+  template_name='store/sales.html'
+  
+  def get(self,request):
+    context=sales_context
+    
+    inventory = request.user.store.inventory.all()
+    qs = []
+    for a in inventory:
+      qs.append(models.Sale.objects.filter(inventory=a))
+      
+    sales = models.Sale.objects.union(*qs)
+    context['sales']=sales
+    
+    return render(request,self.template_name,context)
+
+class NewSale(LoginRequiredMixin,View):
+  template_name='store/new_sale.html'
+  
+  def get(self,request):
+    form = forms.SaleForm(user=request.user)
+    
+    context=sales_context
+    context['form']=form
+    return render(request,self.template_name,context)
+  
+  def post(self,request):
+    form = forms.SaleForm(user=request.user,data=request.POST)
+    
+    if form.is_valid():
+      form.save()
+      return redirect(reverse("store:sales"))
+    
+    context=sales_context
+    context['form']=form
+    return render(request,self.template_name,context)
+
+class EditSale(LoginRequiredMixin,View):
+  template_name='store/edit_sale.html'
+  
+  def get(self,request,id):
+    sale = models.Sale.objects.get(pk=id)
+    form = forms.SaleForm(user=request.user,instance=sale)
+    
+    context=sales_context
+    context['form']=form
+    return render(request,self.template_name,context)
+  
+  def post(self,request,id):
+    sale = models.Sale.objects.get(pk=id)
+    form = forms.SaleForm(user=request.user,instance=sale,data=request.POST)
+    
+    if form.is_valid():
+      form.save()
+      return redirect(reverse("store:edit-sale",kwargs={'id':id}))
+    
+    context=sales_context
+    context['form']=form
+    return render(request,self.template_name,context)
+
+class DeleteSale(LoginRequiredMixin,View):
+  def get(self,request,id):
+    sale = models.Sale.objects.get(pk=id)
+    sale.delete()
+    return redirect(reverse("store:sales"))

@@ -15,5 +15,8 @@ urlpatterns = [
   path('dashboard/purchases/<id>/edit/',views.EditPurchase.as_view(),name='edit-purchase'),
   path('dashboard/purchases/<id>/delete/',views.DeletePurchase.as_view(),name='delete-purchase'),
   
-  path('dashboard/sales/',views.Inventory.as_view(),name='sales'),
+  path('dashboard/sales/',views.Sales.as_view(),name='sales'),
+  path('dashboard/sales/new/',views.NewSale.as_view(),name='new-sale'),
+  path('dashboard/sales/<id>/edit/',views.EditSale.as_view(),name='edit-sale'),
+  path('dashboard/sales/<id>/delete/',views.DeleteSale.as_view(),name='delete-sale'),
 ]

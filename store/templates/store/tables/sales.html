@@ -2,7 +2,7 @@
 <div class="box">
   <div class="box-header">
     <h3 class="box-title">Sales</h3>
-    <a href="{% url "store:new-purchase" %}" class="btn btn-primary mx-2">New Sale</a>
+    <a href="{% url "store:new-sale" %}" class="btn btn-primary mx-2">New Sale</a>
     <div class="box-tools">
       <div class="input-group">
         <input type="text" name="table_search" class="form-control input-sm pull-right" style="width: 150px;" placeholder="Search"/>
@@ -21,15 +21,15 @@
         <th>Sale Price</th>
         <th></th>
       </tr>
-      {% for purchase in purchases %}
+      {% for sale in sales %}
       <tr>
-        <td>{{purchase.id}}</td>
-        <td>{{purchase.inventory.name}}</td>
-        <td>{{purchase.quantity}}</td>
-        <td>{{purchase.sale_price}}</td>
+        <td>{{sale.id}}</td>
+        <td>{{sale.inventory.name}}</td>
+        <td>{{sale.quantity}}</td>
+        <td>{{sale.sale_price}}</td>
         <td>
-          <a href="{% url "store:edit-purchase" id=purchase.id %}" class="btn btn-primary">Edit</a>
-          <a href="{% url "store:delete-purchase" id=purchase.id %}" class="btn btn-danger">Delete</a>
+          <a href="{% url "store:edit-sale" id=sale.id %}" class="btn btn-primary">Edit</a>
+          <a href="{% url "store:delete-sale" id=sale.id %}" class="btn btn-danger">Delete</a>
         </td>
       </tr>
       {% endfor %}

@@ -43,7 +43,7 @@ class InventoryForm(forms.Form):
 class PurchaseForm(forms.Form):
   user=None
   instance=None
-  inventory=forms.ModelChoiceField(queryset=models.Inventory.objects.all(),widget=forms.Select(attrs={'class':'form-control'}))
+  inventory=forms.ModelChoiceField(queryset=models.Inventory.objects.none(),widget=forms.Select(attrs={'class':'form-control'}))
   quantity=forms.IntegerField(min_value=1,widget=forms.NumberInput(attrs={'class':'form-control'}))
   purchase_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
   sale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
@@ -74,5 +74,37 @@ class PurchaseForm(forms.Form):
       self.initial['inventory']=instance.inventory
       self.initial['quantity']=instance.quantity
       self.initial['purchase_price']=instance.purchase_price
+      self.initial['sale_price']=instance.sale_price
+    
+class SaleForm(forms.Form):
+  user=None
+  instance=None
+  inventory=forms.ModelChoiceField(queryset=models.Inventory.objects.none(),widget=forms.Select(attrs={'class':'form-control'}))
+  quantity=forms.IntegerField(min_value=1,widget=forms.NumberInput(attrs={'class':'form-control'}))
+  sale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
+  
+  def save(self):
+    if self.instance:
+      self.instance.inventory = self.cleaned_data['inventory']
+      self.instance.quantity = self.cleaned_data['quantity']
+      self.instance.sale_price = self.cleaned_data['sale_price']
+      self.instance.save()
+    else:
+      models.Sale.objects.create(
+        inventory=self.cleaned_data['inventory'],
+        quantity=self.cleaned_data['quantity'],
+        sale_price=self.cleaned_data['sale_price'],
+      )
+  
+  def __init__(self,*args,user:User,instance:models.Purchase=None,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.user=user
+    self.instance=instance
+    
+    self.fields['inventory'].queryset = user.store.inventory.all()
+    
+    if self.instance:
+      self.initial['inventory']=instance.inventory
+      self.initial['quantity']=instance.quantity
       self.initial['sale_price']=instance.sale_price
     
