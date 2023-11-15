@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Store(models.Model):
-  user=models.ForeignKey(User,related_name='stores',on_delete=models.CASCADE)
+  user=models.OneToOneField(User,related_name='store',on_delete=models.CASCADE)
   name=models.CharField(max_length=200,unique=True)
   description=models.TextField()
 
@@ -13,7 +13,7 @@ class Inventory(models.Model):
   description=models.TextField()
 
 class Purchase(models.Model):
-  inventory=models.ForeignKey(Inventory,related_name='purchase',on_delete=models.CASCADE)
+  inventory=models.ForeignKey(Inventory,related_name='purchases',on_delete=models.CASCADE)
   quantity=models.IntegerField()
   purchase_price=models.FloatField()
   sale_price=models.FloatField()

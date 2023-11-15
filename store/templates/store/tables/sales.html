@@ -1,0 +1,38 @@
+
+<div class="box">
+  <div class="box-header">
+    <h3 class="box-title">Sales</h3>
+    <a href="{% url "store:new-purchase" %}" class="btn btn-primary mx-2">New Sale</a>
+    <div class="box-tools">
+      <div class="input-group">
+        <input type="text" name="table_search" class="form-control input-sm pull-right" style="width: 150px;" placeholder="Search"/>
+        <div class="input-group-btn">
+          <button class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /.box-header -->
+  <div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+      <tr>
+        <th>ID</th>
+        <th>Inventory</th>
+        <th>Quantity</th>
+        <th>Sale Price</th>
+        <th></th>
+      </tr>
+      {% for purchase in purchases %}
+      <tr>
+        <td>{{purchase.id}}</td>
+        <td>{{purchase.inventory.name}}</td>
+        <td>{{purchase.quantity}}</td>
+        <td>{{purchase.sale_price}}</td>
+        <td>
+          <a href="{% url "store:edit-purchase" id=purchase.id %}" class="btn btn-primary">Edit</a>
+          <a href="{% url "store:delete-purchase" id=purchase.id %}" class="btn btn-danger">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div><!-- /.box-body -->
+</div><!-- /.box -->

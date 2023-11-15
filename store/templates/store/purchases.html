@@ -2,14 +2,14 @@
 
 {% block contentHeader %}
 <h1>
-  Inventory
+  Purchases
 </h1>
 <ol class="breadcrumb">
   <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>-->
-  <li class="active">Inventory</li>
+  <li class="active">Purchases</li>
 </ol>
 {% endblock contentHeader %}
 
 {% block content %}
-{% include "store/tables/inventory_items.html" %}
+{% include "store/tables/purchases.html" %}
 {% endblock content %}

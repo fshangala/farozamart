@@ -1,0 +1,36 @@
+
+<div class="box">
+  <div class="box-header">
+    <h3 class="box-title">Inventory Items</h3>
+    <a href="{% url "store:new-inventory" %}" class="btn btn-primary mx-2">New Item</a>
+    <div class="box-tools">
+      <div class="input-group">
+        <input type="text" name="table_search" class="form-control input-sm pull-right" style="width: 150px;" placeholder="Search"/>
+        <div class="input-group-btn">
+          <button class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /.box-header -->
+  <div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+      <tr>
+        <th>ID</th>
+        <th>Store</th>
+        <th>Name</th>
+        <th></th>
+      </tr>
+      {% for inventory_item in inventory_items %}
+      <tr>
+        <td>{{inventory_item.id}}</td>
+        <td>{{inventory_item.store.name}}</td>
+        <td>{{inventory_item.name}}</td>
+        <td>
+          <a href="{% url "store:edit-inventory" id=inventory_item.id %}" class="btn btn-primary">Edit</a>
+          <a href="{% url "store:delete-inventory" id=inventory_item.id %}" class="btn btn-danger">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div><!-- /.box-body -->
+</div><!-- /.box -->

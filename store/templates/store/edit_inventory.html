@@ -1,0 +1,16 @@
+{% extends "dashboard/base.html" %}
+
+{% block contentHeader %}
+<h1>
+  Edit Inventory
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li><a href="{% url "store:inventory" %}"><i class="fa fa-dashboard"></i> Inventory</a></li>
+  <li class="active">Edit</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+{% include "includes/form.html" with method="POST" action="" submitText="Save" %}
+{% endblock content %}

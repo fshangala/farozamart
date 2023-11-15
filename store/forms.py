@@ -18,13 +18,61 @@ class BecomeSellerForm(forms.Form):
     self.user.save()
 
 class InventoryForm(forms.Form):
-  store=forms.ModelChoiceField(models.Store.objects.all())
-  name=forms.CharField(validators=[validators.unique_inventory_name],widget=forms.Textarea(attrs={'class':'form-control'}))
+  user=None
+  instance=None
+  name=forms.CharField(validators=[validators.unique_inventory_name],widget=forms.TextInput(attrs={'class':'form-control'}))
   description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
   
   def save(self):
-    inventory = models.Inventory.objects.create(store=self.cleaned_data['store'],name=self.cleaned_data['name'],description=self.cleaned_data['description'])
+    if self.instance != None:
+      self.instance.name = self.cleaned_data['name']
+      self.instance.description = self.cleaned_data['description']
+      self.instance.save()
+    else:
+      inventory = models.Inventory.objects.create(store=self.user.store,name=self.cleaned_data['name'],description=self.cleaned_data['description'])
   
-  def __init__(self,*args,user:User,**kwargs):
+  def __init__(self,*args,user:User,instance:models.Inventory=None,**kwargs):
     super().__init__(*args,**kwargs)
-    self.store=forms.ModelChoiceField(models.Store.objects.filter(user=user),widget=forms.Select(attrs={'class':'form-control'}))
+    self.user=user
+    self.instance=instance
+    
+    if self.instance:
+      self.initial['name']=instance.name
+      self.initial['description']=instance.description
+
+class PurchaseForm(forms.Form):
+  user=None
+  instance=None
+  inventory=forms.ModelChoiceField(queryset=models.Inventory.objects.all(),widget=forms.Select(attrs={'class':'form-control'}))
+  quantity=forms.IntegerField(min_value=1,widget=forms.NumberInput(attrs={'class':'form-control'}))
+  purchase_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
+  sale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
+  
+  def save(self):
+    if self.instance:
+      self.instance.inventory = self.cleaned_data['inventory']
+      self.instance.quantity = self.cleaned_data['quantity']
+      self.instance.purchase_price = self.cleaned_data['purchase_price']
+      self.instance.sale_price = self.cleaned_data['sale_price']
+      self.instance.save()
+    else:
+      models.Purchase.objects.create(
+        inventory=self.cleaned_data['inventory'],
+        quantity=self.cleaned_data['quantity'],
+        purchase_price=self.cleaned_data['purchase_price'],
+        sale_price=self.cleaned_data['sale_price'],
+      )
+  
+  def __init__(self,*args,user:User,instance:models.Purchase=None,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.user=user
+    self.instance=instance
+    
+    self.fields['inventory'].queryset = user.store.inventory.all()
+    
+    if self.instance:
+      self.initial['inventory']=instance.inventory
+      self.initial['quantity']=instance.quantity
+      self.initial['purchase_price']=instance.purchase_price
+      self.initial['sale_price']=instance.sale_price
+    
