@@ -1,0 +1,31 @@
+<form method='POST' action='' id='listing-form'>
+  {% csrf_token %}
+  <div class="box p-4">
+    <div class=''>
+      <h6>{{listing.inventory.name}}</h6>
+      <h6>Price ${{listing.sale_price}}</h6>
+      <p>
+        {{form}}
+        <input type='hidden' name='submit_type' id='submit-type'>
+      </p>
+    </div>
+    <div class="btn-box">
+      <button onclick="submitForm(this)" submit-type='buy' type='button' class="btn btn-outline-primary mx-2">
+        Buy Now
+      </button>
+      <button onclick="submitForm(this)" submit-type='cart' type='button' class="btn btn-outline-info mx-2">
+        Add To Cart
+      </button>
+    </div>
+  </div>
+</form>
+
+<script>
+  function submitForm(el){
+    var submit_type = el.getAttribute('submit-type');
+    var form = document.querySelector('#listing-form');
+
+    document.querySelector('#submit-type').value = submit_type;
+    form.submit();
+  }
+</script>

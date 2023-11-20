@@ -2,6 +2,7 @@ from django import forms
 from store import models
 from store import validators
 from django.contrib.auth.models import User
+from store import functions
 
 class BecomeSellerForm(forms.Form):
   user=None
@@ -79,32 +80,41 @@ class PurchaseForm(forms.Form):
 class SaleForm(forms.Form):
   user=None
   instance=None
-  inventory=forms.ModelChoiceField(queryset=models.Inventory.objects.none(),widget=forms.Select(attrs={'class':'form-control'}))
+  purchase=forms.ModelChoiceField(queryset=models.Purchase.objects.none(),widget=forms.Select(attrs={'class':'form-control'}))
   quantity=forms.IntegerField(min_value=1,widget=forms.NumberInput(attrs={'class':'form-control'}))
   sale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
   
   def save(self):
     if self.instance:
-      self.instance.inventory = self.cleaned_data['inventory']
+      self.instance.purchase = self.cleaned_data['purchase']
       self.instance.quantity = self.cleaned_data['quantity']
       self.instance.sale_price = self.cleaned_data['sale_price']
       self.instance.save()
     else:
       models.Sale.objects.create(
-        inventory=self.cleaned_data['inventory'],
+        purchase=self.cleaned_data['purchase'],
         quantity=self.cleaned_data['quantity'],
         sale_price=self.cleaned_data['sale_price'],
       )
   
-  def __init__(self,*args,user:User,instance:models.Purchase=None,**kwargs):
+  def __init__(self,*args,user:User,instance:models.Sale=None,**kwargs):
     super().__init__(*args,**kwargs)
     self.user=user
     self.instance=instance
     
-    self.fields['inventory'].queryset = user.store.inventory.all()
+    self.fields['purchase'].queryset = functions.getUserPurchases(user)
     
     if self.instance:
-      self.initial['inventory']=instance.inventory
+      self.initial['purchase']=instance.purchase
       self.initial['quantity']=instance.quantity
       self.initial['sale_price']=instance.sale_price
+
+class ListingForm(forms.Form):
+  quantity=forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
+
+  def buy(self):
+    pass
+
+  def cart(self):
+    pass
     

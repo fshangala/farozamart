@@ -103,15 +103,10 @@
 {% block content %}
 <section class="">
   <div class="container emp-profile">
-    <form method="post">
         <div class="row">
             <div class="col-md-4">
                 <div class="profile-img">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog" alt=""/>
-                    <div class="file btn btn-lg btn-primary">
-                        Change Photo
-                        <input type="file" name="file"/>
-                    </div>
                 </div>
             </div>
             <div class="col-md-6">
@@ -131,7 +126,7 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <input type="submit" class="profile-edit-btn mb-2" name="btnAddMore" value="Edit Profile"/>
+                <a href='{% url "accounts:edit-profile" %}' class='btn btn-secondary m-2'>Edit Profile</a>
                 {% if user.is_staff or user.profile.is_seller %}
                 <a href='{% url "dashboard:dashboard" %}' class="btn btn-primary my-2">Dashboard</a>
                 {% endif %}
@@ -241,8 +236,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </form>           
+        </div>         
     <center><a href="{% url "accounts:logout" %}" class="btn btn-danger">Logout</a></center>
 </div>
 </section>

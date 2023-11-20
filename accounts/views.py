@@ -39,6 +39,13 @@ class Profile(LoginRequiredMixin,View):
     context={}
     return render(request,self.template_name,context)
 
+class EditProfile(LoginRequiredMixin,View):
+  template_name='accounts/edit-profile.html'
+
+  def get(self,request):
+    context={}
+    return render(request,self.template_name,context)
+
 class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
   template_name='accounts/become-seller.html'
   

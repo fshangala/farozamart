@@ -4,6 +4,8 @@ from store import views
 app_name='store'
 urlpatterns = [
   path('shop/',views.Shop.as_view(),name='shop'),
+  path('shop/listing/<id>/',views.Listing.as_view(),name='listing'),
+
   path('become-seller/',views.BecomeSeller.as_view(),name='become-seller'),
   
   path('dashboard/inventory/',views.Inventory.as_view(),name='inventory'),

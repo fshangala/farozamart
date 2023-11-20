@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import View
 from store import forms
 from store import models
+from store import functions
 
 # Create your views here.
 class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
@@ -102,13 +103,8 @@ class Purchases(LoginRequiredMixin,View):
   
   def get(self,request):
     context=purchases_context
-    
-    inventory = request.user.store.inventory.all()
-    qs = []
-    for a in inventory:
-      qs.append(models.Purchase.objects.filter(inventory=a))
       
-    purchases = models.Purchase.objects.union(*qs)
+    purchases = functions.getUserPurchases(request.user)
     context['purchases']=purchases
     
     return render(request,self.template_name,context)
@@ -173,14 +169,8 @@ class Sales(LoginRequiredMixin,View):
   
   def get(self,request):
     context=sales_context
-    
-    inventory = request.user.store.inventory.all()
-    qs = []
-    for a in inventory:
-      qs.append(models.Sale.objects.filter(inventory=a))
       
-    sales = models.Sale.objects.union(*qs)
-    context['sales']=sales
+    context['sales']=functions.getUserSales(request.user)
     
     return render(request,self.template_name,context)
 
@@ -238,11 +228,40 @@ class DeleteSale(LoginRequiredMixin,View):
 shop_context={
   'nav_shop_class':'active'
 }
-class Shop(LoginRequiredMixin,View):
+class Shop(View):
   template_name='store/shop.html'
   def get(self,request):
     context=shop_context
 
-    sales = models.Sale.objects.all()
-    context['sales']=sales
+    listings = models.Purchase.objects.all()
+    context['listings']=listings
     return render(request,self.template_name,context)
+
+class Listing(View):
+  template_name='store/listing.html'
+
+  def get(self,request,id):
+    context=shop_context
+    form=forms.ListingForm()
+
+    context['listing']=models.Purchase.objects.get(pk=id)
+    context['form']=form
+
+    return render(request, self.template_name, context)
+  
+  def post(self,request,id):
+    context=shop_context
+    form=forms.ListingForm(data=request.POST)
+    print(request.POST)
+    if form.is_valid():
+      if request.POST.get('submit-type') == 'buy':
+        form.buy()
+      elif request.POST.get('submit-type') == 'cart':
+        form.cart()
+      else:
+        form.add_error(field=None,error='Invalid request')
+
+    context['listing']=models.Purchase.objects.get(pk=id)
+    context['form']=form
+
+    return render(request, self.template_name, context)
