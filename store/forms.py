@@ -113,7 +113,7 @@ class ListingForm(forms.Form):
   quantity=forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
 
   def __init__(self,user:User,listing:models.Purchase,*args,**kwargs):
-    super().__init__(*args,*kwargs)
+    super().__init__(*args,**kwargs)
     self.user=user
     self.listing=listing
 
@@ -121,19 +121,32 @@ class ListingForm(forms.Form):
     pass
 
   def cart(self):
-    try:
-      current = models.Sale.objects.get(user=self.user,purchase=self.listing,cart=True)
+    current = models.Sale.objects.filter(user=self.user,purchase=self.listing,cart=True).first()
+    if current:
+      current.quantity += self.cleaned_data['quantity']
+      current.save()
+    else:
+      models.Sale.objects.create(
+        user=self.user,
+        purchase=self.listing,
+        quantity=self.cleaned_data['quantity'],
+        sale_price=self.listing.sale_price,
+        cart=True,
+        approved=False
+      )
+
+    """try:
     except Exception as e:
       print(e)
       models.Sale.objects.create(
         user=self.user,
+        purchase=self.listing,
         quantity=self.cleaned_data['quantity'],
         sale_price=self.listing.sale_price,
-        purchase=self.listing,
         cart=True,
         approved=False
       )
     else:
       current.quantity += self.cleaned_data['quantity']
-      current.save()
+      current.save()"""
     

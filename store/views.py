@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib import messages
 from django.views.generic import View
 from store import forms
 from store import models
@@ -255,10 +256,11 @@ class Listing(LoginRequiredMixin,View):
     listing=models.Purchase.objects.get(pk=id)
     form=forms.ListingForm(user=request.user,listing=listing,data=request.POST)
     if form.is_valid():
-      if request.POST.get('submit_type') == 'buy':
+      if request.POST['submit_type'] == 'buy':
         form.buy()
-      elif request.POST.get('submit_type') == 'cart':
+      elif request.POST['submit_type'] == 'cart':
         form.cart()
+        messages.success(request,'Added to cart!')
       else:
         form.add_error(field=None,error='Invalid request')
 
@@ -266,3 +268,14 @@ class Listing(LoginRequiredMixin,View):
     context['form']=form
 
     return render(request, self.template_name, context)
+
+# cart
+cart_context={}
+class Cart(LoginRequiredMixin,View):
+  template_name='store/cart.html'
+
+  def get(self,request):
+    context=cart_context
+    context['cart_items']=request.user.orders.filter(cart=True)
+
+    return render(request,self.template_name,context)

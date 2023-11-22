@@ -1,0 +1,13 @@
+{% extends "home/base.html" %}
+
+{% block title %}Farozamart | Cart{% endblock title %}
+
+{% block content %}
+
+<section class="layout_padding">
+  <div class="container">
+    {% for cart_item in cart_items %} {{cart_item}} {% endfor %}
+  </div>
+</section>
+
+{% endblock content %}
