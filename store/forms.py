@@ -134,19 +134,3 @@ class ListingForm(forms.Form):
         cart=True,
         approved=False
       )
-
-    """try:
-    except Exception as e:
-      print(e)
-      models.Sale.objects.create(
-        user=self.user,
-        purchase=self.listing,
-        quantity=self.cleaned_data['quantity'],
-        sale_price=self.listing.sale_price,
-        cart=True,
-        approved=False
-      )
-    else:
-      current.quantity += self.cleaned_data['quantity']
-      current.save()"""
-    

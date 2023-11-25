@@ -289,3 +289,10 @@ class Cart(LoginRequiredMixin,View):
     context['cart_total']=self.cartTotal(cart_items)
 
     return render(request,self.template_name,context)
+
+class DeleteCartItem(LoginRequiredMixin,View):
+  def get(self,request,id):
+    context=cart_context
+    item = models.Sale.objects.get(pk=id)
+    item.delete()
+    return redirect(reverse('store:cart'))
