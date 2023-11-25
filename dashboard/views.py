@@ -1,6 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from dashboard.forms import GeneralOptionsForm
+from dashboard.function import getOptions
+from django.contrib import messages
 
 # Create your views here.
 class Dashboard(LoginRequiredMixin,UserPassesTestMixin,View):
@@ -13,4 +16,23 @@ class Dashboard(LoginRequiredMixin,UserPassesTestMixin,View):
     context={
       'sidebar_menu_dashboard_class':'active'
     }
+    return render(request,self.template_name,context)
+
+class GeneralSettings(LoginRequiredMixin,View):
+  template_name='dashboard/general-settings.html'
+  
+  def get(self,request):
+    context={
+      'form':GeneralOptionsForm(data=getOptions())
+    }
+    return render(request,self.template_name,context)
+  
+  def post(self,request):
+    form = GeneralOptionsForm(data=request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'General options updated!')
+      return redirect(reverse('dashboard:general-settings'))
+    
+    context={'form':form}
     return render(request,self.template_name,context)

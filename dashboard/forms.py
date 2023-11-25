@@ -1,5 +1,5 @@
 from django import forms
-from farozamart import models
+from dashboard import models, function
 
 class GeneralOptionsForm(forms.Form):
   name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -7,6 +7,5 @@ class GeneralOptionsForm(forms.Form):
   description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
 
   def save(self):
-    models.Option.objects.create(name='name',value=self.cleaned_data['name'])
-    models.Option.objects.create(name='tag_line',value=self.cleaned_data['tag_line'])
-    models.Option.objects.create(name='description',value=self.cleaned_data['description'])
+    for x in ['name','tag_line','description']:
+      function.saveOption(x,self.cleaned_data[x])
