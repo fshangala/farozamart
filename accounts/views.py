@@ -36,7 +36,9 @@ class Register(View):
 class Profile(LoginRequiredMixin,View):
   template_name='accounts/profile.html'
   def get(self,request):
-    context={}
+    context={
+      'cart_items_count':request.user.orders.filter(cart=True).count()
+    }
     return render(request,self.template_name,context)
 
 class EditProfile(LoginRequiredMixin,View):
