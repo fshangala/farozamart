@@ -273,9 +273,19 @@ class Listing(LoginRequiredMixin,View):
 cart_context={}
 class Cart(LoginRequiredMixin,View):
   template_name='store/cart.html'
+  
+  def cartTotal(self,items)->float:
+    cart_total = 0.0
+    for item in items:
+      cart_total += item.quantity * item.sale_price
+    return cart_total
 
   def get(self,request):
     context=cart_context
-    context['cart_items']=request.user.orders.filter(cart=True)
+    
+    cart_items = request.user.orders.filter(cart=True)
+    context['cart_items_count']=cart_items.count()
+    context['cart_items']=cart_items
+    context['cart_total']=self.cartTotal(cart_items)
 
     return render(request,self.template_name,context)

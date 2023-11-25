@@ -6,9 +6,10 @@ def getUserPurchases(user:User):
   qs=None
   for a in inventory:
     if qs:
-      qs.union(a.purchases.all())
+      qs = qs.union(a.purchases.all())
     else:
       qs = a.purchases.all()
+
   return qs
 
 def getUserSales(user:User):
@@ -17,7 +18,7 @@ def getUserSales(user:User):
   qs1=None
   for b in qs:
     if qs1:
-      qs1.union(b.sales.all())
+      qs1 = qs1.union(b.sales.all())
     else:
       qs1 = b.sales.all()
   
