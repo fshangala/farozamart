@@ -1,6 +1,6 @@
 FROM python:3.10
-WORKDIR /app
-COPY ./ .
+RUN git clone https://github.com/fshangala/farozamart.git
+WORKDIR /farozamart
 RUN pip install -r requirements.txt
 RUN cp .env-production .env
 RUN python manage.py migrate
