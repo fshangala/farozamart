@@ -21,7 +21,7 @@ class BecomeSellerForm(forms.Form):
 class InventoryForm(forms.Form):
   user=None
   instance=None
-  name=forms.CharField(validators=[validators.unique_inventory_name],widget=forms.TextInput(attrs={'class':'form-control'}))
+  name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
   description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
   
   def save(self):
@@ -40,6 +40,44 @@ class InventoryForm(forms.Form):
     if self.instance:
       self.initial['name']=instance.name
       self.initial['description']=instance.description
+    else:
+      self.fields['name'].validators=[validators.unique_inventory_name]
+
+class CurrencyForm(forms.Form):
+  symbol=forms.CharField(max_length=10,widget=forms.TextInput(attrs={'class':'form-control'}))
+  name_singular=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  name_plural=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  code=forms.CharField(max_length=10,widget=forms.TextInput(attrs={'class':'form-control'}))
+  
+  def save(self):
+    if self.instance != None:
+      self.instance.symbol=self.cleaned_data['symbol']
+      self.instance.name_singular=self.cleaned_data['name_singular']
+      self.instance.name_plural=self.cleaned_data['name_plural']
+      self.instance.code=self.cleaned_data['code']
+      self.instance.save()
+    else:
+      models.Currency.objects.create(
+        symbol=self.cleaned_data['symbol'],
+        name_singular=self.cleaned_data['name_singular'],
+        name_plural=self.cleaned_data['name_plural'],
+        code=self.cleaned_data['code']
+      )
+  
+  def __init__(self,*args,instance:models.Currency=None,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.instance=instance
+    
+    if self.instance:
+      self.initial.update({
+        'symbol':instance.symbol,
+        'name_singular':instance.name_singular,
+        'name_plural':instance.name_plural,
+        'code':instance.code
+      })
+    else:
+      self.fields['symbol'].validators=[validators.CurrencyValidators.unique_symbo]
+      self.fields['code'].validators=[validators.CurrencyValidators.unique_code]
 
 class PurchaseForm(forms.Form):
   user=None
@@ -48,6 +86,7 @@ class PurchaseForm(forms.Form):
   quantity=forms.IntegerField(min_value=1,widget=forms.NumberInput(attrs={'class':'form-control'}))
   purchase_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
   sale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
+  currency=forms.ModelChoiceField(queryset=models.Currency.objects.all(),widget=forms.Select(attrs={'class':'form-control'}))
   
   def save(self):
     if self.instance:
@@ -55,6 +94,7 @@ class PurchaseForm(forms.Form):
       self.instance.quantity = self.cleaned_data['quantity']
       self.instance.purchase_price = self.cleaned_data['purchase_price']
       self.instance.sale_price = self.cleaned_data['sale_price']
+      self.instance.currency = self.cleaned_data['currency']
       self.instance.save()
     else:
       models.Purchase.objects.create(
@@ -62,6 +102,7 @@ class PurchaseForm(forms.Form):
         quantity=self.cleaned_data['quantity'],
         purchase_price=self.cleaned_data['purchase_price'],
         sale_price=self.cleaned_data['sale_price'],
+        currency=self.cleaned_data['currency']
       )
   
   def __init__(self,*args,user:User,instance:models.Purchase=None,**kwargs):
@@ -76,6 +117,7 @@ class PurchaseForm(forms.Form):
       self.initial['quantity']=instance.quantity
       self.initial['purchase_price']=instance.purchase_price
       self.initial['sale_price']=instance.sale_price
+      self.initial['currency']=instance.currency
     
 class SaleForm(forms.Form):
   user=None

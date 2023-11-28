@@ -1,0 +1,133 @@
+POST /tokenized/checkout/token/grant HTTP/1.1
+Host: {base_URL}
+Content-Type: application/json
+Accept: application/json
+username: username
+password: password
+
+{  
+   "app_key": "test_app_key",
+   "app_secret": "test_app_secret"
+}
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{  
+   "token_type": "Bearer",
+   "id_token": "test_id_token_value"
+   "expires_in": 3600,
+   "refresh_token": "test_refresh_token_value"
+}
+
+POST /tokenized/checkout/token/refresh HTTP/1.1
+Host: {base_URL}
+Content-Type: application/json
+Accept: application/json
+username: username
+password: password
+
+{  
+   "app_key": "test_app_key",
+   "app_secret": "test_app_secret",
+   "refresh_token": "test_refresh_token"
+}
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{  
+   "token_type": "Bearer",
+   "id_token": "test_id_token_value"
+   "expires_in": "3600",
+   "refresh_token": "test_refresh_token_value"
+}
+
+POST /tokenized/checkout/create HTTP/1.1
+Host: {base_URL}
+Content-Type: application/json
+Accept: application/json
+authorization: id_token
+x-app-key: x-app-key
+
+{  
+   "mode": "0011",
+   "payerReference": "01723888888",
+   "callbackURL": "yourDomain.com",
+   "merchantAssociationInfo": "MI05MID54RF09123456One"
+   "amount": "500",
+   "currency": "BDT",
+   "intent": "sale",
+   "merchantInvoiceNumber": "Inv0124"
+}
+
+{ 
+  "statusCode": "0000", 
+  "statusMessage": "Successful", 
+  "paymentID": "TR0011ON1565154754797", 
+  "bkashURL": "https://bkash.com/redirect/tokenized/?paymentID=TR0011O N1565154754797*********", 
+  "callbackURL": "yourURL.com", 
+  "successCallbackURL": "yourURL.com?paymentID=TR0011ON1565154754797&status=success", 
+  "failureCallbackURL": "yourURL.com?paymentID=TR0011ON1565154754797&status=failure", 
+  "cancelledCallbackURL": "yourURL.com?paymentID=TR0011ON1565154754797&status=cancel", 
+  "amount": "500", 
+  "intent": "sale", 
+  "currency": "BDT", 
+  "paymentCreateTime": "2019-08-07T11:12:34:978 GMT+0600", 
+  "transactionStatus": "Initiated", 
+  "merchantInvoiceNumber": "Inv0124" 
+}
+
+POST /tokenized/checkout/execute HTTP/1.1
+Host: {base_URL}
+Accept: application/json
+authorization: id_token
+x-app-key: x-app-key
+
+{
+	"paymentID" : "TR0011ON1565154754797"
+}
+
+{ 
+  "statusCode": "0000", 
+  "statusMessage": "Successful", 
+  "paymentID": "TR0011ON1565154754797", 
+  "payerReference": "01770618575", 
+  "customerMsisdn": "01770618575", 
+  "trxID": "6H7801QFYM", 
+  "amount": "15", 
+  "transactionStatus": "Completed", 
+  "paymentExecuteTime": "2019-08-07T11:15:56:336 GMT+0600", 
+  "currency": "BDT", 
+  "intent": "sale", 
+  "merchantInvoiceNumber": "MER1231" 
+}
+
+POST /tokenized/checkout/payment/status HTTP/1.1
+Host: {base_URL}
+Accept: application/json
+authorization: id_token
+x-app-key: x-app-key
+
+{
+	'paymentID': 'TR0001IV1565085942653'
+}
+
+{ 
+  "statusCode": "0000", 
+  "statusMessage": "Successful", 
+  "paymentID": "TR0001IV1565085942653", 
+  "mode": "0001", 
+  "paymentCreateTime": "2019-08-06T16:05:42:731 GMT+0600", 
+  "amount": "12", 
+  "currency": "BDT", 
+  "intent": "sale", 
+  "merchantInvoice": "merchant101", 
+  "transactionStatus": "Initiated", 
+  "verificationStatus": "Incomplete", 
+  "payerReference": "01770618575", 
+  "agreementID": "TokenizedMerchant01VX13KWB1565085851926", 
+  "agreementStatus": "Completed", 
+  "agreementCreateTime": "2019-08-06T16:02:47:194 GMT+0600", 
+  "agreementExecuteTime": "2019-08-06T16:04:11:926 GMT+0600" 
+}

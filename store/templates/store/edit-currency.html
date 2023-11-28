@@ -2,14 +2,15 @@
 
 {% block contentHeader %}
 <h1>
-  General settings
+  Edit Currency
 </h1>
 <ol class="breadcrumb">
   <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-  <li class="active">General settings</li>
+  <li><a href="{% url "store:currencies" %}"><i class="fa fa-dashboard"></i> Currencies</a></li>
+  <li class="active">New</li>
 </ol>
 {% endblock contentHeader %}
 
 {% block content %}
-{% include "includes/form.html" with method='POST' submitText='Save' action='' %}
+{% include "includes/form.html" with method="POST" action="" submitText="Save" %}
 {% endblock content %}

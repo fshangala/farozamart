@@ -21,7 +21,7 @@
             <tr>
               <td><a href="{% url "store:listing" id=cart_item.purchase.id %}">{{cart_item.purchase.inventory.name}}</a></td>
               <td>{{cart_item.quantity}}</td>
-              <td>{{cart_item.sale_price}}</td>
+              <td>{{cart_item.get_sale_price}}</td>
               <td><a href='{% url "store:delete-cart-item" id=cart_item.id %}' class='mx-2 btn btn-danger'>Delete</a></td>
             </tr>
             {% endfor %}
@@ -33,11 +33,11 @@
         <table class="table">
           <tr>
             <td>Products</td>
-            <td>{{cart_total}}</td>
+            <td>{{cart_total}} {{cart_currency}}</td>
           </tr>
           <tr>
             <th>Total</th>
-            <td>{{cart_total}}</td>
+            <td>{{cart_total}} {{cart_currency}}</td>
           </tr>
         </table>
         <button class="btn btn-primary">Checkout</button>

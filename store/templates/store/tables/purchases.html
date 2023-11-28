@@ -27,8 +27,8 @@
         <td>{{purchase.id}}</td>
         <td>{{purchase.inventory.name}}</td>
         <td>{{purchase.quantity}}</td>
-        <td>{{purchase.purchase_price}}</td>
-        <td>{{purchase.sale_price}}</td>
+        <td>{{purchase.get_purchase_price}}</td>
+        <td>{{purchase.get_sale_price}}</td>
         <td>
           <a href="{% url "store:edit-purchase" id=purchase.id %}" class="btn btn-primary">Edit</a>
           <a href="{% url "store:delete-purchase" id=purchase.id %}" class="btn btn-danger">Delete</a>

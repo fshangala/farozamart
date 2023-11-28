@@ -26,7 +26,7 @@
         <td>{{sale.id}}</td>
         <td>{{sale.purchase.inventory.name}}</td>
         <td>{{sale.quantity}}</td>
-        <td>{{sale.sale_price}}</td>
+        <td>{{sale.get_sale_price}}</td>
         <td>
           <a href="{% url "store:edit-sale" id=sale.id %}" class="btn btn-primary">Edit</a>
           <a href="{% url "store:delete-sale" id=sale.id %}" class="btn btn-danger">Delete</a>

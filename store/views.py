@@ -274,6 +274,9 @@ cart_context={}
 class Cart(LoginRequiredMixin,View):
   template_name='store/cart.html'
   
+  def cartCurrency(self,items)->str:
+    return items[0].purchase.currency.code
+  
   def cartTotal(self,items)->float:
     cart_total = 0.0
     for item in items:
@@ -287,6 +290,7 @@ class Cart(LoginRequiredMixin,View):
     context['cart_items_count']=cart_items.count()
     context['cart_items']=cart_items
     context['cart_total']=self.cartTotal(cart_items)
+    context['cart_currency']=self.cartCurrency(cart_items)
 
     return render(request,self.template_name,context)
 
@@ -296,3 +300,55 @@ class DeleteCartItem(LoginRequiredMixin,View):
     item = models.Sale.objects.get(pk=id)
     item.delete()
     return redirect(reverse('store:cart'))
+
+# settings currency
+class Currencies(LoginRequiredMixin,View):
+  template_name='store/currencies.html'
+  def get(self,request):
+    context={}
+    context['currencies']=models.Currency.objects.all()
+    return render(request,self.template_name,context)
+  
+class NewCurrency(LoginRequiredMixin,View):
+  template_name='store/new-currency.html'
+  def get(self,request):
+    context={
+      'form':forms.CurrencyForm()
+    }
+    return render(request,self.template_name,context)
+  
+  def post(self,request):
+    context={}
+    form=forms.CurrencyForm(data=request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'New currency successfully created!')
+      return redirect(reverse('store:currencies'))
+    context['form']=form
+    return render(request,self.template_name,context)
+
+class EditCurrency(LoginRequiredMixin,View):
+  template_name='store/edit-currency.html'
+  def get(self,request,id):
+    instance=models.Currency.objects.get(pk=id)
+    context={'form':forms.CurrencyForm(instance=instance)}
+    return render(request,self.template_name,context)
+  
+  def post(self,request,id):
+    instance=models.Currency.objects.get(pk=id)
+    context={}
+    form=forms.CurrencyForm(data=request.POST,instance=instance)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'Successfully updated!')
+      return redirect(reverse('store:currencies'))
+    context['form']=form
+    return render(request,self.template_name,context)
+
+class DeleteCurrency(LoginRequiredMixin,View):
+  def get(self,request,id):
+    context=cart_context
+    item = models.Currency.objects.get(pk=id)
+    item.delete()
+    messages.success(request,f"{item.name_singular} successfully deleted!")
+    return redirect(reverse('store:currencies'))
