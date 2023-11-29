@@ -287,7 +287,6 @@ class Cart(LoginRequiredMixin,View):
     context=cart_context
     
     cart_items = request.user.orders.filter(cart=True)
-    context['cart_items_count']=cart_items.count()
     context['cart_items']=cart_items
     context['cart_total']=self.cartTotal(cart_items)
     context['cart_currency']=self.cartCurrency(cart_items)
