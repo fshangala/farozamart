@@ -7,6 +7,7 @@ urlpatterns = [
   path('shop/listing/<id>/',views.Listing.as_view(),name='listing'),
   path('shop/cart/',views.Cart.as_view(),name='cart'),
   path('shop/cart/<id>/delete/',views.DeleteCartItem.as_view(),name='delete-cart-item'),
+  path('shop/cart/checkout/',views.Checkout.as_view(),name='checkout'),
   
   path('dashboard/currencies/',views.Currencies.as_view(),name='currencies'),
   path('dashboard/currencies/new/',views.NewCurrency.as_view(),name='new-currency'),

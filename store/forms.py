@@ -176,3 +176,10 @@ class ListingForm(forms.Form):
         cart=True,
         approved=False
       )
+
+class CheckoutForm(forms.Form):
+  success=forms.BooleanField()
+  transaction_id=forms.CharField(max_length=200)
+  
+  def __init__(self,*args,**kwargs):
+    super().__init__(*args,**kwargs)
