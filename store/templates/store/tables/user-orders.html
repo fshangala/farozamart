@@ -1,0 +1,17 @@
+
+<table class="table">
+  <thead>
+    <th>ID</th>
+    <th>Items</th>
+    <th>In progress</th>
+  </thead>
+  <tbody>
+    {% for order in user.orders.all %}
+    <tr>
+      <td><a href="#">{{order.id}}</a></td>
+      <td>{{order.sales.all.count}}</td>
+      <td>{{order.draft}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

@@ -163,16 +163,22 @@ class ListingForm(forms.Form):
     pass
 
   def cart(self):
+    try:
+      order=self.user.orders.get(draft=True)
+    except Exception as e:
+      order=models.Order.objects.create(user=self.user,draft=True)
+      
     current = models.Sale.objects.filter(user=self.user,purchase=self.listing,cart=True).first()
     if current:
       current.quantity += self.cleaned_data['quantity']
       current.save()
     else:
-      models.Sale.objects.create(
+      sale = models.Sale.objects.create(
         user=self.user,
         purchase=self.listing,
         quantity=self.cleaned_data['quantity'],
         sale_price=self.listing.sale_price,
+        order=order,
         cart=True,
         approved=False
       )

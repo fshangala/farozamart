@@ -1,0 +1,15 @@
+{% if messages %}
+<div style="position: relative;">
+  <!-- Position it -->
+  <div style="">
+    {% for message in messages %}
+    <div class="alert alert-dismissible {% if message.tags %}{{ message.tags }}{% endif %}">
+      {{message}}
+      <a href="#" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

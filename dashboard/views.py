@@ -16,6 +16,7 @@ class Dashboard(LoginRequiredMixin,UserPassesTestMixin,View):
     context={
       'sidebar_menu_dashboard_class':'active'
     }
+    messages.info(request,'Welcome to the dashboard!')
     return render(request,self.template_name,context)
 
 class GeneralSettings(LoginRequiredMixin,View):

@@ -285,12 +285,12 @@ class Cart(LoginRequiredMixin,View):
 
   def get(self,request):
     context=cart_context
-    
-    cart_items = request.user.orders.filter(cart=True)
-    context['cart_items']=cart_items
-    if cart_items.count() > 0:
-      context['cart_total']=self.cartTotal(cart_items)
-      context['cart_currency']=self.cartCurrency(cart_items)
+    order = request.user.orders.filter(draft=True).first()
+    if order:
+      context['order']=order
+      if order.sales.all().count() > 0:
+        context['cart_total']=self.cartTotal(order.sales.all())
+        context['cart_currency']=self.cartCurrency(order.sales.all())
 
     return render(request,self.template_name,context)
 
@@ -303,12 +303,14 @@ class DeleteCartItem(LoginRequiredMixin,View):
 
 class Checkout(LoginRequiredMixin,View):
   template_name=''
-  def get(self,request):
+  def get(self,request,order):
     context=cart_context
-    items = request.user.orders.filter(cart=True)
-    for item in items:
+    order = models.Order.objects.get(pk=order)
+    for item in order.sales.all():
       item.cart = False
       item.save()
+    order.draft = False
+    order.save()
     messages.success(request,'Payment successful!')
     return redirect(reverse('store:cart'))
 

@@ -17,7 +17,7 @@
             <th></th>
           </thead>
           <tbody>
-            {% for cart_item in cart_items %}
+            {% for cart_item in order.sales.all %}
             <tr>
               <td><a href="{% url "store:listing" id=cart_item.purchase.id %}">{{cart_item.purchase.inventory.name}}</a></td>
               <td>{{cart_item.quantity}}</td>
@@ -32,6 +32,10 @@
         <h3>Order Summery</h3>
         <table class="table">
           <tr>
+            <td>Order ID</td>
+            <td>{{order.id}}</td>
+          </tr>
+          <tr>
             <td>Products</td>
             <td>{{cart_total}} {{cart_currency}}</td>
           </tr>
@@ -40,7 +44,9 @@
             <td>{{cart_total}} {{cart_currency}}</td>
           </tr>
         </table>
-        <a href="{% url "store:checkout" %}" class="btn btn-primary">Checkout</a>
+        {% if order %}
+        <a href="{% url "store:checkout" order=order.id %}" class="btn btn-primary">Checkout</a>
+        {% endif %}
       </div>
     </div>
   </div>

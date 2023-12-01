@@ -44,13 +44,20 @@ class Purchase(models.Model):
 
   def __str__(self):
       return f"{self.inventory.name} -> Purchase {self.purchase_price}x{self.quantity}"
+
+class Order(models.Model):
+  user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='orders')
+  draft=models.BooleanField()
   
+  def __str__(self):
+    return f"{self.user.username};#{self.id};{self.sales.count()}"
 
 class Sale(models.Model):
-  user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='orders')
+  user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='sales')
   purchase=models.ForeignKey(Purchase,related_name='sales',on_delete=models.CASCADE)
   quantity=models.IntegerField()
   sale_price=models.FloatField()
+  order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='sales')
   cart=models.BooleanField(default=True)
   approved=models.BooleanField(default=False)
   
