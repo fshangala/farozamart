@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'accounts',
     'dashboard',
     'store',
+    'dropshipping',
     
     'django.contrib.admin',
     'django.contrib.auth',
