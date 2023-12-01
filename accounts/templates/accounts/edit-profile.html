@@ -1,2 +1,12 @@
 {% extends "home/base.html" %}
 {% block title %}Farozamart | Edit Profile{% endblock title %}
+
+{% block content %}
+
+<section class="layout_padding">
+  <div class="container">
+  {% include "home/includes/form.html" with method='POST' action='' submitText='Save' %}
+  </div>
+</section>
+
+{% endblock content %}

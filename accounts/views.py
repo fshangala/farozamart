@@ -4,6 +4,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.conf import settings
 from accounts import forms
+from django.contrib import messages
 
 # Create your views here.
 class Login(LoginView):
@@ -43,7 +44,20 @@ class EditProfile(LoginRequiredMixin,View):
   template_name='accounts/edit-profile.html'
 
   def get(self,request):
-    context={}
+    context={
+      'form':forms.EditProfileForm(user=request.user)
+    }
+    return render(request,self.template_name,context)
+  
+  def post(self,request):
+    form = forms.EditProfileForm(user=request.user,data=request.POST)
+    context={
+      'form':form
+    }
+    if form.is_valid():
+      form.save()
+      messages.success(request,'Profile successfully updated!')
+      return redirect(reverse('accounts:profile'))
     return render(request,self.template_name,context)
 
 class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):

@@ -12,6 +12,7 @@ class Profile(models.Model):
   user=models.OneToOneField(to=User,on_delete=models.CASCADE,related_name='profile')
   phone=models.CharField(max_length=20,null=True)
   gender=models.CharField(max_length=200,choices=gender_options,default='Male')
+  address=models.CharField(max_length=200,null=True)
   is_seller=models.BooleanField(default=False)
   
   @receiver(post_save, sender=User)
