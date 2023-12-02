@@ -6,6 +6,8 @@ from store import forms
 from store import models
 from store import functions
 from dropshipping.functions import steadfastCreateOrder
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 
 # Create your views here.
 class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
@@ -272,6 +274,7 @@ class Listing(LoginRequiredMixin,View):
 
 # cart
 cart_context={}
+@method_decorator(never_cache,name='dispatch')
 class Cart(LoginRequiredMixin,View):
   template_name='store/cart.html'
   
@@ -283,7 +286,7 @@ class Cart(LoginRequiredMixin,View):
     for item in items:
       cart_total += item.quantity * item.sale_price
     return cart_total
-
+  
   def get(self,request):
     context=cart_context
     order = request.user.orders.filter(draft=True).first()
@@ -316,7 +319,7 @@ class Checkout(LoginRequiredMixin,View):
     steadfastCreateOrder(order)
     
     messages.success(request,'Payment successful!')
-    return redirect(reverse('store:cart'))
+    return redirect(reverse('store:customer-order',kwargs={'id':order.id}))
 
 # settings currency
 class Currencies(LoginRequiredMixin,View):

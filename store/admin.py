@@ -5,3 +5,4 @@ from store import models
 admin.site.register(models.Inventory)
 admin.site.register(models.Purchase)
 admin.site.register(models.Sale)
+admin.site.register(models.Order)
