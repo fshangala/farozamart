@@ -1,0 +1,19 @@
+
+<table class="table">
+  <thead>
+    <th>Name</th>
+    <th>Quantity</th>
+    <th>Unit price</th>
+    <th>Approved</th>
+  </thead>
+  <tbody>
+    {% for item in order.sales.all %}
+    <tr>
+      <td>{{item.purchase.inventory.name}}</td>
+      <td>{{item.quantity}}</td>
+      <td>{{item.sale_price}}</td>
+      <td>{{item.approved}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
