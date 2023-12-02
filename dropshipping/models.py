@@ -5,6 +5,7 @@ class SteadFastDelivery(models.Model):
   consignment_id=models.IntegerField()
   invoice=models.CharField(max_length=200)
   tracking_code=models.CharField(max_length=200)
+  status=models.CharField(max_length=200)
   created_at=models.CharField(max_length=200)
   updated_at=models.CharField(max_length=200)
   

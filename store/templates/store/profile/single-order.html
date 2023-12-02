@@ -145,6 +145,24 @@
                         <p>{{order.id}}</p>
                     </div>
                 </div>
+                {% if steadfast_delivery %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Steadfast Delivery Tracking code</label>
+                    </div>
+                    <div class="col-md-6">
+                        <p>{{steadfast_delivery.tracking_code}}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Steadfast Delivery status</label>
+                    </div>
+                    <div class="col-md-6">
+                        <p>{{steadfast_delivery.status}}</p>
+                    </div>
+                </div>
+                {% endif %}
                 {% include "store/tables/order-items.html" %}
             </div>
         </div>         

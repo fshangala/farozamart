@@ -8,6 +8,7 @@ from store import functions
 from dropshipping.functions import steadfastCreateOrder
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
+from dropshipping.models import SteadFastDelivery
 
 # Create your views here.
 class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
@@ -385,6 +386,7 @@ class SingleCustomerOrder(LoginRequiredMixin,View):
   def get(self,request,id):
     order = request.user.orders.get(pk=id)
     context={
-      'order':order
+      'order':order,
+      'steadfast_delivery':SteadFastDelivery.objects.filter(invoice=str(order.id)).first()
     }
     return render(request,self.template_name,context)

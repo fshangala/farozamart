@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from dropshipping import forms
 from dashboard.function import getOptions
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
+from django.contrib import messages
 
 # Create your views here.
 
@@ -21,7 +22,7 @@ class SteadfastConfiguration(LoginRequiredMixin,View):
     if form.is_valid():
       form.save()
       messages.success(request,'Steadfast configuration updated!')
-      return redirect(reverse('dashboard:steadfast-configuration'))
+      return redirect(reverse('dropshipping:steadfast-configuration'))
     
     context={'form':form}
     return render(request,self.template_name,context)
