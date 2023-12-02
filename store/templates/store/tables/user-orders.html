@@ -8,7 +8,7 @@
   <tbody>
     {% for order in user.orders.all %}
     <tr>
-      <td><a href="#">{{order.id}}</a></td>
+      <td><a href="{% url "store:customer-order" id=order.id %}">{{order.id}}</a></td>
       <td>{{order.sales.all.count}}</td>
       <td>{{order.draft}}</td>
     </tr>

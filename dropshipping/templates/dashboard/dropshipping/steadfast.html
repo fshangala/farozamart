@@ -1,0 +1,17 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Farozamart | Dashboard - Steadfast Delivery{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Steadfast Delivery
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li class="active">Steadfast Delivery</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+{% include "store/tables/sales.html" %}
+{% endblock content %}

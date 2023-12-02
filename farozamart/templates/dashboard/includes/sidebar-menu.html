@@ -23,6 +23,11 @@
       <i class="fa fa-shopping-cart"></i> <span>Sales</span>
     </a>
   </li>
+  <li class="{{sidebar_menu_steadfast_class}}">
+    <a href="{% url "dropshipping:steadfast-delivery" %}">
+      <i class="fa fa-shopping-cart"></i> <span>Steadfast Delivery</span>
+    </a>
+  </li>
   {% endif %}
 
   {% if user.is_staff %}

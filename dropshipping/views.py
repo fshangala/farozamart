@@ -25,3 +25,16 @@ class SteadfastConfiguration(LoginRequiredMixin,View):
     
     context={'form':form}
     return render(request,self.template_name,context)
+
+# Steadfast
+steadfast_context = {
+  'sidebar_menu_steadfast_class':'active'
+}
+
+class SteadfastDelivery(LoginRequiredMixin,View):
+  template_name='dashboard/dropshipping/steadfast.html'
+  
+  def get(self,request):
+    context=steadfast_context
+    
+    return render(request,self.template_name,context)

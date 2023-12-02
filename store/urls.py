@@ -9,6 +9,9 @@ urlpatterns = [
   path('shop/cart/<id>/delete/',views.DeleteCartItem.as_view(),name='delete-cart-item'),
   path('shop/cart/checkout/<order>/',views.Checkout.as_view(),name='checkout'),
   
+  path('profile/orders/',views.CustomerOrders.as_view(),name='customer-orders'),
+  path('profile/orders/<id>/',views.SingleCustomerOrder.as_view(),name='customer-order'),
+  
   path('dashboard/currencies/',views.Currencies.as_view(),name='currencies'),
   path('dashboard/currencies/new/',views.NewCurrency.as_view(),name='new-currency'),
   path('dashboard/currencies/<id>/edit/',views.EditCurrency.as_view(),name='edit-currency'),

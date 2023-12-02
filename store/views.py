@@ -5,6 +5,7 @@ from django.views.generic import View
 from store import forms
 from store import models
 from store import functions
+from dropshipping.functions import steadfastCreateOrder
 
 # Create your views here.
 class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
@@ -302,15 +303,18 @@ class DeleteCartItem(LoginRequiredMixin,View):
     return redirect(reverse('store:cart'))
 
 class Checkout(LoginRequiredMixin,View):
-  template_name=''
   def get(self,request,order):
     context=cart_context
+    
     order = models.Order.objects.get(pk=order)
     for item in order.sales.all():
       item.cart = False
       item.save()
     order.draft = False
     order.save()
+    
+    steadfastCreateOrder(order)
+    
     messages.success(request,'Payment successful!')
     return redirect(reverse('store:cart'))
 
@@ -365,3 +369,19 @@ class DeleteCurrency(LoginRequiredMixin,View):
     item.delete()
     messages.success(request,f"{item.name_singular} successfully deleted!")
     return redirect(reverse('store:currencies'))
+
+# customer
+class CustomerOrders(LoginRequiredMixin,View):
+  template_name='store/profile/orders.html'
+  def get(self,request):
+    context={}
+    return render(request,self.template_name,context)
+
+class SingleCustomerOrder(LoginRequiredMixin,View):
+  template_name='store/profile/single-order.html'
+  def get(self,request,id):
+    order = request.user.orders.get(pk=id)
+    context={
+      'order':order
+    }
+    return render(request,self.template_name,context)
