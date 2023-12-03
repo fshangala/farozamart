@@ -2,13 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
-class Store(models.Model):
-  user=models.OneToOneField(User,related_name='store',on_delete=models.CASCADE)
-  name=models.CharField(max_length=200,unique=True)
-  description=models.TextField()
-
-  def __str__(self):
-      return self.name
     
 class Currency(models.Model):
   symbol=models.CharField(max_length=10,unique=True)
@@ -18,6 +11,23 @@ class Currency(models.Model):
   
   def __str__(self):
       return self.name_singular
+  
+    
+class Store(models.Model):
+  user=models.OneToOneField(User,related_name='store',on_delete=models.CASCADE)
+  name=models.CharField(max_length=200,unique=True)
+  description=models.TextField()
+
+  def __str__(self):
+      return self.name
+
+class Wallet(models.Model):
+  store=models.ForeignKey(Store,related_name='wallets',on_delete=models.CASCADE)
+  currency=models.ForeignKey(Currency,related_name='wallets',on_delete=models.CASCADE)
+  balance=models.FloatField(default=0.0)
+  
+  def __str__(self):
+      return f"{self.store.name}#{self.id}: {self.balance} {self.currency.code}"
   
 
 class Inventory(models.Model):
@@ -37,7 +47,7 @@ class Purchase(models.Model):
   currency=models.ForeignKey(Currency,related_name='purchases',on_delete=models.CASCADE)
   
   def get_purchase_price(self):
-    return f"{self.purchase_price} {self.currency.code}"
+    return f"{self.purchase_price} {self.inventory.store.currency.code}"
   
   def get_sale_price(self):
     return f"{self.sale_price} {self.currency.code}"

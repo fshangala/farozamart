@@ -1,0 +1,41 @@
+- model: store.store
+  pk: 1
+  fields:
+    user: 1
+    name: EStore
+    description: Sample store
+- model: accounts.profile
+  pk: 1
+  fields:
+    user: 1
+    is_seller: 1
+
+- model: store.inventory
+  pk: 1
+  fields:
+    store: 1
+    name: Sample Product 1
+    description: Sample product 1 description
+- model: store.inventory
+  pk: 2
+  fields:
+    store: 1
+    name: Sample Product 2
+    description: Sample product 2 description
+
+- model: store.purchase
+  pk: 1
+  fields:
+    inventory: 1
+    quantity: 50
+    purchase_price: 200.0
+    sale_price: 10.0
+    currency: 1
+- model: store.purchase
+  pk: 2
+  fields:
+    inventory: 2
+    quantity: 60
+    purchase_price: 200.0
+    sale_price: 12.0
+    currency: 1

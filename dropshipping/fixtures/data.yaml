@@ -1,0 +1,10 @@
+- model: dashboard.option
+  pk: 4
+  fields:
+    name: steadfast_api_key
+    value: test
+- model: dashboard.option
+  pk: 5
+  fields:
+    name: steadfast_api_secrete
+    value: test

@@ -1,0 +1,7 @@
+- model: store.currency
+  pk: 1
+  fields:
+    symbol: $
+    name_singular: American Dollar
+    name_plural: American Dollars
+    code: USD

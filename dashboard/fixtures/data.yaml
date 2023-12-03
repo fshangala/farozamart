@@ -1,0 +1,15 @@
+- model: dashboard.option
+  pk: 1
+  fields:
+    name: name
+    value: Farozamart
+- model: dashboard.option
+  pk: 2
+  fields:
+    name: tag_line
+    value: Online store
+- model: dashboard.option
+  pk: 3
+  fields:
+    name: description
+    value: Farozamart online multivendor store

@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from store import functions
 
 class BecomeSellerForm(forms.Form):
-  user=None
   name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
   description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}),help_text='Describe your store i.e the products that will be sold on it')
   
