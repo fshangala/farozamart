@@ -3,6 +3,7 @@ from store import models
 from store import validators
 from django.contrib.auth.models import User
 from store import functions
+from paymentgateway.models import Transaction
 
 class BecomeSellerForm(forms.Form):
   name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
@@ -183,8 +184,31 @@ class ListingForm(forms.Form):
       )
 
 class CheckoutForm(forms.Form):
-  success=forms.BooleanField()
   transaction_id=forms.CharField(max_length=200)
+  amount=forms.FloatField()
   
-  def __init__(self,*args,**kwargs):
+  def __init__(self,*args,order_id,**kwargs):
     super().__init__(*args,**kwargs)
+    self.order_id=order_id
+  
+  def save(self):
+    order = models.Order.objects.get(pk=self.order_id)
+    for item in order.sales.all():
+      item.cart = False
+      item.save()
+      wallet = item.purchase.inventory.store.wallets.filter(currency=item.purchase.currency).first()
+      if wallet:
+        wallet.balance += item.sale_price*item.quantity
+        wallet.save()
+      else:
+        wallet = models.Wallet.objects.create(store=item.purchase.inventory.store,currency=item.purchase.currency)
+        wallet.balance += item.sale_price*item.quantity
+        wallet.save()
+        
+    order.draft = False
+    order.save()
+    Transaction.objects.create(
+      transaction_id=self.cleaned_data['transaction_id'],
+      amount=self.cleaned_data['amount']
+    )
+    steadfastCreateOrder(order)

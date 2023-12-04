@@ -12,6 +12,17 @@ def getUserPurchases(user:User):
 
   return qs
 
+def getUserResalePurchases(user:User):
+  inventory = user.store.inventory.all()
+  qs=None
+  for a in inventory:
+    if qs:
+      qs = qs.union(a.purchases.all())
+    else:
+      qs = a.purchases.all()
+
+  return qs
+
 def getUserSales(user:User):
   qs = getUserPurchases(user)
     

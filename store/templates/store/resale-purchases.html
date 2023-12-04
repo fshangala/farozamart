@@ -1,0 +1,15 @@
+{% extends "dashboard/base.html" %}
+
+{% block contentHeader %}
+<h1>
+  Resale Purchases
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>-->
+  <li class="active">Resale Purchases</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+{% include "store/tables/resale-purchases.html" %}
+{% endblock content %}

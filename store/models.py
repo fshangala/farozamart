@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from paymentgateway.models import Transaction
 
 # Create your models here.
     
@@ -47,7 +48,7 @@ class Purchase(models.Model):
   currency=models.ForeignKey(Currency,related_name='purchases',on_delete=models.CASCADE)
   
   def get_purchase_price(self):
-    return f"{self.purchase_price} {self.inventory.store.currency.code}"
+    return f"{self.purchase_price} {self.currency.code}"
   
   def get_sale_price(self):
     return f"{self.sale_price} {self.currency.code}"
@@ -57,6 +58,7 @@ class Purchase(models.Model):
 
 class Order(models.Model):
   user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='orders')
+  transaction=models.ForeignKey(Transaction,on_delete=models.CASCADE,related_name='orders')
   draft=models.BooleanField()
   
   def __str__(self):

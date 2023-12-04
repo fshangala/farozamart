@@ -165,6 +165,18 @@ class DeletePurchase(LoginRequiredMixin,View):
     return redirect(reverse("store:purchases"))
 
 # dashboard sales
+resale_purchases_context = {
+  'sidebar_menu_resale_purchases_class':'active'
+}
+class ResalePurchases(LoginRequiredMixin,View):
+  template_name='store/resale-purchases.html'
+  def get(self,request):
+    context=resale_purchases_context
+    purchases = functions.getUserResalePurchases(request.user)
+    context['purchases']=purchases
+    return render(request,self.template_name,context)
+
+# dashboard sales
 sales_context = {
   'sidebar_menu_sales_class':'active'
 }
@@ -310,14 +322,9 @@ class Checkout(LoginRequiredMixin,View):
   def get(self,request,order):
     context=cart_context
     
-    order = models.Order.objects.get(pk=order)
-    for item in order.sales.all():
-      item.cart = False
-      item.save()
-    order.draft = False
-    order.save()
-    
-    steadfastCreateOrder(order)
+    form = forms.CheckoutForm(data=request.GET)
+    if form.is_valid():
+      form.save()
     
     messages.success(request,'Payment successful!')
     return redirect(reverse('store:customer-order',kwargs={'id':order.id}))
