@@ -58,7 +58,7 @@ class Purchase(models.Model):
 
 class Order(models.Model):
   user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='orders')
-  transaction=models.ForeignKey(Transaction,on_delete=models.CASCADE,related_name='orders')
+  transaction=models.ForeignKey(Transaction,on_delete=models.CASCADE,related_name='orders',null=True)
   draft=models.BooleanField()
   
   def __str__(self):

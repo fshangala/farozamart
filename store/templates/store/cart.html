@@ -45,7 +45,7 @@
           </tr>
         </table>
         {% if order %}
-        <a href="{% url "store:checkout" order=order.id %}" class="btn btn-primary">Checkout</a>
+        <a href="{% url "store:checkout" order=order.id %}?transaction_id={{transaction_id}}&amount={{cart_total}}" class="btn btn-primary">Checkout</a>
         {% endif %}
       </div>
     </div>

@@ -4,6 +4,7 @@ from store import validators
 from django.contrib.auth.models import User
 from store import functions
 from paymentgateway.models import Transaction
+from dropshipping.functions import steadfastCreateOrder
 
 class BecomeSellerForm(forms.Form):
   name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
@@ -205,10 +206,11 @@ class CheckoutForm(forms.Form):
         wallet.balance += item.sale_price*item.quantity
         wallet.save()
         
-    order.draft = False
-    order.save()
-    Transaction.objects.create(
+    transaction = Transaction.objects.create(
       transaction_id=self.cleaned_data['transaction_id'],
       amount=self.cleaned_data['amount']
     )
+    order.draft = False
+    order.transaction = transaction
+    order.save()
     steadfastCreateOrder(order)

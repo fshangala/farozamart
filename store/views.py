@@ -9,6 +9,7 @@ from dropshipping.functions import steadfastCreateOrder
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from dropshipping.models import SteadFastDelivery
+from django.utils import timezone
 
 # Create your views here.
 class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
@@ -180,7 +181,6 @@ class ResalePurchases(LoginRequiredMixin,View):
 sales_context = {
   'sidebar_menu_sales_class':'active'
 }
-
 class Sales(LoginRequiredMixin,View):
   template_name='store/sales.html'
   
@@ -306,6 +306,7 @@ class Cart(LoginRequiredMixin,View):
     if order:
       context['order']=order
       if order.sales.all().count() > 0:
+        context['transaction_id']=timezone.now().timestamp()
         context['cart_total']=self.cartTotal(order.sales.all())
         context['cart_currency']=self.cartCurrency(order.sales.all())
 
@@ -322,12 +323,14 @@ class Checkout(LoginRequiredMixin,View):
   def get(self,request,order):
     context=cart_context
     
-    form = forms.CheckoutForm(data=request.GET)
+    form = forms.CheckoutForm(data=request.GET,order_id=order)
     if form.is_valid():
       form.save()
+      return redirect(reverse('store:customer-order',kwargs={'id':order}))
+    else:
+      messages.error(request,form.errors.as_text())
     
-    messages.success(request,'Payment successful!')
-    return redirect(reverse('store:customer-order',kwargs={'id':order.id}))
+    return redirect(reverse('store:cart'))
 
 # settings currency
 class Currencies(LoginRequiredMixin,View):
