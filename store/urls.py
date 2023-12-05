@@ -35,4 +35,5 @@ urlpatterns = [
   path('dashboard/sales/new/',views.NewSale.as_view(),name='new-sale'),
   path('dashboard/sales/<id>/edit/',views.EditSale.as_view(),name='edit-sale'),
   path('dashboard/sales/<id>/delete/',views.DeleteSale.as_view(),name='delete-sale'),
+  path('dashboard/sales/order/<id>/',views.SalesOrder.as_view(),name='sales-order'),
 ]

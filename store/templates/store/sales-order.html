@@ -1,0 +1,18 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{block.super}} | Dashboard - Order {{order.id}}{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Order {{order.id}}
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li><a href="{% url "store:sales" %}"><i class="fa fa-dashboard"></i> Sales</a></li>
+  <li class="active">Order {{order.id}}</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+{% include "store/tables/sales-order.html" %}
+{% endblock content %}

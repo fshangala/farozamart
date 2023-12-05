@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.views.generic import View
@@ -165,7 +165,7 @@ class DeletePurchase(LoginRequiredMixin,View):
     purchase.delete()
     return redirect(reverse("store:purchases"))
 
-# dashboard sales
+# dashboard resales
 resale_purchases_context = {
   'sidebar_menu_resale_purchases_class':'active'
 }
@@ -240,6 +240,14 @@ class DeleteSale(LoginRequiredMixin,View):
     sale = models.Sale.objects.get(pk=id)
     sale.delete()
     return redirect(reverse("store:sales"))
+
+class SalesOrder(LoginRequiredMixin,View):
+  template_name='store/sales-order.html'
+  def get(self,request,id):
+    context=sales_context
+    order = get_object_or_404(models.Order,pk=id)
+    context['order']=order
+    return render(request,self.template_name,context)
 
 # shop
 shop_context={

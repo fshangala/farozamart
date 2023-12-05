@@ -1,0 +1,24 @@
+
+<div class="box">
+  <div class="box-header">
+    <h3 class="box-title">Order</h3>
+  </div><!-- /.box-header -->
+  <div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+      <tr>
+        <th>ID</th>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Sale Price</th>
+      </tr>
+      {% for sale in order.sales.all %}
+      <tr>
+        <td>{{order.id}}</td>
+        <td>{{sale.purchase.inventory.name}}</td>
+        <td>{{sale.quantity}}</td>
+        <td>{{sale.get_sale_price}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div><!-- /.box-body -->
+</div><!-- /.box -->

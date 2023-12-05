@@ -16,6 +16,7 @@
       <tr>
         <th>ID</th>
         <th>Order ID</th>
+        <th>Customer</th>
         <th>Inventory</th>
         <th>Quantity</th>
         <th>Sale Price</th>
@@ -25,11 +26,12 @@
       <tr>
         <td>{{sale.id}}</td>
         <td>{{sale.order.id}}</td>
+        <td>{{sale.user.profile.full_name}}</td>
         <td>{{sale.purchase.inventory.name}}</td>
         <td>{{sale.quantity}}</td>
         <td>{{sale.get_sale_price}}</td>
         <td>
-          <a href="" class="btn btn-primary">View Order</a>
+          <a href="{% url "store:sales-order" id=sale.order.id %}" class="btn btn-primary">View Order</a>
         </td>
       </tr>
       {% endfor %}
