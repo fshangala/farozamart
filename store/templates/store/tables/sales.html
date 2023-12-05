@@ -16,6 +16,7 @@
     <table class="table table-hover">
       <tr>
         <th>ID</th>
+        <th>Order ID</th>
         <th>Inventory</th>
         <th>Quantity</th>
         <th>Sale Price</th>
@@ -24,6 +25,7 @@
       {% for sale in sales %}
       <tr>
         <td>{{sale.id}}</td>
+        <td>{{sale.order.id}}</td>
         <td>{{sale.purchase.inventory.name}}</td>
         <td>{{sale.quantity}}</td>
         <td>{{sale.get_sale_price}}</td>

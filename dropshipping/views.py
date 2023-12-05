@@ -6,8 +6,6 @@ from django.views.generic import View
 from django.contrib import messages
 
 # Create your views here.
-
-
 class SteadfastConfiguration(LoginRequiredMixin,View):
   template_name='dashboard/steadfast-configuration.html'
   
@@ -31,7 +29,6 @@ class SteadfastConfiguration(LoginRequiredMixin,View):
 steadfast_context = {
   'sidebar_menu_steadfast_class':'active'
 }
-
 class SteadfastDelivery(LoginRequiredMixin,View):
   template_name='dashboard/dropshipping/steadfast.html'
   
