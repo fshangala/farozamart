@@ -249,6 +249,24 @@ class SalesOrder(LoginRequiredMixin,View):
     context['order']=order
     return render(request,self.template_name,context)
 
+class WithdrawRequest(LoginRequiredMixin,View):
+  template_name='store/withdraw.html'
+  def get(self,request,id):
+    context=sales_context
+    wallet = get_object_or_404(models.Wallet,pk=id)
+    context['form'] = forms.WithdrawRequest(wallet=wallet)
+    return render(request,self.template_name,context)
+  
+  def post(self,request,id):
+    context=sales_context
+    wallet = get_object_or_404(models.Wallet,pk=id)
+    form=forms.WithdrawRequest(wallet=wallet,data=request.POST)
+    if form.is_valid():
+      form.save()
+      messages.info(request,'Withdraw request successfully submitted!')
+      return redirect(reverse('store:sales'))
+    return render(request,self.template_name,context)
+
 # shop
 shop_context={
   'nav_shop_class':'active'

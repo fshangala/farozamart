@@ -1,0 +1,17 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{block.super}} | Dashboard - Withdraw{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Withdraw
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li class="active">Withdraw</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+{% include "includes/form.html" with method='POST' action='' submitText='Submit' %}
+{% endblock content %}

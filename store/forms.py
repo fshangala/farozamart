@@ -214,3 +214,16 @@ class CheckoutForm(forms.Form):
     order.transaction = transaction
     order.save()
     steadfastCreateOrder(order)
+
+class WithdrawRequest(forms.Form):
+  amount=forms.FloatField(widget=forms.NumberInput(attrs={'class':'form-control'}))
+  
+  def __init__(self,*args,wallet:models.Wallet,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.wallet=wallet
+  
+  def save(self):
+    models.Withdraw.objects.create(
+      wallet=self.wallet,
+      amount=self.cleaned_data['amount']
+    )

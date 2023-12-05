@@ -29,7 +29,15 @@ class Wallet(models.Model):
   
   def __str__(self):
       return f"{self.store.name}#{self.id}: {self.balance} {self.currency.code}"
+
+class Withdraw(models.Model):
+  wallet=models.ForeignKey(Wallet,on_delete=models.CASCADE,related_name='withdraws')
+  amount=models.FloatField()
+  transaction=models.ForeignKey(Transaction,on_delete=models.CASCADE,related_name='withdraws',null=True)
+  approved=models.BooleanField(default=False)
   
+  def __str__(self):
+      return f"Withdraw {self.amount}"  
 
 class Inventory(models.Model):
   store=models.ForeignKey(Store,related_name='inventory',on_delete=models.CASCADE)
