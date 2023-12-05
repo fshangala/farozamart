@@ -24,4 +24,5 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('store/', include('store.urls')),
     path('dropshipping/',include('dropshipping.urls')),
+    path('paymentgateway/',include('paymentgateway.urls')),
 ]

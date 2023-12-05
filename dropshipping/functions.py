@@ -8,7 +8,7 @@ from django.utils import timezone
 def steadfastCreateOrder(order:Order):
   option=getOptions()
   
-  if option.get('steadfast_api_key') and option.get('steadfast_api_secrete'):
+  if option.get('steadfast_status') == 'ACTIVATED':
     if option.get('steadfast_api_key') == 'test' and option.get('steadfast_api_secrete') == 'test':
       resulte={
         "status": 200,

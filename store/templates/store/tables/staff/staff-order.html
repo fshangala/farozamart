@@ -1,0 +1,40 @@
+
+<div class="box">
+  <div class="box-header">
+    <h3 class="box-title">Order</h3>
+  </div><!-- /.box-header -->
+  <table class="table table-hover">
+    <tr>
+      <th>Order ID</th>
+      <td>{{order.id}}</td>
+    </tr>
+    <tr>
+      <th>Order Cost</th>
+      <td>{{order.total_cost}}</td>
+    </tr>
+    {% if order.transaction %}
+    <tr>
+      <th>Transaction</th>
+      <td>{{order.transaction}}</td>
+    </tr>
+    {% endif %}
+  </table>
+  <div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+      <tr>
+        <th>ID</th>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Sale Price</th>
+      </tr>
+      {% for sale in order.sales.all %}
+      <tr>
+        <td>{{sale.id}}</td>
+        <td>{{sale.purchase.inventory.name}}</td>
+        <td>{{sale.quantity}}</td>
+        <td>{{sale.get_sale_price}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div><!-- /.box-body -->
+</div><!-- /.box -->

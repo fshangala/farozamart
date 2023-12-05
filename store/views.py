@@ -345,6 +345,28 @@ class DeleteCartItem(LoginRequiredMixin,View):
     item.delete()
     return redirect(reverse('store:cart'))
 
+class CheckoutPayment(LoginRequiredMixin,View):
+  template_name='store/checkout-payment.html'
+  
+  def cartCurrency(self,items)->str:
+    return items[0].purchase.currency.code
+  
+  def cartTotal(self,items)->float:
+    cart_total = 0.0
+    for item in items:
+      cart_total += item.quantity * item.sale_price
+    return cart_total
+  def get(self,request):
+    context=cart_context
+    order = request.user.orders.filter(draft=True).first()
+    if order:
+      context['order']=order
+      if order.sales.all().count() > 0:
+        context['transaction_id']=timezone.now().timestamp()
+        context['cart_total']=self.cartTotal(order.sales.all())
+        context['cart_currency']=self.cartCurrency(order.sales.all())
+    return render(request,self.template_name,context)
+
 class Checkout(LoginRequiredMixin,View):
   def get(self,request,order):
     context=cart_context
@@ -357,6 +379,20 @@ class Checkout(LoginRequiredMixin,View):
       messages.error(request,form.errors.as_text())
     
     return redirect(reverse('store:cart'))
+
+class CheckoutCOD(LoginRequiredMixin,View):
+  def get(self,request,order):
+    context=cart_context
+    order = get_object_or_404(models.Order,pk=order)
+    for item in order.sales.all():
+      item.cart = False
+      item.save()
+        
+    order.draft = False
+    order.save()
+    
+    steadfastCreateOrder(order)
+    return redirect(reverse('store:customer-order',kwargs={'id':order.id}))
 
 # settings currency
 class Currencies(LoginRequiredMixin,View):
@@ -425,4 +461,46 @@ class SingleCustomerOrder(LoginRequiredMixin,View):
       'order':order,
       'steadfast_delivery':SteadFastDelivery.objects.filter(invoice=str(order.id)).first()
     }
+    return render(request,self.template_name,context)
+
+# Staff orders
+staff_orders_context={
+  'sidebar_menu_staff_orders_class':'active'
+}
+class StaffOrders(LoginRequiredMixin,View):
+  template_name='store/staff/orders.html'
+  def get(self,request):
+    context=staff_orders_context
+    orders = models.Order.objects.filter(draft=False)
+    context['orders']=orders
+    return render(request,self.template_name,context)
+
+class StaffApproveOrder(LoginRequiredMixin,View):
+  template_name='store/staff/approve-order.html'
+  def get(self,request,id):
+    context=staff_orders_context
+    order=get_object_or_404(models.Order,pk=id)
+    form=forms.ApproveOrderForm(order=order,data={
+      'transaction_id':timezone.now().timestamp(),
+      'amount':order.total_cost_number()
+    })
+    context['form']=form
+    return render(request,self.template_name,context)
+  def post(self,request,id):
+    context=staff_orders_context
+    order=get_object_or_404(models.Order,pk=id)
+    form=forms.ApproveOrderForm(order=order,data=request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'Order successfully approved!')
+      return redirect(reverse('store:staff-orders'))
+    context['form']=form
+    return render(request,self.template_name,context)
+
+class StaffOrder(LoginRequiredMixin,View):
+  template_name='store/staff/staff-order.html'
+  def get(self,request,id):
+    context=staff_orders_context
+    order = get_object_or_404(models.Order,pk=id)
+    context['order']=order
     return render(request,self.template_name,context)

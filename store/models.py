@@ -69,6 +69,22 @@ class Order(models.Model):
   transaction=models.ForeignKey(Transaction,on_delete=models.CASCADE,related_name='orders',null=True)
   draft=models.BooleanField()
   
+  def total_cost_number(self):
+    amount=0.0
+    for sale in self.sales.all():
+      amount += sale.sale_price*sale.quantity
+    
+    return amount
+  
+  def total_cost(self):
+    amount=0.0
+    currency=None
+    for sale in self.sales.all():
+      amount += sale.sale_price*sale.quantity
+      currency = sale.purchase.currency
+    
+    return f"{amount} {currency.code}"
+  
   def __str__(self):
     return f"{self.user.username};#{self.id};{self.sales.count()}"
 
@@ -83,6 +99,20 @@ class Sale(models.Model):
   
   def get_sale_price(self):
     return f"{self.sale_price} {self.purchase.currency.code}"
+  
+  def approve(self):
+    self.cart = False
+    self.approved = True
+    self.save()
+    
+    wallet = self.purchase.inventory.store.wallets.filter(currency=self.purchase.currency).first()
+    if wallet:
+      wallet.balance += self.sale_price*self.quantity
+      wallet.save()
+    else:
+      wallet = Wallet.objects.create(store=self.purchase.inventory.store,currency=self.purchase.currency)
+      wallet.balance += self.sale_price*self.quantity
+      wallet.save()
 
   def __str__(self):
       return f"{self.purchase.inventory.name} -> Sale {self.sale_price}x{self.quantity}"

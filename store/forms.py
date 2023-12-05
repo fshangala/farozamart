@@ -215,6 +215,29 @@ class CheckoutForm(forms.Form):
     order.save()
     steadfastCreateOrder(order)
 
+class ApproveOrderForm(forms.Form):
+  transaction_id=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control','read-only':True}))
+  amount=forms.FloatField(widget=forms.NumberInput(attrs={'class':'form-control','readonly':True}))
+  
+  def __init__(self,*args,order:models.Order,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.order=order
+  
+  def save(self):
+    for item in self.order.sales.all():
+      item.approve()
+        
+    transaction = Transaction.objects.create(
+      transaction_id=self.cleaned_data['transaction_id'],
+      amount=self.order.total_cost_number()
+    )
+    
+    self.order.draft = False
+    self.order.transaction = transaction
+    self.order.save()
+    
+    steadfastCreateOrder(self.order)
+
 class WithdrawRequest(forms.Form):
   amount=forms.FloatField(widget=forms.NumberInput(attrs={'class':'form-control'}))
   

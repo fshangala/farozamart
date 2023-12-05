@@ -6,11 +6,16 @@ urlpatterns = [
   path('shop/',views.Shop.as_view(),name='shop'),
   path('shop/listing/<id>/',views.Listing.as_view(),name='listing'),
   path('shop/cart/',views.Cart.as_view(),name='cart'),
+  path('shop/checkout/payment/',views.CheckoutPayment.as_view(),name='checkout-payment'),
   path('shop/cart/<id>/delete/',views.DeleteCartItem.as_view(),name='delete-cart-item'),
   path('shop/cart/checkout/<order>/',views.Checkout.as_view(),name='checkout'),
+  path('shop/cart/checkout-cod/<order>/',views.CheckoutCOD.as_view(),name='checkout-cod'),
   
   path('profile/orders/',views.CustomerOrders.as_view(),name='customer-orders'),
   path('profile/orders/<id>/',views.SingleCustomerOrder.as_view(),name='customer-order'),
+  path('dashboard/orders/',views.StaffOrders.as_view(),name='staff-orders'),
+  path('dashboard/orders/<id>/',views.StaffOrder.as_view(),name='staff-order'),
+  path('dashboard/orders/<id>/approve/',views.StaffApproveOrder.as_view(),name='staff-approve-order'),
   
   path('dashboard/currencies/',views.Currencies.as_view(),name='currencies'),
   path('dashboard/currencies/new/',views.NewCurrency.as_view(),name='new-currency'),

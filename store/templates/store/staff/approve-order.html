@@ -1,0 +1,16 @@
+{% extends "dashboard/base.html" %}
+
+{% block contentHeader %}
+<h1>
+  Approve order {{order.id}}
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li><a href="{% url "store:staff-orders" %}"><i class="fa fa-dashboard"></i> Orders</a></li>
+  <li class="active">{{order.id}}</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+{% include "includes/form.html" with method="POST" action="" submitText="Save" %}
+{% endblock content %}

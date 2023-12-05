@@ -1,0 +1,17 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{block.super}} | Dashboard - Payment methods{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Payment Methods
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li class="active">Payment methods</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+{% include "includes/form.html" with form=cod_form method='POST' action='' submitText='Save' %}
+{% endblock content %}
