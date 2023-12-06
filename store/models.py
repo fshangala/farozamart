@@ -43,6 +43,7 @@ class Inventory(models.Model):
   store=models.ForeignKey(Store,related_name='inventory',on_delete=models.CASCADE)
   name=models.CharField(max_length=200,unique=True)
   description=models.TextField()
+  picture=models.ImageField(upload_to='products',default='products/default.png')
 
   def __str__(self):
       return self.name

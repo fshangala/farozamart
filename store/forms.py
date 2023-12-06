@@ -20,18 +20,23 @@ class BecomeSellerForm(forms.Form):
     self.user.save()
 
 class InventoryForm(forms.Form):
-  user=None
-  instance=None
   name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
   description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
+  picture=forms.ImageField()
   
   def save(self):
     if self.instance != None:
       self.instance.name = self.cleaned_data['name']
       self.instance.description = self.cleaned_data['description']
+      self.instance.picture = self.cleaned_data['picture']
       self.instance.save()
     else:
-      inventory = models.Inventory.objects.create(store=self.user.store,name=self.cleaned_data['name'],description=self.cleaned_data['description'])
+      inventory = models.Inventory.objects.create(
+        store=self.user.store,
+        name=self.cleaned_data['name'],
+        description=self.cleaned_data['description'],
+        picture=self.cleaned_data['picture']
+      )
   
   def __init__(self,*args,user:User,instance:models.Inventory=None,**kwargs):
     super().__init__(*args,**kwargs)
@@ -41,6 +46,7 @@ class InventoryForm(forms.Form):
     if self.instance:
       self.initial['name']=instance.name
       self.initial['description']=instance.description
+      self.initial['picture']=instance.picture
     else:
       self.fields['name'].validators=[validators.unique_inventory_name]
 
