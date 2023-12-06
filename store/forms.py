@@ -87,12 +87,11 @@ class CurrencyForm(forms.Form):
       self.fields['code'].validators=[validators.CurrencyValidators.unique_code]
 
 class PurchaseForm(forms.Form):
-  user=None
-  instance=None
   inventory=forms.ModelChoiceField(queryset=models.Inventory.objects.none(),widget=forms.Select(attrs={'class':'form-control'}))
   quantity=forms.IntegerField(min_value=1,widget=forms.NumberInput(attrs={'class':'form-control'}))
   purchase_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
   sale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
+  resale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
   currency=forms.ModelChoiceField(queryset=models.Currency.objects.all(),widget=forms.Select(attrs={'class':'form-control'}))
   
   def save(self):
@@ -101,6 +100,7 @@ class PurchaseForm(forms.Form):
       self.instance.quantity = self.cleaned_data['quantity']
       self.instance.purchase_price = self.cleaned_data['purchase_price']
       self.instance.sale_price = self.cleaned_data['sale_price']
+      self.instance.resale_price = self.cleaned_data['resale_price']
       self.instance.currency = self.cleaned_data['currency']
       self.instance.save()
     else:
@@ -109,6 +109,7 @@ class PurchaseForm(forms.Form):
         quantity=self.cleaned_data['quantity'],
         purchase_price=self.cleaned_data['purchase_price'],
         sale_price=self.cleaned_data['sale_price'],
+        resale_price=self.cleaned_data['resale_price'],
         currency=self.cleaned_data['currency']
       )
   
@@ -124,11 +125,10 @@ class PurchaseForm(forms.Form):
       self.initial['quantity']=instance.quantity
       self.initial['purchase_price']=instance.purchase_price
       self.initial['sale_price']=instance.sale_price
+      self.initial['resale_price']=instance.resale_price
       self.initial['currency']=instance.currency
     
 class SaleForm(forms.Form):
-  user=None
-  instance=None
   purchase=forms.ModelChoiceField(queryset=models.Purchase.objects.none(),widget=forms.Select(attrs={'class':'form-control'}))
   quantity=forms.IntegerField(min_value=1,widget=forms.NumberInput(attrs={'class':'form-control'}))
   sale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
@@ -156,6 +156,29 @@ class SaleForm(forms.Form):
     if self.instance:
       self.initial['purchase']=instance.purchase
       self.initial['quantity']=instance.quantity
+      self.initial['sale_price']=instance.sale_price
+
+class ResaleForm(forms.Form):
+  sale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
+  
+  def save(self):
+    if self.instance:
+      self.instance.sale_price = self.cleaned_data['sale_price']
+      self.instance.save()
+    else:
+      models.Resale.objects.create(
+        store=self.user.store,
+        purchase=self.purchase,
+        sale_price=self.cleaned_data['sale_price'],
+      )
+  
+  def __init__(self,*args,user:User,resale_purchase:models.Purchase,instance:models.Resale=None,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.user=user
+    self.purchase=resale_purchase
+    self.instance=instance
+    
+    if self.instance:
       self.initial['sale_price']=instance.sale_price
 
 class ListingForm(forms.Form):

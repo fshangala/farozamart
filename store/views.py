@@ -66,7 +66,8 @@ class EditInventory(LoginRequiredMixin,View):
     
     if form.is_valid():
       form.save()
-      return redirect(reverse("store:edit-inventory",kwargs={'id':id}))
+      messages.success(request,'Inventory successfully updated!')
+      return redirect(reverse("store:inventory"))
     
     context=inventory_context
     context['form']=form
@@ -169,14 +170,50 @@ class DeletePurchase(LoginRequiredMixin,View):
 resale_purchases_context = {
   'sidebar_menu_resale_purchases_class':'active'
 }
+class Resales(LoginRequiredMixin,View):
+  template_name='store/resales.html'
+  def get(self,request):
+    context=resale_purchases_context
+    resales = functions.getUserResalePurchases(request.user)
+    context['resales']=resales
+    return render(request,self.template_name,context)
+
 class ResalePurchases(LoginRequiredMixin,View):
   template_name='store/resale-purchases.html'
   def get(self,request):
     context=resale_purchases_context
-    purchases = functions.getUserResalePurchases(request.user)
+    purchases=models.Purchase.objects.filter(resale_price__gt=0.0)
     context['purchases']=purchases
     return render(request,self.template_name,context)
 
+class NewResale(LoginRequiredMixin,View):
+  template_name='store/new-resale.html'
+  def get(self,request,id):
+    context=resale_purchases_context
+    purchase=get_object_or_404(models.Purchase,pk=id)
+    form = forms.ResaleForm(user=request.user,resale_purchase=purchase)
+    context['form']=form
+    context['purchase']=purchase
+    return render(request,self.template_name,context)
+  def post(self,request,id):
+    context=resale_purchases_context
+    purchase=get_object_or_404(models.Purchase,pk=id)
+    form = forms.ResaleForm(user=request.user,resale_purchase=purchase,data=request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'New resale successfully added!')
+      return redirect(reverse('store:resales'))
+    context['form']=form
+    context['purchase']=purchase
+    return render(request,self.template_name,context)
+
+class DeleteResale(LoginRequiredMixin,View):
+  def get(self,request,id):
+    resale = get_object_or_404(models.Resale,pk=id)
+    resale.delete()
+    messages.info(request,'Resale deleted!')
+    return redirect(reverse("store:resales"))
+  
 # dashboard sales
 sales_context = {
   'sidebar_menu_sales_class':'active'

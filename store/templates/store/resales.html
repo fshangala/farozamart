@@ -2,15 +2,14 @@
 
 {% block contentHeader %}
 <h1>
-  Resale Purchases
+  Resales
 </h1>
 <ol class="breadcrumb">
   <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-  <li><a href="{% url "store:resales" %}"><i class="fa fa-dashboard"></i> Resales</a></li>
-  <li class="active">Resale Purchases</li>
+  <li class="active">Resales</li>
 </ol>
 {% endblock contentHeader %}
 
 {% block content %}
-{% include "store/tables/resale-purchases.html" %}
+{% include "store/tables/resales.html" %}
 {% endblock content %}

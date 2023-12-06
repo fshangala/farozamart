@@ -34,7 +34,10 @@ urlpatterns = [
   path('dashboard/purchases/<id>/edit/',views.EditPurchase.as_view(),name='edit-purchase'),
   path('dashboard/purchases/<id>/delete/',views.DeletePurchase.as_view(),name='delete-purchase'),
   
-  path('dashboard/resale/purchases/',views.ResalePurchases.as_view(),name='resale-purchases'),
+  path('dashboard/resale/',views.Resales.as_view(),name='resales'),
+  path('dashboard/resale/<id>/delete',views.DeleteResale.as_view(),name='delete-resale'),
+  path('dahsboard/resale/purchases/',views.ResalePurchases.as_view(),name='resale-purchases'),
+  path('dahsboard/resale/purchases/<id>/resale/',views.NewResale.as_view(),name='new-resale'),
   
   path('dashboard/sales/',views.Sales.as_view(),name='sales'),
   path('dashboard/sales/new/',views.NewSale.as_view(),name='new-sale'),

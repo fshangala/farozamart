@@ -1,7 +1,8 @@
 
 <div class="box">
   <div class="box-header">
-    <h3 class="box-title">Resale Purchases</h3>
+    <h3 class="box-title">Resales</h3>
+    <a href="{% url "store:resale-purchases" %}" class="btn btn-primary mx-2">Resale Purchases</a>
     <div class="box-tools">
       <div class="input-group">
         <input type="text" name="table_search" class="form-control input-sm pull-right" style="width: 150px;" placeholder="Search"/>
@@ -15,21 +16,21 @@
     <table class="table table-hover">
       <tr>
         <th>ID</th>
-        <th>Inventory</th>
+        <th>Product</th>
         <th></th>
-        <th>Quantity</th>
         <th>Resale Price</th>
+        <th>Sale Price</th>
         <th></th>
       </tr>
-      {% for purchase in purchases %}
+      {% for resale in resales %}
       <tr>
-        <td>{{purchase.id}}</td>
-        <td>{{purchase.inventory.name}}</td>
-        <td><img src="{{purchase.inventory.picture.url}}" alt="{{purchase.inventory.name}}" height=50 /></td>
-        <td>{{purchase.quantity}}</td>
-        <td>{{purchase.get_resale_price}}</td>
+        <td>{{resale.id}}</td>
+        <td>{{resale.purchase.inventory.name}}</td>
+        <td><img src="{{resale.purchase.inventory.picture.url}}" alt="{{resale.purchase.inventory.name}}" height=50/></td>
+        <td>{{resale.purchase.get_resale_price}}</td>
+        <td>{{resale.get_sale_price}}</td>
         <td>
-          <a href="{% url "store:new-resale" id=purchase.id %}" class="btn btn-primary">Resale</a>
+          <a href="{% url "store:delete-resale" id=resale.id %}" class="btn btn-danger">Delete</a>
         </td>
       </tr>
       {% endfor %}

@@ -1,0 +1,29 @@
+{% extends "dashboard/base.html" %}
+
+{% block contentHeader %}
+<h1>
+  New Resale
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li><a href="{% url "store:resales" %}"><i class="fa fa-dashboard"></i> Resales</a></li>
+  <li><a href="{% url "store:resale-purchases" %}"><i class="fa fa-dashboard"></i> Resale Purchases</a></li>
+  <li class="active">New</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+<table class="table">
+  <tr>
+    <th>Product</th>
+    <td><img src="{{purchase.inventory.picture.url}}" alt="{{purchase.inventory.name}}" height=50 /></td>
+    <td>{{purchase.inventory.name}}</td>
+  </tr>
+  <tr>
+    <th>Resale price</th>
+    <td></td>
+    <td>{{purchase.get_resale_price}}</td>
+  </tr>
+</table>
+{% include "includes/form.html" with method="POST" action="" submitText="Save" %}
+{% endblock content %}

@@ -54,6 +54,7 @@ class Purchase(models.Model):
   quantity=models.IntegerField()
   purchase_price=models.FloatField()
   sale_price=models.FloatField()
+  resale_price=models.FloatField(default=0.0)
   currency=models.ForeignKey(Currency,related_name='purchases',on_delete=models.CASCADE)
   
   def get_purchase_price(self):
@@ -61,9 +62,26 @@ class Purchase(models.Model):
   
   def get_sale_price(self):
     return f"{self.sale_price} {self.currency.code}"
+  
+  def get_resale_price(self):
+    value=""
+    if self.resale_price > 0:
+      value = f"{self.resale_price} {self.currency.code}"
+    return value
 
   def __str__(self):
       return f"{self.inventory.name} -> Purchase {self.purchase_price}x{self.quantity}"
+
+class Resale(models.Model):
+  store=models.ForeignKey(Store,on_delete=models.CASCADE,related_name='resales')
+  purchase=models.ForeignKey(Purchase,on_delete=models.CASCADE,related_name='resales')
+  sale_price=models.FloatField()
+  
+  def get_sale_price(self):
+    return f"{self.sale_price} {self.purchase.currency.code}"
+
+  def __str__(self):
+      return f"{self.purchase.inventory.name} -> Resale {self.purchase.resale_price} --> {self.sale_price}"
 
 class Order(models.Model):
   user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='orders')

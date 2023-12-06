@@ -21,6 +21,7 @@
         <th>Quantity</th>
         <th>Purchase Price</th>
         <th>Sale Price</th>
+        <th>Resale Price</th>
         <th></th>
       </tr>
       {% for purchase in purchases %}
@@ -30,6 +31,7 @@
         <td>{{purchase.quantity}}</td>
         <td>{{purchase.get_purchase_price}}</td>
         <td>{{purchase.get_sale_price}}</td>
+        <td>{{purchase.get_resale_price}}</td>
         <td>
           <a href="{% url "store:edit-purchase" id=purchase.id %}" class="btn btn-primary">Edit</a>
           <a href="{% url "store:delete-purchase" id=purchase.id %}" class="btn btn-danger">Delete</a>
