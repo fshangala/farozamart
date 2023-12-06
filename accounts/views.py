@@ -38,6 +38,8 @@ class Profile(LoginRequiredMixin,View):
   template_name='accounts/profile.html'
   def get(self,request):
     context={}
+    picture_form=forms.UpdatePictureForm(user=request.user)
+    context['picture_form']=picture_form
     return render(request,self.template_name,context)
 
 class EditProfile(LoginRequiredMixin,View):
@@ -59,6 +61,24 @@ class EditProfile(LoginRequiredMixin,View):
       messages.success(request,'Profile successfully updated!')
       return redirect(reverse('accounts:profile'))
     return render(request,self.template_name,context)
+
+class UpdateProfilePicture(LoginRequiredMixin,View):
+  template_name='accounts/update-picture.html'
+  def get(self,request):
+    context={}
+    form=forms.UpdatePictureForm(user=request.user)
+    context['form']=form
+    return render(request,self.template_name,context)
+  def post(self,request):
+    context={}
+    form=forms.UpdatePictureForm(user=request.user,data=request.POST,files=request.FILES)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'Profile picture successfully updated!')
+      return redirect(reverse('accounts:profile'))
+    context['form']=form
+    return render(request,self.template_name,context)
+    
 
 class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
   template_name='accounts/become-seller.html'

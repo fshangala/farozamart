@@ -108,3 +108,17 @@ class EditProfileForm(forms.Form):
     self.initial['phone']=self.user.profile.phone
     self.initial['gender']=self.user.profile.gender
     self.initial['address']=self.user.profile.address
+
+class UpdatePictureForm(forms.Form):
+  picture=forms.ImageField()
+  
+  def save(self):
+    self.user.profile.picture = self.cleaned_data['picture']
+    self.user.profile.save()
+  
+  def __init__(self,*args,user:User,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.user=user
+    
+    self.initial['picture']=self.user.profile.picture
+  

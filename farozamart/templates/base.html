@@ -13,7 +13,8 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
   {% endblock siteMetas %}
-  <!--<link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">-->
+  {% load static %}
+  <link rel="shortcut icon" href="{% static "favicon.png" %}" type="image/x-icon">
 
   <title>
     {% block title %}Farozamart{% endblock title %}
