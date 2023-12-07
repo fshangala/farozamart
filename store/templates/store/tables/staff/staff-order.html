@@ -27,6 +27,7 @@
         <th>Quantity</th>
         <th>Sale Price</th>
       </tr>
+      {% if order.sales.all %}
       {% for sale in order.sales.all %}
       <tr>
         <td>{{sale.id}}</td>
@@ -35,6 +36,17 @@
         <td>{{sale.get_sale_price}}</td>
       </tr>
       {% endfor %}
+      {% endif %}
+      {% if order.resales.all %}
+      {% for sale in order.resales.all %}
+      <tr>
+        <td>{{sale.id}}</td>
+        <td>{{sale.purchase.inventory.name}}</td>
+        <td>{{sale.quantity}}</td>
+        <td>{{sale.get_sale_price}}</td>
+      </tr>
+      {% endfor %}
+      {% endif %}
     </table>
   </div><!-- /.box-body -->
 </div><!-- /.box -->

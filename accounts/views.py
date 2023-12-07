@@ -102,3 +102,14 @@ class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
       'form':form
     }
     return render(request,self.template_name,context)
+
+class BecomeReseller(LoginRequiredMixin,View):
+  def get(self,request):
+    form = forms.BecomeResellerForm()
+    form.save()
+    messages.success(request,'You are now a reseller!')
+    context={
+      'form':form
+    }
+    return redirect(reverse('dashboard:dashboard'))
+    

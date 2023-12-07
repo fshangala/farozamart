@@ -68,6 +68,11 @@ class BecomeSellerForm(forms.Form):
     user.profile.is_seller = True
     user.save()
 
+class BecomeResellerForm(forms.Form):
+  def save(self,user:User):
+    user.profile.is_reseller = True
+    user.save()
+
 class EditProfileForm(forms.Form):
   email=forms.EmailField(max_length=200,widget=forms.EmailInput(attrs={
     'class':'form-control'

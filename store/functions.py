@@ -13,7 +13,7 @@ def getUserPurchases(user:User):
   return qs
 
 def getUserResalePurchases(user:User):
-  return user.store.resales.all()
+  return user.resales.all()
 
 def getUserSales(user:User):
   qs = getUserPurchases(user)

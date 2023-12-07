@@ -35,6 +35,16 @@ class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
     }
     return render(request,self.template_name,context)
 
+class BecomeReseller(LoginRequiredMixin,View):
+  def get(self,request):
+    form = forms.BecomeResellerForm(user=request.user)
+    form.save()
+    messages.success(request,'You are now a reseller!')
+    context={
+      'form':form
+    }
+    return redirect(reverse('dashboard:dashboard'))
+
 # dashboard inventory
 inventory_context = {
   'sidebar_menu_inventory_class':'active'
@@ -191,14 +201,14 @@ class NewResale(LoginRequiredMixin,View):
   def get(self,request,id):
     context=resale_purchases_context
     purchase=get_object_or_404(models.Purchase,pk=id)
-    form = forms.ResaleForm(user=request.user,resale_purchase=purchase)
+    form = forms.ResaleForm(reseller=request.user,purchase=purchase)
     context['form']=form
     context['purchase']=purchase
     return render(request,self.template_name,context)
   def post(self,request,id):
     context=resale_purchases_context
     purchase=get_object_or_404(models.Purchase,pk=id)
-    form = forms.ResaleForm(user=request.user,resale_purchase=purchase,data=request.POST)
+    form = forms.ResaleForm(reseller=request.user,purchase=purchase,data=request.POST)
     if form.is_valid():
       form.save()
       messages.success(request,'New resale successfully added!')

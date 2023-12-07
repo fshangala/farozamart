@@ -18,14 +18,23 @@
       <i class="fa fa-shopping-cart"></i> <span>Purchases</span>
     </a>
   </li>
-  <li class="{{sidebar_menu_resale_purchases_class}}">
-    <a href="{% url "store:resales" %}">
-      <i class="fa fa-shopping-cart"></i> <span>Resales</span>
-    </a>
-  </li>
   <li class="{{sidebar_menu_sales_class}}">
     <a href="{% url "store:sales" %}">
       <i class="fa fa-shopping-cart"></i> <span>Sales</span>
+    </a>
+  </li>
+  <!--<li class="{{sidebar_menu_steadfast_class}}">
+    <a href="{% url "dropshipping:steadfast-delivery" %}">
+      <i class="fa fa-shopping-cart"></i> <span>Steadfast Delivery</span>
+    </a>
+  </li>-->
+  {% endif %}
+
+  {% if user.profile.is_reseller %}
+  <li class="header">RESELLER</li>
+  <li class="{{sidebar_menu_resale_purchases_class}}">
+    <a href="{% url "store:resales" %}">
+      <i class="fa fa-shopping-cart"></i> <span>Resales</span>
     </a>
   </li>
   <!--<li class="{{sidebar_menu_steadfast_class}}">

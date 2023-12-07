@@ -119,11 +119,8 @@
             </div>
             <div class="col-md-2">
                 <a href='{% url "accounts:edit-profile" %}' class='btn btn-secondary m-2'>Edit Profile</a>
-                {% if user.is_staff or user.profile.is_seller %}
+                {% if user.is_staff or user.profile.is_seller or user.profile.is_reseller %}
                 <a href='{% url "dashboard:dashboard" %}' class="btn btn-primary my-2">Dashboard</a>
-                {% endif %}
-                {% if not user.profile.is_seller %}
-                <a href='{% url "store:become-seller" %}' class="btn btn-secondary my-2">Become a seller</a>
                 {% endif %}
             </div>
         </div>

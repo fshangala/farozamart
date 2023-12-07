@@ -9,5 +9,6 @@ urlpatterns = [
     path('profile/', views.Profile.as_view(), name='profile'),
     path('profile/edit/', views.EditProfile.as_view(), name='edit-profile'),
     path('profile/update-picture/', views.UpdateProfilePicture.as_view(), name='update-picture'),
-    path('become-seller/',views.BecomeSeller.as_view(), name='become-seller')
+    path('become-seller/',views.BecomeSeller.as_view(), name='become-seller'),
+    path('become-reseller/',views.BecomeReseller.as_view(), name='become-reseller'),
 ]

@@ -19,6 +19,15 @@ class BecomeSellerForm(forms.Form):
     self.user.profile.is_seller = True
     self.user.save()
 
+class BecomeResellerForm(forms.Form):
+  def save(self):
+    self.user.profile.is_reseller = True
+    self.user.save()
+    
+  def __init__(self,*args,user:User,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.user=user
+
 class InventoryForm(forms.Form):
   name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
   description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
@@ -159,27 +168,33 @@ class SaleForm(forms.Form):
       self.initial['sale_price']=instance.sale_price
 
 class ResaleForm(forms.Form):
+  customer_name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  customer_phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  customer_address=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  quantity=forms.IntegerField(min_value=1,widget=forms.NumberInput(attrs={'class':'form-control'}))
   sale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
   
   def save(self):
-    if self.instance:
-      self.instance.sale_price = self.cleaned_data['sale_price']
-      self.instance.save()
-    else:
-      models.Resale.objects.create(
-        store=self.user.store,
-        purchase=self.purchase,
-        sale_price=self.cleaned_data['sale_price'],
-      )
+    order = models.Order.objects.create(
+      user=self.reseller,
+      draft=False
+    )
+    models.Resale.objects.create(
+      reseller=self.reseller,
+      purchase=self.purchase,
+      customer_name=self.cleaned_data['customer_name'],
+      customer_phone=self.cleaned_data['customer_phone'],
+      customer_address=self.cleaned_data['customer_address'],
+      quantity=self.cleaned_data['quantity'],
+      sale_price=self.cleaned_data['sale_price'],
+      order=order
+    )
+    steadfastCreateOrder(order)
   
-  def __init__(self,*args,user:User,resale_purchase:models.Purchase,instance:models.Resale=None,**kwargs):
+  def __init__(self,*args,reseller:User,purchase:models.Purchase,**kwargs):
     super().__init__(*args,**kwargs)
-    self.user=user
-    self.purchase=resale_purchase
-    self.instance=instance
-    
-    if self.instance:
-      self.initial['sale_price']=instance.sale_price
+    self.reseller=reseller
+    self.purchase=purchase
 
 class ListingForm(forms.Form):
   quantity=forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))

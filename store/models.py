@@ -72,17 +72,6 @@ class Purchase(models.Model):
   def __str__(self):
       return f"{self.inventory.name} -> Purchase {self.purchase_price}x{self.quantity}"
 
-class Resale(models.Model):
-  store=models.ForeignKey(Store,on_delete=models.CASCADE,related_name='resales')
-  purchase=models.ForeignKey(Purchase,on_delete=models.CASCADE,related_name='resales')
-  sale_price=models.FloatField()
-  
-  def get_sale_price(self):
-    return f"{self.sale_price} {self.purchase.currency.code}"
-
-  def __str__(self):
-      return f"{self.purchase.inventory.name} -> Resale {self.purchase.resale_price} --> {self.sale_price}"
-
 class Order(models.Model):
   user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='orders')
   transaction=models.ForeignKey(Transaction,on_delete=models.CASCADE,related_name='orders',null=True)
@@ -98,9 +87,18 @@ class Order(models.Model):
   def total_cost(self):
     amount=0.0
     currency=None
-    for sale in self.sales.all():
-      amount += sale.sale_price*sale.quantity
-      currency = sale.purchase.currency
+    sales = self.sales.all()
+    resales = self.resales.all()
+    
+    if sales.count() > 0:
+      for sale in sales:
+        amount += sale.sale_price*sale.quantity
+        currency = sale.purchase.currency
+    
+    elif resales.count() > 0:
+      for resale in resales:
+        amount += resale.sale_price*resale.quantity
+        currency = resale.purchase.currency
     
     return f"{amount} {currency.code}"
   
@@ -135,3 +133,22 @@ class Sale(models.Model):
 
   def __str__(self):
       return f"{self.purchase.inventory.name} -> Sale {self.sale_price}x{self.quantity}"
+
+class Resale(models.Model):
+  reseller=models.ForeignKey(User,on_delete=models.CASCADE,related_name='resales')
+  customer_name=models.CharField(max_length=200)
+  customer_phone=models.CharField(max_length=200)
+  customer_address=models.CharField(max_length=200)
+  purchase=models.ForeignKey(Purchase,related_name='resales',on_delete=models.CASCADE)
+  quantity=models.IntegerField()
+  sale_price=models.FloatField()
+  order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='resales')
+  approved=models.BooleanField(default=False)
+  
+  def get_sale_price(self):
+    return f"{self.sale_price} {self.purchase.currency.code}"
+  
+  def __str__(self):
+      return f"{self.purchase.inventory.name} -> Resale {self.sale_price}x{self.quantity}"
+  
+  

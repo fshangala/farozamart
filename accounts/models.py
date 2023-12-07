@@ -15,6 +15,7 @@ class Profile(models.Model):
   gender=models.CharField(max_length=200,choices=gender_options,default='Male')
   address=models.CharField(max_length=200,null=True)
   is_seller=models.BooleanField(default=False)
+  is_reseller=models.BooleanField(default=False)
   picture=models.ImageField(upload_to='profile/pictures',default='profile/default.png')
   
   def full_name(self):

@@ -23,6 +23,7 @@ urlpatterns = [
   path('dashboard/currencies/<id>/delete/',views.DeleteCurrency.as_view(),name='delete-currency'),
 
   path('become-seller/',views.BecomeSeller.as_view(),name='become-seller'),
+  path('become-reseller/',views.BecomeReseller.as_view(),name='become-reseller'),
   
   path('dashboard/inventory/',views.Inventory.as_view(),name='inventory'),
   path('dashboard/new-inventory/',views.NewInventory.as_view(),name='new-inventory'),
