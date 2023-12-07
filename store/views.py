@@ -335,10 +335,10 @@ class Listing(LoginRequiredMixin,View):
     listing=models.Purchase.objects.get(pk=id)
     form=forms.ListingForm(user=request.user,listing=listing,data=request.POST)
     if form.is_valid():
+      form.cart()
       if request.POST['submit_type'] == 'buy':
-        form.buy()
+        return redirect(reverse('store:checkout-payment'))
       elif request.POST['submit_type'] == 'cart':
-        form.cart()
         messages.success(request,'Added to cart!')
       else:
         form.add_error(field=None,error='Invalid request')

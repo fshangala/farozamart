@@ -189,9 +189,6 @@ class ListingForm(forms.Form):
     self.user=user
     self.listing=listing
 
-  def buy(self):
-    pass
-
   def cart(self):
     try:
       order=self.user.orders.get(draft=True)
