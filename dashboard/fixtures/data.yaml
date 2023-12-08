@@ -1,15 +1,24 @@
 - model: dashboard.option
-  pk: 1
   fields:
     name: name
     value: Farozamart
 - model: dashboard.option
-  pk: 2
   fields:
     name: tag_line
     value: Online store
 - model: dashboard.option
-  pk: 3
   fields:
     name: description
     value: Farozamart online multivendor store
+- model: dashboard.option
+  fields:
+    name: site_mail
+    value: admin@farozamart.com
+- model: dashboard.option
+  fields:
+    name: site_phone
+    value: +8801625356531
+- model: dashboard.option
+  fields:
+    name: business_address
+    value: Shop No 169, 3rd Floor, Bonolota Market, Kacha Bazar, New Market, Dhaka.

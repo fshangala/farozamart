@@ -72,7 +72,7 @@ class EditInventory(LoginRequiredMixin,View):
   
   def post(self,request,id):
     inventory = models.Inventory.objects.get(pk=id)
-    form = forms.InventoryForm(user=request.user,instance=inventory,data=request.POST)
+    form = forms.InventoryForm(user=request.user,instance=inventory,data=request.POST,files=request.FILES)
     
     if form.is_valid():
       form.save()
@@ -94,7 +94,7 @@ class NewInventory(LoginRequiredMixin,View):
     return render(request,self.template_name,context)
   
   def post(self,request):
-    form = forms.InventoryForm(user=request.user,data=request.POST)
+    form = forms.InventoryForm(user=request.user,data=request.POST,files=request.FILES)
     
     if form.is_valid():
       form.save()
@@ -131,6 +131,13 @@ class NewPurchase(LoginRequiredMixin,View):
   
   def get(self,request):
     form = forms.PurchaseForm(user=request.user)
+    inventory_id = request.GET.get('inventory_id')
+    if inventory_id:
+      try:
+        inventory = models.Inventory.objects.get(pk=inventory_id)
+        form = forms.PurchaseForm(user=request.user,inventory=inventory)
+      except Exception as e:
+        messages.error(request,str(e))
     
     context=purchases_context
     context['form']=form

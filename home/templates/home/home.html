@@ -29,20 +29,21 @@
                     <div class="col-md-7">
                       <div class="detail-box">
                         <h1>
-                          Welcome To Our <br>
-                          Gift Shop
+                          Welcome To <br>
+                          {{options.name}}
                         </h1>
                         <p>
-                          Sequi perspiciatis nulla reiciendis, rem, tenetur impedit, eveniet non necessitatibus error distinctio mollitia suscipit. Nostrum fugit doloribus consequatur distinctio esse, possimus maiores aliquid repellat beatae cum, perspiciatis enim, accusantium perferendis.
+                          {{options.description}}
                         </p>
-                        <a href="">
-                          Contact Us
+                        <a href="{% url "store:shop" %}">
+                          <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                          <span> Start Shopping</span>
                         </a>
                       </div>
                     </div>
                     <div class="col-md-5 ">
                       <div class="img-box">
-                        <img src="images/slider-img.png" alt="" />
+                        <img src="{% static "giftos/images/slider-img.png" %}" alt="{{options.name}}" />
                       </div>
                     </div>
                   </div>
@@ -54,45 +55,24 @@
                     <div class="col-md-7">
                       <div class="detail-box">
                         <h1>
-                          Welcome To Our <br>
-                          Gift Shop
+                          Contact Us
                         </h1>
                         <p>
-                          Sequi perspiciatis nulla reiciendis, rem, tenetur impedit, eveniet non necessitatibus error distinctio mollitia suscipit. Nostrum fugit doloribus consequatur distinctio esse, possimus maiores aliquid repellat beatae cum, perspiciatis enim, accusantium perferendis.
+                          Feel free to reach out to us and we will be glad to get back to you in no time.
                         </p>
-                        <a href="">
-                          Contact Us
+                        <a href="mailto:{{options.site_mail}}">
+                          <i class="fa fa-envelope" aria-hidden="true"></i>
+                          <span> Contact Us: {{options.site_mail}}</span>
+                        </a>
+                        <a href="tel:{{options.site_phone}}">
+                          <i class="fa fa-phone" aria-hidden="true"></i>
+                          <span>Call Us: {{options.site_phone}}</span>
                         </a>
                       </div>
                     </div>
                     <div class="col-md-5 ">
                       <div class="img-box">
-                        <img src="images/slider-img.png" alt="" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="carousel-item ">
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-7">
-                      <div class="detail-box">
-                        <h1>
-                          Welcome To Our <br>
-                          Gift Shop
-                        </h1>
-                        <p>
-                          Sequi perspiciatis nulla reiciendis, rem, tenetur impedit, eveniet non necessitatibus error distinctio mollitia suscipit. Nostrum fugit doloribus consequatur distinctio esse, possimus maiores aliquid repellat beatae cum, perspiciatis enim, accusantium perferendis.
-                        </p>
-                        <a href="">
-                          Contact Us
-                        </a>
-                      </div>
-                    </div>
-                    <div class="col-md-5 ">
-                      <div class="img-box">
-                        <img src="images/slider-img.png" alt="" />
+                        <img src="{% static "giftos/images/slider-img.png" %}" alt="" />
                       </div>
                     </div>
                   </div>
@@ -171,7 +151,7 @@
         <div class="row">
           <div class="col-lg-6">
             <div class="img-box">
-              <img src="images/saving-img.png" alt="">
+              <img src="{% static "giftos/images/saving-img.png" %}" alt="">
             </div>
           </div>
           <div class="col-lg-6">
@@ -182,14 +162,14 @@
                   new arrivals
                 </h2>
               </div>
-              <p>
+              <!--<p>
                 Qui ex dolore at repellat, quia neque doloribus omnis adipisci, ipsum eos odio fugit ut eveniet blanditiis praesentium totam non nostrum dignissimos nihil eius facere et eaque. Qui, animi obcaecati.
-              </p>
+              </p>-->
               <div class="btn-box">
-                <a href="#" class="btn1">
+                <a href="{% url "store:shop" %}" class="btn1">
                   Buy Now
                 </a>
-                <a href="#" class="btn2">
+                <a href="{% url "store:shop" %}" class="btn2">
                   See More
                 </a>
               </div>
@@ -306,7 +286,7 @@
                 Fast Delivery
               </h5>
               <p>
-                variations of passages of Lorem Ipsum available
+                With us you don't have to wait too long to have your order.
               </p>
             </div>
           </div>
@@ -421,7 +401,7 @@
                 Free Shiping
               </h5>
               <p>
-                variations of passages of Lorem Ipsum available
+                Some of our products are on free shipping
               </p>
             </div>
           </div>
@@ -442,7 +422,7 @@
                 Best Quality
               </h5>
               <p>
-                variations of passages of Lorem Ipsum available
+                All products on the store are verified and trusted
               </p>
             </div>
           </div>
@@ -463,7 +443,7 @@
           <div class="col-md-5">
             <div class="img_container">
               <div class="img-box">
-                <img src="images/gifts.png" alt="">
+                <img src="{% static "giftos/images/gifts.png" %}" alt="">
               </div>
             </div>
           </div>
@@ -475,14 +455,14 @@
                   loved ones
                 </h2>
               </div>
-              <p>
+              <!--<p>
                 Omnis ex nam laudantium odit illum harum, excepturi accusamus at corrupti, velit blanditiis unde perspiciatis, vitae minus culpa? Beatae at aut consequuntur porro adipisci aliquam eaque iste ducimus expedita accusantium?
-              </p>
+              </p>-->
               <div class="btn-box">
-                <a href="#" class="btn1">
+                <a href="{% url "store:shop" %}" class="btn1">
                   Buy Now
                 </a>
-                <a href="#" class="btn2">
+                <a href="{% url "store:shop" %}" class="btn2">
                   See More
                 </a>
               </div>
@@ -497,7 +477,7 @@
   <!-- end gift section -->
   
   
-  <!-- contact section -->
+  <!-- contact section
   
   <section class="contact_section ">
     <div class="container px-0">
@@ -539,11 +519,11 @@
         </div>
       </div>
     </div>
-  </section>
+  </section>  -->
   
   <!-- end contact section -->
   
-  <!-- client section -->
+  <!-- client section
   <section class="client_section layout_padding">
     <div class="container">
       <div class="heading_container heading_center">
@@ -622,97 +602,9 @@
         </div>
       </div>
     </div>
-  </section>
+  </section>  -->
   <!-- end client section -->
 {% endblock content %}
-
-    <!-- info section -->
-{% block footer %}
-  <section class="info_section  layout_padding2-top">
-    <div class="social_container">
-      <div class="social_box">
-        <a href="">
-          <i class="fa fa-facebook" aria-hidden="true"></i>
-        </a>
-        <a href="">
-          <i class="fa fa-twitter" aria-hidden="true"></i>
-        </a>
-        <a href="">
-          <i class="fa fa-instagram" aria-hidden="true"></i>
-        </a>
-        <a href="">
-          <i class="fa fa-youtube" aria-hidden="true"></i>
-        </a>
-      </div>
-    </div>
-    <div class="info_container ">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6 col-lg-3">
-            <h6>
-              ABOUT US
-            </h6>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet,
-            </p>
-          </div>
-          <div class="col-md-6 col-lg-3">
-            <div class="info_form ">
-              <h5>
-                Newsletter
-              </h5>
-              <form action="#">
-                <input type="email" placeholder="Enter your email">
-                <button>
-                  Subscribe
-                </button>
-              </form>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-3">
-            <h6>
-              NEED HELP
-            </h6>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet,
-            </p>
-          </div>
-          <div class="col-md-6 col-lg-3">
-            <h6>
-              CONTACT US
-            </h6>
-            <div class="info_link-box">
-              <a href="">
-                <i class="fa fa-map-marker" aria-hidden="true"></i>
-                <span> Gb road 123 london Uk </span>
-              </a>
-              <a href="">
-                <i class="fa fa-phone" aria-hidden="true"></i>
-                <span>+01 12345678901</span>
-              </a>
-              <a href="">
-                <i class="fa fa-envelope" aria-hidden="true"></i>
-                <span> demo@gmail.com</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- footer section -->
-    <footer class=" footer_section">
-      <div class="container">
-        <p>
-          &copy; <span id="displayYear"></span> All Rights Reserved By
-          <a href="https://html.design/">Free Html Templates</a>
-        </p>
-      </div>
-    </footer>
-    <!-- footer section -->
-  
-  </section>
-{% endblock footer %}
-    <!-- end info section -->
   
 {% block scripts %}
   <script src="{% static "giftos/js/jquery-3.4.1.min.js" %}"></script>

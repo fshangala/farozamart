@@ -29,9 +29,9 @@ class BecomeResellerForm(forms.Form):
     self.user=user
 
 class InventoryForm(forms.Form):
-  name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
-  description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
-  picture=forms.ImageField()
+  name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Product name')
+  description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}),help_text='Product description')
+  picture=forms.ImageField(help_text='Product featured image')
   
   def save(self):
     if self.instance != None:
@@ -60,10 +60,10 @@ class InventoryForm(forms.Form):
       self.fields['name'].validators=[validators.unique_inventory_name]
 
 class CurrencyForm(forms.Form):
-  symbol=forms.CharField(max_length=10,widget=forms.TextInput(attrs={'class':'form-control'}))
-  name_singular=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
-  name_plural=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
-  code=forms.CharField(max_length=10,widget=forms.TextInput(attrs={'class':'form-control'}))
+  symbol=forms.CharField(max_length=10,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Currency symbol i.e $')
+  name_singular=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Currency singular name i.e American Dollar')
+  name_plural=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Currency Plural name i.e American dollars')
+  code=forms.CharField(max_length=10,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Currency 3 character code i.e USD')
   
   def save(self):
     if self.instance != None:
@@ -96,12 +96,12 @@ class CurrencyForm(forms.Form):
       self.fields['code'].validators=[validators.CurrencyValidators.unique_code]
 
 class PurchaseForm(forms.Form):
-  inventory=forms.ModelChoiceField(queryset=models.Inventory.objects.none(),widget=forms.Select(attrs={'class':'form-control'}))
-  quantity=forms.IntegerField(min_value=1,widget=forms.NumberInput(attrs={'class':'form-control'}))
-  purchase_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
-  sale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
-  resale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}))
-  currency=forms.ModelChoiceField(queryset=models.Currency.objects.all(),widget=forms.Select(attrs={'class':'form-control'}))
+  inventory=forms.ModelChoiceField(queryset=models.Inventory.objects.none(),widget=forms.Select(attrs={'class':'form-control'}),help_text='Choose a product from your inventory.')
+  quantity=forms.IntegerField(min_value=1,widget=forms.NumberInput(attrs={'class':'form-control'}), help_text='How much stock you have purchased.')
+  purchase_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}), help_text='How much you spent for a single purchase.')
+  sale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}),help_text='How much each purchase will be listed for sale.')
+  resale_price=forms.FloatField(min_value=0.0,widget=forms.NumberInput(attrs={'class':'form-control'}), help_text='How much each purchase will be listed for resale.')
+  currency=forms.ModelChoiceField(queryset=models.Currency.objects.all(),widget=forms.Select(attrs={'class':'form-control'}),help_text='Choose a currency for this product.')
   
   def save(self):
     if self.instance:
@@ -122,12 +122,15 @@ class PurchaseForm(forms.Form):
         currency=self.cleaned_data['currency']
       )
   
-  def __init__(self,*args,user:User,instance:models.Purchase=None,**kwargs):
+  def __init__(self,*args,user:User,instance:models.Purchase=None,inventory:models.Inventory=None,**kwargs):
     super().__init__(*args,**kwargs)
     self.user=user
     self.instance=instance
     
     self.fields['inventory'].queryset = user.store.inventory.all()
+    
+    if inventory:
+      self.initial['inventory']=inventory
     
     if self.instance:
       self.initial['inventory']=instance.inventory
