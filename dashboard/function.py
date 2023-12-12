@@ -1,6 +1,6 @@
 from dashboard import models
 
-def getOptions()->dict[str,str]:
+def getOptions():
   options = models.Option.objects.all()
   options_dict = dict()
   for option in options:
