@@ -151,11 +151,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-if DEBUG:
-    STATIC_URL = "/static/"
-else:
-    STATIC_URL = 'https://cdn.statically.io/gh/fshangala/farozamart/main/staticfiles/'
+STATIC_URL = env('STATIC_URL')
 
 MEDIA_ROOT=BASE_DIR / 'media'
 MEDIA_URL='/media/'
