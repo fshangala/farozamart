@@ -2,7 +2,6 @@
 <div class="box">
   <div class="box-header">
     <h3 class="box-title">Inventory Items</h3>
-    <a href="{% url "store:new-inventory" %}" class="btn btn-primary mx-2">New Item</a>
     <div class="box-tools">
       <div class="input-group">
         <input type="text" name="table_search" class="form-control input-sm pull-right" style="width: 150px;" placeholder="Search"/>
@@ -13,6 +12,7 @@
     </div>
   </div><!-- /.box-header -->
   <div class="box-body table-responsive no-padding">
+    <a href="{% url "store:new-inventory" %}" class="btn btn-primary mx-2">New Item</a>
     <table class="table table-hover">
       <tr>
         <th>ID</th>
