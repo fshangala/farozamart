@@ -270,14 +270,15 @@ class ApproveOrderForm(forms.Form):
   def save(self):
     for item in self.order.sales.all():
       item.approve()
-        
-    transaction = Transaction.objects.create(
-      transaction_id=self.cleaned_data['transaction_id'],
-      amount=self.order.total_cost_number()
-    )
+    
+    if not self.order.transaction:
+      transaction = Transaction.objects.create(
+        transaction_id=self.cleaned_data['transaction_id'],
+        amount=self.order.total_cost_number()
+      )
+      self.order.transaction = transaction
     
     self.order.draft = False
-    self.order.transaction = transaction
     self.order.save()
     
     steadfastCreateOrder(self.order)
