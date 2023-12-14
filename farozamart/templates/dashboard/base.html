@@ -63,7 +63,7 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-left image">
-              <img src="{% static "dashboard/dist/img/user2-160x160.jpg" %}" class="img-circle" alt="User Image" />
+              <img src="{{user.profile.picture.url}}" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
               <p>{{user.username}}</p>
@@ -95,7 +95,7 @@
         <div class="pull-right hidden-xs">
           <b>Version</b> 2.0
         </div>
-        <strong>Copyright &copy; 2014-2015 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights reserved.
+        <strong>Designed by Copyright &copy; 2014-2015 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights reserved. Developed by <a href="https://github.com/fshangala/">@fshangala</a>
       </footer>
     </div><!-- ./wrapper -->
 {% block scripts %}

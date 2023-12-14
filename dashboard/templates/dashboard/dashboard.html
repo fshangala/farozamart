@@ -119,6 +119,21 @@
             <section class="col-lg-7 connectedSortable">
 
               <!-- solid sales graph -->
+              <div class="box box-solid">
+                <div class="box-header">
+                  <i class="fa fa-dollar"></i>
+                  <h3 class="box-title">Wallets</h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn bg-teal btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn bg-teal btn-sm" data-widget="remove"><i class="fa fa-times"></i></button>
+                  </div>
+                </div>
+                <div class="box-body border-radius-none">
+                  {% include "store/tables/wallets.html" %}
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+
+              <!-- solid sales graph -->
               <div class="box box-solid bg-teal-gradient">
                 <div class="box-header">
                   <i class="fa fa-th"></i>
