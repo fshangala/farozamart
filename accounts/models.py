@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from store.models import Store
+from rest_framework.authtoken.models import Token
 
 # Create your models here.
 gender_options = (
@@ -25,5 +26,6 @@ class Profile(models.Model):
   def _post_save_receiver(sender, instance, created, **kwargs):
     if(created):
       Profile.objects.create(user=instance)
+      Token.objects.create(user=instance)
     else:
       instance.profile.save()

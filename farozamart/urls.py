@@ -21,6 +21,15 @@ from django.conf.urls.static import static
 from django.views.generic import RedirectView
 from django.contrib.staticfiles.storage import staticfiles_storage
 
+from rest_framework.routers import DefaultRouter
+from rest_framework.authtoken import views
+from store.api.routes import router as storeRouter
+from accounts.api.routes import router as accountsRouter
+
+router = DefaultRouter()
+router.registry.extend(storeRouter.registry)
+router.registry.extend(accountsRouter.registry)
+
 urlpatterns = [
     path('favicon.ico',RedirectView.as_view(url=staticfiles_storage.url('favicon.png'))),
     path('admin/', admin.site.urls),
@@ -30,4 +39,6 @@ urlpatterns = [
     path('store/', include('store.urls')),
     path('dropshipping/',include('dropshipping.urls')),
     path('paymentgateway/',include('paymentgateway.urls')),
+    path('api/v1/',include(router.urls)),
+    path('api/auth/login/',views.obtain_auth_token)
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
