@@ -1,0 +1,118 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "farozamart",
+    "dateExported": "2023-12-22T09:20:17.170Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "e773fd1a-6968-49bb-baf0-5693a78eaa72",
+            "colId": "4bda7fcc-34d2-4212-9fe7-4f204aedd059",
+            "containerId": "",
+            "name": "login",
+            "url": "/auth/login/",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-12-22T08:41:43.780Z",
+            "modified": "2023-12-22T08:47:13.440Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "username",
+                        "value": "admin"
+                    },
+                    {
+                        "name": "password",
+                        "value": "admin"
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "cf9f1b2c-935f-454b-9df1-c26131fd6dbf",
+            "colId": "4bda7fcc-34d2-4212-9fe7-4f204aedd059",
+            "containerId": "",
+            "name": "get current user",
+            "url": "http://localhost:8000/api/v1/accounts/token-user/",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2023-12-22T08:41:55.389Z",
+            "modified": "2023-12-22T08:48:40.750Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Token 035eb3ffc2c5edf795db84a7a9c6df57952a197d"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "236bfcbd-794b-40c1-95b4-8c4f54a8ffc5",
+            "colId": "4bda7fcc-34d2-4212-9fe7-4f204aedd059",
+            "containerId": "",
+            "name": "listing",
+            "url": "http://localhost:8000/api/v1/store/listing/",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2023-12-22T08:42:05.143Z",
+            "modified": "2023-12-22T08:42:05.143Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Token 035eb3ffc2c5edf795db84a7a9c6df57952a197d"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "eae706a7-3339-44d5-9440-3df927f33397",
+            "colId": "4bda7fcc-34d2-4212-9fe7-4f204aedd059",
+            "containerId": "",
+            "name": "add to cart",
+            "url": "/v1/store/listing/3/add_to_cart/",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2023-12-22T08:59:10.193Z",
+            "modified": "2023-12-22T09:02:35.174Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Token 035eb3ffc2c5edf795db84a7a9c6df57952a197d"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "quantity",
+                        "value": "2"
+                    }
+                ]
+            },
+            "tests": []
+        }
+    ],
+    "settings": {
+        "tests": [
+            {
+                "type": "res-code",
+                "custom": "",
+                "action": "equal",
+                "value": "200"
+            }
+        ],
+        "options": {
+            "baseUrl": "http://localhost:8000/api"
+        },
+        "envId": "e99dd877-04dd-49bf-b664-602fb45104de"
+    }
+}

@@ -437,15 +437,7 @@ class Checkout(LoginRequiredMixin,View):
 class CheckoutCOD(LoginRequiredMixin,View):
   def get(self,request,order):
     context=cart_context
-    order = get_object_or_404(models.Order,pk=order)
-    for item in order.sales.all():
-      item.cart = False
-      item.save()
-        
-    order.draft = False
-    order.save()
-    
-    steadfastCreateOrder(order)
+    order = functions.CODPayment(order)
     return redirect(reverse('store:customer-order',kwargs={'id':order.id}))
 
 # settings currency
