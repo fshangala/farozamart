@@ -6,7 +6,11 @@
 
 <section class="layout_padding">
   <div class="container">
-  {% include "home/includes/form.html" with method='POST' action='' submitText='Submit' %}
+    {% if user.becomeseller %}
+    <h1>Under Review</h1>
+    {% else %}
+    {% include "home/includes/form.html" with method='POST' action='' submitText='Submit' %}
+    {% endif %}
   </div>
 </section>
 

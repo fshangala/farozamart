@@ -1,5 +1,7 @@
 {% extends "dashboard/base.html" %}
 
+{% block title %}{{block.super}} | Dashboard - Order {{order.id}}{% endblock title %}
+
 {% block contentHeader %}
 <h1>
   Approve order {{order.id}}

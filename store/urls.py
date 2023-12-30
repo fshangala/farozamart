@@ -17,6 +17,9 @@ urlpatterns = [
   path('dashboard/orders/<id>/',views.StaffOrder.as_view(),name='staff-order'),
   path('dashboard/orders/<id>/approve/',views.StaffApproveOrder.as_view(),name='staff-approve-order'),
   
+  path('dashboard/sellers/',views.StaffSellers.as_view(),name='staff-sellers'),
+  path('dashboard/sellers/<pk>/',views.StaffApproveSeller.as_view(),name='staff-approve-seller'),
+  
   path('dashboard/currencies/',views.Currencies.as_view(),name='currencies'),
   path('dashboard/currencies/new/',views.NewCurrency.as_view(),name='new-currency'),
   path('dashboard/currencies/<id>/edit/',views.EditCurrency.as_view(),name='edit-currency'),

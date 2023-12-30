@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic import View
 from store import forms
@@ -26,10 +27,11 @@ class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
     return render(request,self.template_name,context)
   
   def post(self,request):
-    form = forms.BecomeSellerForm(user=request.user,data=request.POST)
+    form = forms.BecomeSellerRequestForm(user=request.user,data=request.POST)
     if form.is_valid():
       form.save()
-      return redirect(reverse('dashboard:dashboard'))
+      messages.info(request,'Request successfull. Seller status under review.')
+      return redirect(reverse('store:become-seller'))
     context={
       'form':form
     }
@@ -550,3 +552,34 @@ class StaffOrder(LoginRequiredMixin,View):
     order = get_object_or_404(models.Order,pk=id)
     context['order']=order
     return render(request,self.template_name,context)
+
+#Staff sellers
+staff_sellers_context={
+  'sidebar_menu_staff_sellers_class':'active'
+}
+class StaffSellers(LoginRequiredMixin,View):
+  template_name='store/staff/sellers.html'
+  def get(self,request):
+    context=staff_sellers_context
+    sellers = User.objects.filter(profile__is_seller=True)
+    seller_requests = models.Becomeseller.objects.all()
+    context['sellers']=sellers
+    context['seller_requests']=seller_requests
+    return render(request,self.template_name,context)
+
+class StaffApproveSeller(LoginRequiredMixin,View):
+  def get(self,request,pk):
+    sellerRequest = models.Becomeseller.objects.get(pk=pk)
+    form = forms.BecomeSellerForm(user=sellerRequest.user,data={
+      'name':sellerRequest.name,
+      'description':sellerRequest.description,
+    })
+    if form.is_valid():
+      form.save()
+      sellerRequest.delete()
+      messages.success(request,'Seller successfully approved!')
+    else:
+      messages.error(request,form.errors.as_text)
+    
+    return redirect(reverse('store:staff-sellers'))
+    

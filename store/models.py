@@ -12,7 +12,14 @@ class Currency(models.Model):
   
   def __str__(self):
       return self.name_singular
-  
+
+class Becomeseller(models.Model):
+  user=models.OneToOneField(User,related_name='becomeseller',on_delete=models.CASCADE)
+  name=models.CharField(max_length=200,unique=True)
+  description=models.TextField()
+
+  def __str__(self):
+      return self.name
     
 class Store(models.Model):
   user=models.OneToOneField(User,related_name='store',on_delete=models.CASCADE)

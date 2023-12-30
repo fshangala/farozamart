@@ -6,6 +6,22 @@ from store import functions
 from paymentgateway.models import Transaction
 from dropshipping.functions import steadfastCreateOrder
 
+class BecomeSellerRequestForm(forms.Form):
+  name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
+  description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}),help_text='Describe your store i.e the products that will be sold on it')
+  
+  def __init__(self,*args,user:User,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.user=user
+  
+  def save(self):
+    request = models.Becomeseller.objects.create(
+      user=self.user,
+      name=self.cleaned_data['name'],
+      description=self.cleaned_data['description']
+    )
+  
+
 class BecomeSellerForm(forms.Form):
   name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
   description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}),help_text='Describe your store i.e the products that will be sold on it')
