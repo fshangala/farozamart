@@ -1,0 +1,18 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{block.super}} | Dashboard - Resellers{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Resellers
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li class="active">Resellers</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+{% include "store/tables/staff/reseller-requests.html" %}
+{% include "store/tables/staff/resellers.html" %}
+{% endblock content %}

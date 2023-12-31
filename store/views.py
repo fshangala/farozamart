@@ -587,4 +587,27 @@ class StaffApproveSeller(LoginRequiredMixin,View):
       messages.error(request,form.errors.as_text)
     
     return redirect(reverse('store:staff-sellers'))
+
+#Staff sellers
+staff_resellers_context={
+  'sidebar_menu_staff_resellers_class':'active'
+}
+class StaffResellers(LoginRequiredMixin,View):
+  template_name='store/staff/resellers.html'
+  def get(self,request):
+    context=staff_resellers_context
+    resellers = User.objects.filter(profile__is_reseller=True)
+    reseller_requests = models.Becomereseller.objects.all()
+    context['resellers']=resellers
+    context['reseller_requests']=reseller_requests
+    return render(request,self.template_name,context)
+
+class StaffApproveReseller(LoginRequiredMixin,View):
+  def get(self,request,pk):
+    resellerRequest = models.Becomereseller.objects.get(pk=pk)
+    form = forms.BecomeResellerForm(user=resellerRequest.user)
+    form.save()
+    resellerRequest.delete()
+    messages.success(request,'Reseller successfully approved!')
     
+    return redirect(reverse('store:staff-resellers'))
