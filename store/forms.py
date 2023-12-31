@@ -53,6 +53,31 @@ class BecomeResellerForm(forms.Form):
     super().__init__(*args,**kwargs)
     self.user=user
 
+class CategoryForm(forms.Form):
+  name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Category name')
+  description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}),help_text='Category description')
+  
+  def save(self):
+    if self.instance != None:
+      self.instance.name = self.cleaned_data['name']
+      self.instance.description = self.cleaned_data['description']
+      self.instance.save()
+    else:
+      models.Category.objects.create(
+        user=self.user,
+        name=self.cleaned_data['name'],
+        description=self.cleaned_data['description']
+      )
+  
+  def __init__(self,*args,user:User,instance:models.Category=None,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.user=user
+    self.instance=instance
+    
+    if self.instance:
+      self.initial['name']=instance.name
+      self.initial['description']=instance.description
+
 class InventoryForm(forms.Form):
   name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Product name')
   description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}),help_text='Product description')

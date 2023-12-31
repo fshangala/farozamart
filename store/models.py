@@ -52,15 +52,24 @@ class Withdraw(models.Model):
   def __str__(self):
       return f"Withdraw {self.amount}"  
 
+class Category(models.Model):
+  user=models.ForeignKey(User,related_name='categories',on_delete=models.CASCADE)
+  name=models.CharField(max_length=200,unique=True)
+  description=models.TextField()
+  
+  def __str__(self):
+      return self.name
+
 class Inventory(models.Model):
   store=models.ForeignKey(Store,related_name='inventory',on_delete=models.CASCADE)
+  category=models.ForeignKey(Category,on_delete=models.CASCADE,related_name='inventory',null=True)
   name=models.CharField(max_length=200,unique=True)
   description=models.TextField()
   picture=models.ImageField(upload_to='products',default='products/default.png')
 
   def __str__(self):
       return self.name
-  
+    
 
 class Purchase(models.Model):
   inventory=models.ForeignKey(Inventory,related_name='purchases',on_delete=models.CASCADE)

@@ -37,6 +37,11 @@ urlpatterns = [
   path('dashboard/inventory/<id>/edit/',views.EditInventory.as_view(),name='edit-inventory'),
   path('dashboard/inventory/<id>/delete/',views.DeleteInventory.as_view(),name='delete-inventory'),
   
+  path('dashboard/categories/',views.Categories.as_view(),name='categories'),
+  path('dashboard/categories/new/',views.NewCategory.as_view(),name='new-category'),
+  path('dashboard/categories/<id>/edit/',views.EditCategory.as_view(),name='edit-category'),
+  path('dashboard/categories/<id>/delete/',views.DeleteCategory.as_view(),name='delete-category'),
+  
   path('dashboard/purchases/',views.Purchases.as_view(),name='purchases'),
   path('dashboard/purchases/new/',views.NewPurchase.as_view(),name='new-purchase'),
   path('dashboard/purchases/<id>/edit/',views.EditPurchase.as_view(),name='edit-purchase'),

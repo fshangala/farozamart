@@ -1,0 +1,17 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ block.super }} | Categories{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Categories
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>-->
+  <li class="active">Categories</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+{% include "store/tables/categories.html" %}
+{% endblock content %}

@@ -18,6 +18,7 @@
         <th>ID</th>
         <th>Store</th>
         <th>Name</th>
+        <th>Category</th>
         <th></th>
         <th></th>
       </tr>
@@ -26,6 +27,7 @@
         <td>{{inventory_item.id}}</td>
         <td>{{inventory_item.store.name}}</td>
         <td>{{inventory_item.name}}</td>
+        <td>{{inventory_item.category.name}}</td>
         <td><img src="{{inventory_item.picture.url}}" witdth=50 height=50 alt="{{inventory_item.name}}" /></td>
         <td>
           <a href="{% url "store:new-purchase" %}?inventory_id={{inventory_item.id}}" class="btn btn-primary">Add stock</a>

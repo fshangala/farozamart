@@ -14,12 +14,14 @@
   pk: 1
   fields:
     store: 1
+    category: 1
     name: Sample Product 1
     description: Sample product 1 description
 - model: store.inventory
   pk: 2
   fields:
     store: 1
+    category: 1
     name: Sample Product 2
     description: Sample product 2 description
 

@@ -5,3 +5,10 @@
     name_singular: American Dollar
     name_plural: American Dollars
     code: USD
+
+- model: store.category
+  pk: 1
+  fields:
+    user: 1
+    name: Uncategorised
+    description: Uncategorised products

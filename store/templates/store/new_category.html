@@ -1,0 +1,16 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ block.super }} | New Category{% endblock title %}
+{% block contentHeader %}
+<h1>
+  New Category
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li><a href="{% url "store:categories" %}"><i class="fa fa-dashboard"></i> Categories</a></li>
+  <li class="active">New</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+{% include "includes/form.html" with method="POST" action="" submitText="Save" %}
+{% endblock content %}

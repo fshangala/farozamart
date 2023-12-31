@@ -117,6 +117,68 @@ class DeleteInventory(LoginRequiredMixin,View):
     inventory.delete()
     return redirect(reverse("store:inventory"))
 
+# dashboard categories
+categories_context = {
+  'sidebar_menu_categories_class':'active'
+}
+class Categories(LoginRequiredMixin,View):
+  template_name='store/categories.html'
+  def get(self,request):
+    context=categories_context
+    context['categories']=models.Category.objects.all()
+    return render(request,self.template_name,context)
+
+class EditCategory(LoginRequiredMixin,View):
+  template_name='store/edit_category.html'
+  
+  def get(self,request,id):
+    category = models.Category.objects.get(pk=id)
+    form = forms.CategoryForm(user=request.user,instance=category)
+    
+    context=categories_context
+    context['form']=form
+    return render(request,self.template_name,context)
+  
+  def post(self,request,id):
+    category = models.Category.objects.get(pk=id)
+    form = forms.CategoryForm(user=request.user,instance=category,data=request.POST)
+    
+    if form.is_valid():
+      form.save()
+      messages.success(request,'Category successfully updated!')
+      return redirect(reverse("store:categories"))
+    
+    context=categories_context
+    context['form']=form
+    return render(request,self.template_name,context)
+
+class NewCategory(LoginRequiredMixin,View):
+  template_name='store/new_category.html'
+  
+  def get(self,request):
+    form = forms.CategoryForm(user=request.user)
+    
+    context=categories_context
+    context['form']=form
+    return render(request,self.template_name,context)
+  
+  def post(self,request):
+    form = forms.CategoryForm(user=request.user,data=request.POST)
+    
+    if form.is_valid():
+      form.save()
+      return redirect(reverse("store:categories"))
+    
+    context=categories_context
+    context['form']=form
+    return render(request,self.template_name,context)
+
+class DeleteCategory(LoginRequiredMixin,View):
+  def get(self,request,id):
+    category = models.Category.objects.get(pk=id)
+    category.delete()
+    return redirect(reverse("store:categories"))
+
 # dashboard purchases
 purchases_context = {
   'sidebar_menu_purchases_class':'active'

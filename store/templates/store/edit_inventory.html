@@ -1,5 +1,7 @@
 {% extends "dashboard/base.html" %}
 
+{% block title %}{{ block.super }} | Edit Inventory {{inventory.id}} {% endblock title %}
+
 {% block contentHeader %}
 <h1>
   Edit Inventory
