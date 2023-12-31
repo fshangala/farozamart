@@ -20,7 +20,6 @@ class BecomeSellerRequestForm(forms.Form):
       name=self.cleaned_data['name'],
       description=self.cleaned_data['description']
     )
-  
 
 class BecomeSellerForm(forms.Form):
   name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
@@ -34,6 +33,16 @@ class BecomeSellerForm(forms.Form):
     store = models.Store.objects.create(user=self.user,name=self.cleaned_data['name'],description=self.cleaned_data['description'])
     self.user.profile.is_seller = True
     self.user.save()
+    
+class BecomeResellerRequestForm(forms.Form):
+  def save(self):
+    models.Becomereseller.objects.create(
+      user=self.user
+    )
+    
+  def __init__(self,*args,user:User,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.user=user
 
 class BecomeResellerForm(forms.Form):
   def save(self):

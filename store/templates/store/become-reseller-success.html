@@ -1,0 +1,19 @@
+{% extends "home/base.html" %}
+
+{% block title %}Farozamart | Become a reseller{% endblock title %}
+
+{% block content %}
+
+<section class="layout_padding">
+  <div class="container">
+    {% if user.becomereseller %}
+    <h1>Under Review</h1>
+    {% else %}
+    <center>
+      <a href='{% url "store:become-reseller" %}' class="btn btn-secondary my-2">Become a reseller</a>
+    </center>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock content %}

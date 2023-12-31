@@ -20,6 +20,12 @@ class Becomeseller(models.Model):
 
   def __str__(self):
       return self.name
+
+class Becomereseller(models.Model):
+  user=models.OneToOneField(User,related_name='becomereseller',on_delete=models.CASCADE)
+
+  def __str__(self):
+      return self.user.username
     
 class Store(models.Model):
   user=models.OneToOneField(User,related_name='store',on_delete=models.CASCADE)

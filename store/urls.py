@@ -27,6 +27,7 @@ urlpatterns = [
 
   path('become-seller/',views.BecomeSeller.as_view(),name='become-seller'),
   path('become-reseller/',views.BecomeReseller.as_view(),name='become-reseller'),
+  path('become-reseller-success/',views.BecomeResellerSuccess.as_view(),name='become-reseller-success'),
   
   path('dashboard/inventory/',views.Inventory.as_view(),name='inventory'),
   path('dashboard/new-inventory/',views.NewInventory.as_view(),name='new-inventory'),

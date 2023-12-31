@@ -39,13 +39,18 @@ class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
 
 class BecomeReseller(LoginRequiredMixin,View):
   def get(self,request):
-    form = forms.BecomeResellerForm(user=request.user)
+    form = forms.BecomeResellerRequestForm(user=request.user)
     form.save()
-    messages.success(request,'You are now a reseller!')
+    messages.success(request,'Request successfull. Reseller status under review.')
     context={
       'form':form
     }
-    return redirect(reverse('dashboard:dashboard'))
+    return redirect(reverse('store:become-reseller-success'))
+
+class BecomeResellerSuccess(LoginRequiredMixin,View):
+  template_name='store/become-reseller-success.html'
+  def get(self,request):
+    return render(request,self.template_name,{})
 
 # dashboard inventory
 inventory_context = {
