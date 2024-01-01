@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from paymentgateway.models import Transaction
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
     
@@ -74,10 +76,18 @@ class Inventory(models.Model):
 class Purchase(models.Model):
   inventory=models.ForeignKey(Inventory,related_name='purchases',on_delete=models.CASCADE)
   quantity=models.IntegerField()
+  quantity_sold=models.IntegerField(default=0)
   purchase_price=models.FloatField()
   sale_price=models.FloatField()
   resale_price=models.FloatField(default=0.0)
+  sku=models.CharField(max_length=100,unique=True,null=True)
   currency=models.ForeignKey(Currency,related_name='purchases',on_delete=models.CASCADE)
+  
+  def generateSKU(self)->str:
+    return f"F{self.inventory.store.id}{self.inventory.id}{self.inventory.category.id}{self.id}"
+  
+  def in_stock(self)->int:
+    return self.quantity - self.quantity_sold
   
   def get_purchase_price(self):
     return f"{self.purchase_price} {self.currency.code}"
@@ -93,6 +103,12 @@ class Purchase(models.Model):
 
   def __str__(self):
       return f"{self.inventory.name} -> Purchase {self.purchase_price}x{self.quantity}"
+  
+@receiver(post_save, sender=Purchase)
+def _post_save_receiver(sender, instance, created, **kwargs):
+  if not instance.sku:
+    instance.sku = instance.generateSKU()
+    instance.save()
 
 class Order(models.Model):
   user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='orders')

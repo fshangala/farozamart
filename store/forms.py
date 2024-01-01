@@ -81,17 +81,20 @@ class CategoryForm(forms.Form):
 class InventoryForm(forms.Form):
   name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Product name')
   description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}),help_text='Product description')
+  category=forms.ModelChoiceField(queryset=models.Category.objects.none(),widget=forms.Select(attrs={'class':'form-control'}))
   picture=forms.ImageField(help_text='Product featured image')
   
   def save(self):
     if self.instance != None:
       self.instance.name = self.cleaned_data['name']
       self.instance.description = self.cleaned_data['description']
+      self.instance.category = self.cleaned_data['category']
       self.instance.picture = self.cleaned_data['picture']
       self.instance.save()
     else:
       inventory = models.Inventory.objects.create(
         store=self.user.store,
+        category=self.cleaned_data['category'],
         name=self.cleaned_data['name'],
         description=self.cleaned_data['description'],
         picture=self.cleaned_data['picture']
@@ -101,10 +104,12 @@ class InventoryForm(forms.Form):
     super().__init__(*args,**kwargs)
     self.user=user
     self.instance=instance
+    self.fields['category'].queryset=models.Category.objects.all()
     
     if self.instance:
       self.initial['name']=instance.name
       self.initial['description']=instance.description
+      self.initial['category']=instance.category
       self.initial['picture']=instance.picture
     else:
       self.fields['name'].validators=[validators.unique_inventory_name]

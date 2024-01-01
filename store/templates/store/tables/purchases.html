@@ -18,7 +18,9 @@
       <tr>
         <th>ID</th>
         <th>Inventory</th>
+        <th>SKU</th>
         <th>Quantity</th>
+        <th>Quantity sold</th>
         <th>Purchase Price</th>
         <th>Sale Price</th>
         <th>Resale Price</th>
@@ -28,7 +30,9 @@
       <tr>
         <td>{{purchase.id}}</td>
         <td>{{purchase.inventory.name}}</td>
+        <td>{{purchase.sku}}</td>
         <td>{{purchase.quantity}}</td>
+        <td>{{purchase.quantity_sold}}</td>
         <td>{{purchase.get_purchase_price}}</td>
         <td>{{purchase.get_sale_price}}</td>
         <td>{{purchase.get_resale_price}}</td>
