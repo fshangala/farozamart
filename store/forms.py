@@ -171,6 +171,7 @@ class PurchaseForm(forms.Form):
       models.Purchase.objects.create(
         inventory=self.cleaned_data['inventory'],
         quantity=self.cleaned_data['quantity'],
+        stock=self.cleaned_data['quantity'],
         purchase_price=self.cleaned_data['purchase_price'],
         sale_price=self.cleaned_data['sale_price'],
         resale_price=self.cleaned_data['resale_price'],

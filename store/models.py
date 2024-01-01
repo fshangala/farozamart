@@ -76,7 +76,7 @@ class Inventory(models.Model):
 class Purchase(models.Model):
   inventory=models.ForeignKey(Inventory,related_name='purchases',on_delete=models.CASCADE)
   quantity=models.IntegerField()
-  quantity_sold=models.IntegerField(default=0)
+  stock=models.IntegerField()
   purchase_price=models.FloatField()
   sale_price=models.FloatField()
   resale_price=models.FloatField(default=0.0)
@@ -85,9 +85,6 @@ class Purchase(models.Model):
   
   def generateSKU(self)->str:
     return f"F{self.inventory.store.id}{self.inventory.id}{self.inventory.category.id}{self.id}"
-  
-  def in_stock(self)->int:
-    return self.quantity - self.quantity_sold
   
   def get_purchase_price(self):
     return f"{self.purchase_price} {self.currency.code}"
@@ -156,10 +153,13 @@ class Sale(models.Model):
     return f"{self.sale_price} {self.purchase.currency.code}"
   
   def approve(self):
+    self.purchase.stock -= self.quantity
+    self.purchase.save()
+    
     self.cart = False
     self.approved = True
     self.save()
-    
+  
     wallet = self.purchase.inventory.store.wallets.filter(currency=self.purchase.currency).first()
     if wallet:
       wallet.balance += self.sale_price*self.quantity

@@ -399,7 +399,7 @@ class Shop(View):
   def get(self,request):
     context=shop_context
 
-    listings = models.Purchase.objects.all()
+    listings = models.Purchase.objects.filter(stock__gt=0)
     context['listings']=listings
     return render(request,self.template_name,context)
 

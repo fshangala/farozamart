@@ -3,7 +3,8 @@
   <div class="box p-4">
     <div class=''>
       <h6>{{listing.inventory.name}}</h6>
-      <h6>Price ${{listing.sale_price}}</h6>
+      <h6>Price {{listing.get_sale_price}}</h6>
+      <h6>Stock {{listing.stock}}</h6>
       <p>
         {{form}}
         <input type='hidden' name='submit_type' id='submit-type'>

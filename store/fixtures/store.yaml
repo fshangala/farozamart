@@ -30,6 +30,7 @@
   fields:
     inventory: 1
     quantity: 50
+    stock: 50
     purchase_price: 200.0
     sale_price: 10.0
     currency: 1
@@ -38,6 +39,7 @@
   fields:
     inventory: 2
     quantity: 60
+    stock: 60
     purchase_price: 200.0
     sale_price: 12.0
     currency: 1

@@ -1,0 +1,4 @@
+- model: dashboard.option
+  fields:
+    name: cod_status
+    value: ACTIVATED
