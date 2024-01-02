@@ -304,7 +304,7 @@ class ResellerCODCheckout(forms.Form):
     for item in self.order.sales.all():
       item.cart = False
       item.save()
-    steadfastCreateOrder(self.order)
+    steadfastCreateOrderManual(self.order)
 
 class ListingForm(forms.Form):
   quantity=forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
