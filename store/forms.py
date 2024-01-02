@@ -227,18 +227,33 @@ class SaleForm(forms.Form):
       self.initial['sale_price']=instance.sale_price
       
 class AddToResaleCartForm(forms.Form):
-  quantity=forms.IntegerField(min_value=1,widget=forms.NumberInput(attrs={'class':'form-control'}))
-  
-  def __init__(self,*args,user:User,resale_purchase:models.Purchase,**kwargs):
+  quantity=forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
+
+  def __init__(self,user:User,listing:models.Purchase,*args,**kwargs):
     super().__init__(*args,**kwargs)
     self.user=user
-    self.resale_purchase=resale_purchase
-  
-  def save(self):
+    self.listing=listing
+
+  def cart(self):
     try:
-      order=self.user.orders.get(draft=True)
+      order=self.user.orders.get(draft=True,is_reseller=True)
     except Exception as e:
-      order=models.Order.objects.create(user=self.user,draft=True)
+      order=models.Order.objects.create(user=self.user,draft=True,is_reseller=True)
+      
+    current = models.Sale.objects.filter(user=self.user,purchase=self.listing,cart=True).first()
+    if current:
+      current.quantity += self.cleaned_data['quantity']
+      current.save()
+    else:
+      sale = models.Sale.objects.create(
+        user=self.user,
+        purchase=self.listing,
+        quantity=self.cleaned_data['quantity'],
+        sale_price=self.listing.sale_price,
+        order=order,
+        cart=True,
+        approved=False
+      )
     
 
 class ResaleForm(forms.Form):

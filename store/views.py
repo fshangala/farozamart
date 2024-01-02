@@ -282,13 +282,13 @@ class ResalePurchase(LoginRequiredMixin,View):
     context=resale_purchases_context
     resale_purchase=models.Purchase.objects.get(pk=id)
     context['resale_purchase']=resale_purchase
-    context['form']=forms.ListingForm(user=request.user,listing=resale_purchase)
+    context['form']=forms.AddToResaleCartForm(user=request.user,listing=resale_purchase)
     return render(request,self.template_name,context)
   
   def post(self,request,id):
     context=resale_purchases_context
     listing=models.Purchase.objects.get(pk=id)
-    form=forms.ListingForm(user=request.user,listing=listing,data=request.POST)
+    form=forms.AddToResaleCartForm(user=request.user,listing=listing,data=request.POST)
     if form.is_valid():
       form.cart()
       messages.success(request,'Added to cart!')
@@ -343,8 +343,11 @@ class ResellerCart(LoginRequiredMixin,View):
   
   def get(self,request):
     context=reseller_cart_context
-    order = request.user.orders.get(draft=True)
-    if order:
+    try:
+      order = request.user.orders.get(draft=True)
+    except Exception as e:
+      pass
+    else:
       context['order']=order
       if order.sales.all().count() > 0:
         context['transaction_id']=timezone.now().timestamp()
