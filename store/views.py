@@ -253,24 +253,51 @@ class DeletePurchase(LoginRequiredMixin,View):
     return redirect(reverse("store:purchases"))
 
 # dashboard resales
-resale_purchases_context = {
-  'sidebar_menu_resale_purchases_class':'active'
+resales_context = {
+  'sidebar_menu_resales_class':'active'
 }
 class Resales(LoginRequiredMixin,View):
   template_name='store/resales.html'
   def get(self,request):
-    context=resale_purchases_context
+    context=resales_context
     resales = functions.getUserResalePurchases(request.user)
     context['resales']=resales
     return render(request,self.template_name,context)
 
+# dashboard resale purchases
+resale_purchases_context = {
+  'sidebar_menu_resale_purchases_class':'active'
+}
 class ResalePurchases(LoginRequiredMixin,View):
   template_name='store/resale-purchases.html'
   def get(self,request):
     context=resale_purchases_context
-    purchases=models.Purchase.objects.filter(resale_price__gt=0.0)
+    purchases=models.Purchase.objects.filter(resale_price__gt=0.0,stock__gt=0)
     context['purchases']=purchases
     return render(request,self.template_name,context)
+
+class ResalePurchase(LoginRequiredMixin,View):
+  template_name='store/resale-purchase.html'
+  def get(self,request,id):
+    context=resale_purchases_context
+    resale_purchase=models.Purchase.objects.get(pk=id)
+    context['resale_purchase']=resale_purchase
+    context['form']=forms.ListingForm(user=request.user,listing=resale_purchase)
+    return render(request,self.template_name,context)
+  
+  def post(self,request,id):
+    context=resale_purchases_context
+    listing=models.Purchase.objects.get(pk=id)
+    form=forms.ListingForm(user=request.user,listing=listing,data=request.POST)
+    if form.is_valid():
+      form.cart()
+      messages.success(request,'Added to cart!')
+      return redirect(reverse('store:resale-purchase',kwargs={'id':listing.id}))
+
+    context['listing']=listing
+    context['form']=form
+
+    return render(request, self.template_name, context)
 
 class NewResale(LoginRequiredMixin,View):
   template_name='store/new-resale.html'
@@ -299,6 +326,72 @@ class DeleteResale(LoginRequiredMixin,View):
     resale.delete()
     messages.info(request,'Resale deleted!')
     return redirect(reverse("store:resales"))
+
+# dashboard reseller cart
+reseller_cart_context = {}
+class ResellerCart(LoginRequiredMixin,View):
+  template_name='store/reseller-cart.html'
+  
+  def cartCurrency(self,items)->str:
+    return items[0].purchase.currency.code
+  
+  def cartTotal(self,items)->float:
+    cart_total = 0.0
+    for item in items:
+      cart_total += item.quantity * item.sale_price
+    return cart_total
+  
+  def get(self,request):
+    context=reseller_cart_context
+    order = request.user.orders.get(draft=True)
+    if order:
+      context['order']=order
+      if order.sales.all().count() > 0:
+        context['transaction_id']=timezone.now().timestamp()
+        context['cart_total']=self.cartTotal(order.sales.all())
+        context['cart_currency']=self.cartCurrency(order.sales.all())
+
+    return render(request,self.template_name,context)
+
+class ResellerCODCheckout(LoginRequiredMixin,View):
+  template_name='store/reseller-cod-checkout.html'
+  
+  def cartCurrency(self,items)->str:
+    return items[0].purchase.currency.code
+  
+  def cartTotal(self,items)->float:
+    cart_total = 0.0
+    for item in items:
+      cart_total += item.quantity * item.sale_price
+    return cart_total
+  
+  def get(self,request):
+    context=reseller_cart_context
+    order = request.user.orders.get(draft=True)
+    if order:
+      context['order']=order
+      if order.sales.all().count() > 0:
+        context['transaction_id']=timezone.now().timestamp()
+        context['cart_total']=self.cartTotal(order.sales.all())
+        context['cart_currency']=self.cartCurrency(order.sales.all())
+        context['form']=forms.ResellerCODCheckout(reseller=request.user,order=order)
+    return render(request,self.template_name,context)
+  
+  def post(self,request):
+    context=reseller_cart_context
+    order = request.user.orders.get(draft=True)
+    if order:
+      form=forms.ResellerCODCheckout(reseller=request.user,order=order,data=request.POST)
+      if form.is_valid():
+        form.save()
+        messages.info(request,'Order submitted!')
+        return redirect(reverse('store:resales'))
+      
+      context['cart_total']=self.cartTotal(order.sales.all())
+      context['cart_currency']=self.cartCurrency(order.sales.all())
+      context['order']=order
+      context['form']=form
+    return render(request,self.template_name,context)
   
 # dashboard sales
 sales_context = {
@@ -451,7 +544,7 @@ class Cart(LoginRequiredMixin,View):
   
   def get(self,request):
     context=cart_context
-    order = request.user.orders.filter(draft=True).first()
+    order = request.user.orders.get(draft=True).first()
     if order:
       context['order']=order
       if order.sales.all().count() > 0:

@@ -29,7 +29,7 @@
         <td>{{purchase.quantity}}</td>
         <td>{{purchase.get_resale_price}}</td>
         <td>
-          <a href="{% url "store:new-resale" id=purchase.id %}" class="btn btn-primary">Resale</a>
+          <a href="{% url "store:resale-purchase" id=purchase.id %}" class="btn btn-primary">View</a>
         </td>
       </tr>
       {% endfor %}

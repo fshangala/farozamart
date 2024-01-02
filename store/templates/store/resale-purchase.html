@@ -1,0 +1,32 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ block.super }} | Resale purchase {{resale_purchase.id}}{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Resale Purchase {{purchase.id}}
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li><a href="{% url "store:resale-purchases" %}"><i class="fa fa-dashboard"></i> Resale Purchases</a></li>
+  <li class="active">Resale Purchase {{resale_purchase.id}}</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+<div class='box box-default'>
+  <div class='box-header with-border'>
+    <h3 class='box-title'>{{resale_purchase.inventory.name}}</h3>
+  </div>
+  <div class='box-body'>
+    <div class='row'>
+      <div class='col-sm-4'>
+        <img src="{{resale_purchase.inventory.picture.url}}" alt="{{resale_purchase.inventory.name}}"/>
+      </div>
+      <div class='col-sm-8'>
+        {% include "includes/form.html" with method='post' action='' submitText='Add To Cart' %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

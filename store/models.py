@@ -71,7 +71,6 @@ class Inventory(models.Model):
 
   def __str__(self):
       return self.name
-    
 
 class Purchase(models.Model):
   inventory=models.ForeignKey(Inventory,related_name='purchases',on_delete=models.CASCADE)
@@ -109,7 +108,11 @@ def _post_save_receiver(sender, instance, created, **kwargs):
 
 class Order(models.Model):
   user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='orders')
+  customer_name=models.CharField(max_length=200,null=True)
+  customer_phone=models.CharField(max_length=200,null=True)
+  customer_address=models.CharField(max_length=200,null=True)
   transaction=models.ForeignKey(Transaction,on_delete=models.CASCADE,related_name='orders',null=True)
+  is_reseller=models.BooleanField(default=False)
   draft=models.BooleanField()
   
   def total_cost_number(self):

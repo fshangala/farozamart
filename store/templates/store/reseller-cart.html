@@ -1,0 +1,76 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ block.super }} | Cart{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Cart
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li class="active">Cart</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+<section class="invoice">
+  <!-- info row -->
+  <div class="row invoice-info">
+  </div><!-- /.row -->
+
+  <!-- Table row -->
+  <div class="row">
+    <div class="col-xs-12 table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order.sales.all %}
+          <tr>
+            <td>{{item.id}}</td>
+            <td>{{item.purchase.inventory.name}}</td>
+            <td>{{item.quantity}}</td>
+            <td>{{item.sale_price}}</td>
+            <td></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div><!-- /.col -->
+  </div><!-- /.row -->
+
+  <div class="row">
+    <div class="col-sm-6">
+      <p class="lead">Amount Due</p>
+      <div class="table-responsive">
+        <table class="table">
+          <tr>
+            <th style="width:50%">Subtotal:</th>
+            <td>{{cart_total}} {{cart_currency}}</td>
+          </tr>
+          <tr>
+            <th>Total:</th>
+            <td>{{cart_total}} {{cart_currency}}</td>
+          </tr>
+        </table>
+      </div>
+    </div><!-- /.col -->
+    <!-- accepted payments column -->
+    <div class="col-sm-6">
+      <p class="lead">Payment Methods:</p>
+      {% if options.cod_status == 'ACTIVATED' %}
+      <hr>
+      <h4>Cash On Delivery</h4>
+      <a href="{% url "store:reseller-cod-checkout" %}" class="btn btn-primary">Checkout</a>
+      {% endif %}
+    </div><!-- /.col -->
+  </div><!-- /.row -->
+</section><!-- /.content -->
+<div class="clearfix"></div>
+{% endblock content %}

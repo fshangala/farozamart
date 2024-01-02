@@ -42,9 +42,14 @@
 
   {% if user.profile.is_reseller %}
   <li class="header">RESELLER</li>
-  <li class="{{sidebar_menu_resale_purchases_class}}">
+  <li class="{{sidebar_menu_resales_class}}">
     <a href="{% url "store:resales" %}">
       <i class="fa fa-suitcase"></i> <span>Resales</span>
+    </a>
+  </li>
+  <li class="{{sidebar_menu_resale_purchases_class}}">
+    <a href="{% url "store:resale-purchases" %}">
+      <i class="glyphicon glyphicon-tags"></i> <span>Resale Purchases</span>
     </a>
   </li>
   <!--<li class="{{sidebar_menu_steadfast_class}}">

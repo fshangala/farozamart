@@ -1,0 +1,73 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ block.super }} | Cart - COD Checkout{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Cart - COD Checkout
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li><a href="{% url "store:reseller-cart" %}"><i class="fa fa-dashboard"></i> Cart</a></li>
+  <li class="active">COD Checkout</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+<section class="invoice">
+  <!-- info row -->
+  <div class="row invoice-info">
+  </div><!-- /.row -->
+
+  <!-- Table row -->
+  <div class="row">
+    <div class="col-xs-12 table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order.sales.all %}
+          <tr>
+            <td>{{item.id}}</td>
+            <td>{{item.purchase.inventory.name}}</td>
+            <td>{{item.quantity}}</td>
+            <td>{{item.sale_price}}</td>
+            <td></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div><!-- /.col -->
+  </div><!-- /.row -->
+
+  <div class="row">
+    <div class="col-sm-6">
+      <p class="lead">Amount Due</p>
+      <div class="table-responsive">
+        <table class="table">
+          <tr>
+            <th style="width:50%">Subtotal:</th>
+            <td>{{cart_total}} {{cart_currency}}</td>
+          </tr>
+          <tr>
+            <th>Total:</th>
+            <td>{{cart_total}} {{cart_currency}}</td>
+          </tr>
+        </table>
+      </div>
+    </div><!-- /.col -->
+    <!-- accepted payments column -->
+    <div class="col-sm-6">
+      <p class="lead">Billing information</p>
+      {% include "includes/form.html" with method='post' action='' submitText='Proceed' %}
+    </div><!-- /.col -->
+  </div><!-- /.row -->
+</section><!-- /.content -->
+<div class="clearfix"></div>
+{% endblock content %}

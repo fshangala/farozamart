@@ -225,6 +225,21 @@ class SaleForm(forms.Form):
       self.initial['purchase']=instance.purchase
       self.initial['quantity']=instance.quantity
       self.initial['sale_price']=instance.sale_price
+      
+class AddToResaleCartForm(forms.Form):
+  quantity=forms.IntegerField(min_value=1,widget=forms.NumberInput(attrs={'class':'form-control'}))
+  
+  def __init__(self,*args,user:User,resale_purchase:models.Purchase,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.user=user
+    self.resale_purchase=resale_purchase
+  
+  def save(self):
+    try:
+      order=self.user.orders.get(draft=True)
+    except Exception as e:
+      order=models.Order.objects.create(user=self.user,draft=True)
+    
 
 class ResaleForm(forms.Form):
   customer_name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -254,6 +269,27 @@ class ResaleForm(forms.Form):
     super().__init__(*args,**kwargs)
     self.reseller=reseller
     self.purchase=purchase
+
+class ResellerCODCheckout(forms.Form):
+  customer_name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  customer_phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  customer_address=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  
+  def __init__(self,*args,reseller:User,order:models.Order,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.order=order
+    self.reseller=reseller
+  
+  def save(self):
+    self.order.customer_name=self.cleaned_data['customer_name']
+    self.order.customer_phone=self.cleaned_data['customer_phone']
+    self.order.customer_address=self.cleaned_data['customer_address']
+    self.order.draft=False
+    self.order.save()
+    for item in self.order.sales.all():
+      item.cart = False
+      item.save()
+    steadfastCreateOrder(self.order)
 
 class ListingForm(forms.Form):
   quantity=forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))

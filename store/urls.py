@@ -50,7 +50,11 @@ urlpatterns = [
   path('dashboard/resale/',views.Resales.as_view(),name='resales'),
   path('dashboard/resale/<id>/delete',views.DeleteResale.as_view(),name='delete-resale'),
   path('dahsboard/resale/purchases/',views.ResalePurchases.as_view(),name='resale-purchases'),
+  path('dahsboard/resale/purchases/<id>/',views.ResalePurchase.as_view(),name='resale-purchase'),
   path('dahsboard/resale/purchases/<id>/resale/',views.NewResale.as_view(),name='new-resale'),
+  
+  path('dashboard/reseller/cart/',views.ResellerCart.as_view(),name='reseller-cart'),
+  path('dashboard/reseller/cart/cod-checkout/',views.ResellerCODCheckout.as_view(),name='reseller-cod-checkout'),
   
   path('dashboard/sales/',views.Sales.as_view(),name='sales'),
   path('dashboard/sales/new/',views.NewSale.as_view(),name='new-sale'),
