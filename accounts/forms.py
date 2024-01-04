@@ -45,7 +45,7 @@ class RegistrationForm(forms.Form):
   
   def clean(self):
     cleaned_data = super().clean()
-    if(cleaned_data['password'] != cleaned_data['repeat_password']):
+    if(cleaned_data.get('password') != cleaned_data.get('repeat_password') and cleaned_data.get('password')):
       self.add_error(error='Password and Repeat password must match')
     
     return cleaned_data
