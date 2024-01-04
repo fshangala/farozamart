@@ -4,7 +4,7 @@ from store import validators
 from django.contrib.auth.models import User
 from store import functions
 from paymentgateway.models import Transaction
-from dropshipping.functions import steadfastCreateOrder
+from dropshipping.functions import steadfastCreateOrder, steadfastCreateOrderManual
 
 class BecomeSellerRequestForm(forms.Form):
   name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
