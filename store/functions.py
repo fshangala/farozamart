@@ -5,7 +5,7 @@ from dropshipping.functions import steadfastCreateOrder
 
 def getUserPurchases(user:User):
   inventory = user.store.inventory.all()
-  qs=None
+  qs=models.Purchase.objects.none()
   for a in inventory:
     if qs:
       qs = qs.union(a.purchases.all())
@@ -16,7 +16,7 @@ def getUserPurchases(user:User):
 
 def getUserActivePurchases(user:User):
   inventory = user.store.inventory.all()
-  qs=None
+  qs=models.Purchase.objects.none()
   for a in inventory:
     if qs:
       qs = qs.union(a.purchases.filter(quantity__gt=0))
@@ -31,7 +31,7 @@ def getUserResalePurchases(user:User):
 def getUserSales(user:User):
   qs = getUserPurchases(user)
     
-  qs1=None
+  qs1=models.Sale.objects.none()
   for b in qs:
     if qs1:
       qs1 = qs1.union(b.sales.all())
