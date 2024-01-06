@@ -33,6 +33,17 @@
         </div>
 
         <section class="box">
+          <h5>Product images</h5>
+          <div class="row">
+            {% for image in listing.inventory.images.all %}
+            <div class="col-6 col-sm-3">
+              <img src="/media/{{image}}" alt="{{image}}" style="width:100%;" />
+            </div>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="box">
           <h5>Description</h5>
           <p>{{listing.inventory.description}}</p>
         </section>

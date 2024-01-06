@@ -1,0 +1,36 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ block.super }} | Inventory {{inventory.id}} - Images{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Inventory {{inventory.id}} - Images
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li><a href="{% url "store:inventory" %}"><i class="fa fa-dashboard"></i> Inventory</a></li>
+  <li class="active">Inventory {{inventory.id}} - Images</li>
+</ol>
+{% endblock contentHeader %}
+ 
+{% block content %}
+<div class="box">
+  <div class="box-body">
+    <div class="row">
+      {% for image in inventory.images.all %}
+      <div class="col-6 col-sm-3">
+        <img src="/media/{{image}}" alt="{{image}}" style="width:100%;" />
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<div class="box">
+  <div class="box-header">
+    <h3 class="box-title">Add an image</h3>
+  </div>
+  <div class="box-body">
+    {% include "includes/form.html" with method='post' action='' submitText='Save' %}
+  </div>
+</div>
+{% endblock content %}

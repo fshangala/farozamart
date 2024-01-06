@@ -114,6 +114,17 @@ class InventoryForm(forms.Form):
     else:
       self.fields['name'].validators=[validators.unique_inventory_name]
 
+class InventoryImagesForm(forms.Form):
+  picture=forms.ImageField(help_text='Product image')
+  
+  def __init__(self,*args,inventory:models.Inventory,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.inventory=inventory
+  
+  def save(self):
+    models.InventoryImage.objects.create(inventory=self.inventory,picture=self.cleaned_data['picture'])
+  
+
 class CurrencyForm(forms.Form):
   symbol=forms.CharField(max_length=10,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Currency symbol i.e $')
   name_singular=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Currency singular name i.e American Dollar')

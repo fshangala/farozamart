@@ -72,6 +72,13 @@ class Inventory(models.Model):
   def __str__(self):
       return self.name
 
+class InventoryImage(models.Model):
+  inventory=models.ForeignKey(Inventory,related_name='images',on_delete=models.CASCADE)
+  picture=models.ImageField(upload_to='products/detail')
+  
+  def __str__(self):
+      return self.picture.name
+
 class Purchase(models.Model):
   inventory=models.ForeignKey(Inventory,related_name='purchases',on_delete=models.CASCADE)
   quantity=models.IntegerField()

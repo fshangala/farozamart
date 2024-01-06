@@ -90,6 +90,27 @@ class EditInventory(LoginRequiredMixin,View):
     context['form']=form
     return render(request,self.template_name,context)
 
+class InventoryImages(LoginRequiredMixin,View):
+  template_name='store/inventory-images.html'
+  def get(self,request,id):
+    context=inventory_context
+    inventory=models.Inventory.objects.get(pk=id)
+    form=forms.InventoryImagesForm(inventory=inventory)
+    context['inventory']=inventory
+    context['form']=form
+    return render(request,self.template_name,context)
+  def post(self,request,id):
+    context=inventory_context
+    inventory=models.Inventory.objects.get(pk=id)
+    form=forms.InventoryImagesForm(inventory=inventory,data=request.POST,files=request.FILES)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'Image successfully added!')
+      return redirect(reverse('store:inventory-images',kwargs={'id':id}))
+    context['inventory']=inventory
+    context['form']=form
+    return render(request,self.template_name,context)
+
 class NewInventory(LoginRequiredMixin,View):
   template_name='store/new_inventory.html'
   

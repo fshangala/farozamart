@@ -34,6 +34,7 @@ urlpatterns = [
   
   path('dashboard/inventory/',views.Inventory.as_view(),name='inventory'),
   path('dashboard/new-inventory/',views.NewInventory.as_view(),name='new-inventory'),
+  path('dashboard/inventory/<id>/images/',views.InventoryImages.as_view(),name='inventory-images'),
   path('dashboard/inventory/<id>/edit/',views.EditInventory.as_view(),name='edit-inventory'),
   path('dashboard/inventory/<id>/delete/',views.DeleteInventory.as_view(),name='delete-inventory'),
   

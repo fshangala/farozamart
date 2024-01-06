@@ -31,6 +31,7 @@
         <td><img src="{{inventory_item.picture.url}}" witdth=50 height=50 alt="{{inventory_item.name}}" /></td>
         <td>
           <a href="{% url "store:new-purchase" %}?inventory_id={{inventory_item.id}}" class="btn btn-primary">Add stock</a>
+          <a href="{% url "store:inventory-images" id=inventory_item.id %}" class="btn btn-primary">Images</a>
           <a href="{% url "store:edit-inventory" id=inventory_item.id %}" class="btn btn-primary">Edit</a>
           <a href="{% url "store:delete-inventory" id=inventory_item.id %}" class="btn btn-danger">Delete</a>
         </td>
