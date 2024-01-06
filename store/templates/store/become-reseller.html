@@ -1,0 +1,17 @@
+{% extends "home/base.html" %}
+
+{% block title %}Farozamart | Become a reseller{% endblock title %}
+
+{% block content %}
+
+<section class="layout_padding">
+  <div class="container">
+    {% if user.becomereseller %}
+    <h1>Under Review</h1>
+    {% else %}
+    {% include "home/includes/form.html" with method='POST' action='' submitText='Submit' %}
+    {% endif %}
+  </div>
+</section>
+
+{% endblock content %}

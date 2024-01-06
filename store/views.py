@@ -38,14 +38,25 @@ class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
     return render(request,self.template_name,context)
 
 class BecomeReseller(LoginRequiredMixin,View):
+  template_name='store/become-reseller.html'
   def get(self,request):
+    context={}
     form = forms.BecomeResellerRequestForm(user=request.user)
-    form.save()
-    messages.success(request,'Request successfull. Reseller status under review.')
+    context['form']=form
+    if request.user.profile.is_reseller:
+      return redirect(reverse('dashboard:dashboard'))
+    return render(request,self.template_name,context)
+  def post(self,request):
+    form = forms.BecomeResellerRequestForm(user=request.user,data=request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'Request successfull. Reseller status under review.')
+      return redirect(reverse('store:become-reseller'))
+      
     context={
       'form':form
     }
-    return redirect(reverse('store:become-reseller-success'))
+    return render(request,self.template_name,context)
 
 class BecomeResellerSuccess(LoginRequiredMixin,View):
   template_name='store/become-reseller-success.html'
@@ -757,6 +768,11 @@ class StaffApproveSeller(LoginRequiredMixin,View):
     form = forms.BecomeSellerForm(user=sellerRequest.user,data={
       'name':sellerRequest.name,
       'description':sellerRequest.description,
+      'address':sellerRequest.address,
+      'email':sellerRequest.email,
+      'phone':sellerRequest.phone,
+      'whatsapp':sellerRequest.whatsapp,
+      'facebook_url':sellerRequest.facebook_url
     })
     if form.is_valid():
       form.save()
@@ -784,9 +800,18 @@ class StaffResellers(LoginRequiredMixin,View):
 class StaffApproveReseller(LoginRequiredMixin,View):
   def get(self,request,pk):
     resellerRequest = models.Becomereseller.objects.get(pk=pk)
-    form = forms.BecomeResellerForm(user=resellerRequest.user)
-    form.save()
-    resellerRequest.delete()
-    messages.success(request,'Reseller successfully approved!')
+    form = forms.BecomeResellerForm(user=resellerRequest.user,data={
+      'address':resellerRequest.address,
+      'email':resellerRequest.email,
+      'phone':resellerRequest.phone,
+      'whatsapp':resellerRequest.whatsapp,
+      'facebook_url':resellerRequest.facebook_url
+    })
+    if form.is_valid():
+      form.save()
+      resellerRequest.delete()
+      messages.success(request,'Reseller successfully approved!')
+    else:
+      messages.error(request,form.errors.as_text)
     
     return redirect(reverse('store:staff-resellers'))

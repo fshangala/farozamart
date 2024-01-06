@@ -4,10 +4,16 @@
     user: 1
     name: EStore
     description: Sample store
+    address: sample/address, online
+    email: admin@localhost
+    phone: 1234567890
 - model: accounts.profile
   pk: 1
   fields:
     user: 1
+    address: sample/address, online
+    email: admin@localhost
+    phone: 1234567890
     is_seller: 1
 
 - model: store.inventory

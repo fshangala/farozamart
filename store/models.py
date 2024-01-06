@@ -19,12 +19,22 @@ class Becomeseller(models.Model):
   user=models.OneToOneField(User,related_name='becomeseller',on_delete=models.CASCADE)
   name=models.CharField(max_length=200,unique=True)
   description=models.TextField()
+  address=models.CharField(max_length=200)
+  email=models.EmailField()
+  phone=models.CharField(max_length=200)
+  whatsapp=models.CharField(max_length=200,null=True)
+  facebook_url=models.URLField(null=True)
 
   def __str__(self):
       return self.name
 
 class Becomereseller(models.Model):
   user=models.OneToOneField(User,related_name='becomereseller',on_delete=models.CASCADE)
+  address=models.CharField(max_length=200)
+  email=models.EmailField()
+  phone=models.CharField(max_length=200)
+  whatsapp=models.CharField(max_length=200,null=True)
+  facebook_url=models.URLField(null=True)
 
   def __str__(self):
       return self.user.username
@@ -33,6 +43,11 @@ class Store(models.Model):
   user=models.OneToOneField(User,related_name='store',on_delete=models.CASCADE)
   name=models.CharField(max_length=200,unique=True)
   description=models.TextField()
+  address=models.CharField(max_length=200)
+  email=models.EmailField()
+  phone=models.CharField(max_length=200)
+  whatsapp=models.CharField(max_length=200,null=True)
+  facebook_url=models.URLField(null=True)
 
   def __str__(self):
       return self.name

@@ -13,7 +13,7 @@ class Dashboard(LoginRequiredMixin,UserPassesTestMixin,View):
   template_name='dashboard/dashboard.html'
   
   def test_func(self):
-    return self.request.user.profile.is_seller or self.request.user.is_staff
+    return self.request.user.profile.is_seller or self.request.user.is_staff or self.request.user.profile.is_reseller
   
   def get(self, request):
     context={

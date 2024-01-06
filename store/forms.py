@@ -9,43 +9,101 @@ from dropshipping.functions import steadfastCreateOrder, steadfastCreateOrderMan
 class BecomeSellerRequestForm(forms.Form):
   name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
   description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}),help_text='Describe your store i.e the products that will be sold on it')
+  address=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The physical address of your store e.g EStore')
+  email=forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}),help_text='Business email')
+  phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Business phone')
+  whatsapp=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Business WhatsApp contact',required=False)
+  facebook_url=forms.URLField(widget=forms.URLInput(attrs={'class':'form-control'}),help_text='Business facebook URL',required=False)
   
   def __init__(self,*args,user:User,**kwargs):
     super().__init__(*args,**kwargs)
     self.user=user
+    
+    self.initial['address']=self.user.profile.address
+    self.initial['email']=self.user.profile.email
+    self.initial['phone']=self.user.profile.phone
+    self.initial['whatsapp']=self.user.profile.whatsapp
+    self.initial['facebook_url']=self.user.profile.facebook_url
   
   def save(self):
     request = models.Becomeseller.objects.create(
       user=self.user,
       name=self.cleaned_data['name'],
-      description=self.cleaned_data['description']
+      description=self.cleaned_data['description'],
+      address=self.cleaned_data['address'],
+      email=self.cleaned_data['email'],
+      phone=self.cleaned_data['phone'],
+      whatsapp=self.cleaned_data['whatsapp'],
+      facebook_url=self.cleaned_data['facebook_url']
     )
 
 class BecomeSellerForm(forms.Form):
   name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
   description=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}),help_text='Describe your store i.e the products that will be sold on it')
+  address=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The physical address of your store e.g EStore')
+  email=forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}),help_text='Business email')
+  phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Business phone')
+  whatsapp=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Business WhatsApp contact',required=False)
+  facebook_url=forms.URLField(widget=forms.URLInput(attrs={'class':'form-control'}),help_text='Business facebook URL',required=False)
   
   def __init__(self,*args,user:User,**kwargs):
     super().__init__(*args,**kwargs)
     self.user=user
   
   def save(self):
-    store = models.Store.objects.create(user=self.user,name=self.cleaned_data['name'],description=self.cleaned_data['description'])
+    store = models.Store.objects.create(
+      user=self.user,
+      name=self.cleaned_data['name'],
+      description=self.cleaned_data['description'],
+      address=self.cleaned_data['address'],
+      email=self.cleaned_data['email'],
+      phone=self.cleaned_data['phone'],
+      whatsapp=self.cleaned_data['whatsapp'],
+      facebook_url=self.cleaned_data['facebook_url']
+    )
     self.user.profile.is_seller = True
     self.user.save()
     
 class BecomeResellerRequestForm(forms.Form):
-  def save(self):
-    models.Becomereseller.objects.create(
-      user=self.user
-    )
-    
+  address=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The physical address of your store e.g EStore')
+  email=forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}),help_text='Business email')
+  phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Business phone')
+  whatsapp=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Business WhatsApp contact',required=False)
+  facebook_url=forms.URLField(widget=forms.URLInput(attrs={'class':'form-control'}),help_text='Business facebook URL',required=False)
+
   def __init__(self,*args,user:User,**kwargs):
     super().__init__(*args,**kwargs)
     self.user=user
+    
+    self.initial['address']=self.user.profile.address
+    self.initial['email']=self.user.profile.email
+    self.initial['phone']=self.user.profile.phone
+    self.initial['whatsapp']=self.user.profile.whatsapp
+    self.initial['facebook_url']=self.user.profile.facebook_url
+  
+  def save(self):
+    models.Becomereseller.objects.create(
+      user=self.user,
+      address=self.cleaned_data['address'],
+      email=self.cleaned_data['email'],
+      phone=self.cleaned_data['phone'],
+      whatsapp=self.cleaned_data['whatsapp'],
+      facebook_url=self.cleaned_data['facebook_url']
+    )
 
 class BecomeResellerForm(forms.Form):
+  address=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The physical address of your store e.g EStore')
+  email=forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}),help_text='Business email')
+  phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Business phone')
+  whatsapp=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Business WhatsApp contact',required=False)
+  facebook_url=forms.URLField(widget=forms.URLInput(attrs={'class':'form-control'}),help_text='Business facebook URL',required=False)
+  
   def save(self):
+    self.user.profile.address=self.cleaned_data['address']
+    self.user.profile.email=self.cleaned_data['email']
+    self.user.profile.phone=self.cleaned_data['phone']
+    self.user.profile.whatsapp=self.cleaned_data['whatsapp']
+    self.user.profile.facebook_url=self.cleaned_data['facebook_url']
     self.user.profile.is_reseller = True
     self.user.save()
     

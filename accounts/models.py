@@ -12,9 +12,12 @@ gender_options = (
 )
 class Profile(models.Model):
   user=models.OneToOneField(to=User,on_delete=models.CASCADE,related_name='profile')
-  phone=models.CharField(max_length=20,null=True)
   gender=models.CharField(max_length=200,choices=gender_options,default='Male')
   address=models.CharField(max_length=200,null=True)
+  email=models.EmailField()
+  phone=models.CharField(max_length=200,null=True)
+  whatsapp=models.CharField(max_length=200,null=True)
+  facebook_url=models.URLField(null=True)
   is_seller=models.BooleanField(default=False)
   is_reseller=models.BooleanField(default=False)
   picture=models.ImageField(upload_to='profile/pictures',default='profile/default.png')
@@ -25,7 +28,7 @@ class Profile(models.Model):
   @receiver(post_save, sender=User)
   def _post_save_receiver(sender, instance, created, **kwargs):
     if(created):
-      Profile.objects.create(user=instance)
+      Profile.objects.create(user=instance,email=instance.email)
       Token.objects.create(user=instance)
     else:
       instance.profile.save()
