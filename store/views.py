@@ -20,7 +20,7 @@ class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
     return not (self.request.user.profile.is_seller and self.request.method == 'GET')
   
   def get(self,request):
-    form = forms.BecomeSellerForm(user=request.user)
+    form = forms.BecomeSellerRequestForm(user=request.user)
     context={
       'form':form
     }
@@ -762,6 +762,14 @@ class StaffSellers(LoginRequiredMixin,View):
     context['seller_requests']=seller_requests
     return render(request,self.template_name,context)
 
+class StaffSellerRequest(LoginRequiredMixin,View):
+  template_name='store/staff/general-profile.html'
+  def get(self,request,pk):
+    context=staff_sellers_context
+    seller = User.objects.get(pk=pk)
+    context['obj'] = seller
+    return render(request,self.template_name,context)
+
 class StaffApproveSeller(LoginRequiredMixin,View):
   def get(self,request,pk):
     sellerRequest = models.Becomeseller.objects.get(pk=pk)
@@ -772,7 +780,8 @@ class StaffApproveSeller(LoginRequiredMixin,View):
       'email':sellerRequest.email,
       'phone':sellerRequest.phone,
       'whatsapp':sellerRequest.whatsapp,
-      'facebook_url':sellerRequest.facebook_url
+      'facebook_url':sellerRequest.facebook_url,
+      'trade_licence':sellerRequest.trade_licence
     })
     if form.is_valid():
       form.save()

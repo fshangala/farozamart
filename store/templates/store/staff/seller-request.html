@@ -1,0 +1,36 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{block.super}} | Dashboard - Seller request {{seller.id}}{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Seller request {{seller.id}}
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li><a href="{% url "store:staff-sellers" %}"><i class="fa fa-dashboard"></i> Sellers</a></li>
+  <li class="active">Seller request {{seller.id}}</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+<div class="box">
+  <div class="box-header">
+    <h3 class="box-title">{{seller}}</h3>
+  </div><!-- /.box-header -->
+  <div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+      <tr>
+        <th>ID</th>
+        <td>{{seller.id}}</td>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <td>{{seller.profile.full_name}}</td>
+      </tr>
+    </table>
+  </div><!-- /.box-body -->
+</div><!-- /.box -->
+{{seller}}
+<a class="btn btn-success" href="{% url "store:staff-approve-seller" pk=seller.id %}">Approve</a>
+{% endblock content %}

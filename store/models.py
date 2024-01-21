@@ -24,6 +24,7 @@ class Becomeseller(models.Model):
   phone=models.CharField(max_length=200)
   whatsapp=models.CharField(max_length=200,null=True)
   facebook_url=models.URLField(null=True)
+  trade_licence=models.CharField(max_length=200,choices=(('Yes','Yes'),('No','No')),default='No')
 
   def __str__(self):
       return self.name

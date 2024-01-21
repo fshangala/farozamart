@@ -3,8 +3,13 @@
 {% block content %}
 <section class="login_section layout_padding">
   <div class="container">
+    <div class="heading_container heading_center">
+      <h2>
+        Registration
+      </h2>
+    </div>
     {% include "home/includes/form.html" with form=form method='POST' action='' submitText='Register' %}
-    <a href='{% url "accounts:login" %}' class="btn btn-outline-primary m-4">Aready have an account? Login</a>
+    <a href='{% url "accounts:login" %}?next={{get_parameters.next}}' class="btn btn-outline-primary m-4">Aready have an account? Login</a>
   </div>
 </section>
 {% endblock content %}

@@ -14,6 +14,7 @@ class BecomeSellerRequestForm(forms.Form):
   phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Business phone')
   whatsapp=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Business WhatsApp contact',required=False)
   facebook_url=forms.URLField(widget=forms.URLInput(attrs={'class':'form-control'}),help_text='Business facebook URL',required=False)
+  trade_licence=forms.ChoiceField(choices=(('Yes','Yes'),('No','No')),widget=forms.Select(attrs={'class':'form-control'}),help_text='Does your business have a trade licence?')
   
   def __init__(self,*args,user:User,**kwargs):
     super().__init__(*args,**kwargs)
@@ -34,7 +35,8 @@ class BecomeSellerRequestForm(forms.Form):
       email=self.cleaned_data['email'],
       phone=self.cleaned_data['phone'],
       whatsapp=self.cleaned_data['whatsapp'],
-      facebook_url=self.cleaned_data['facebook_url']
+      facebook_url=self.cleaned_data['facebook_url'],
+      trade_licence=self.cleaned_data['trade_licence']
     )
 
 class BecomeSellerForm(forms.Form):
@@ -45,6 +47,7 @@ class BecomeSellerForm(forms.Form):
   phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Business phone')
   whatsapp=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Business WhatsApp contact',required=False)
   facebook_url=forms.URLField(widget=forms.URLInput(attrs={'class':'form-control'}),help_text='Business facebook URL',required=False)
+  trade_licence=forms.ChoiceField(choices=(('Yes','Yes'),('No','No')),widget=forms.Select(attrs={'class':'form-control'}),help_text='Does your business have a trade licence?')
   
   def __init__(self,*args,user:User,**kwargs):
     super().__init__(*args,**kwargs)

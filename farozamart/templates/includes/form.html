@@ -1,4 +1,4 @@
-<form method="{{method}}" action="{{action}}" enctype="multipart/form-data">
+<form method="{{method}}" action="{{action}}?next={{get_parameters.next}}" enctype="multipart/form-data">
   {% csrf_token %}
 {% for field in form %}
 <div class="form-group">

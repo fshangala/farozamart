@@ -24,7 +24,10 @@
         <td>{{seller_request.id}}</td>
         <td>{{seller_request.user.profile.full_name}}</td>
         <td>{{seller_request.name}}</td>
-        <td><a class="btn btn-primary" href="{% url "store:staff-approve-seller" pk=seller_request.id %}">Approve</a></td>
+        <td>
+          <a class="btn btn-success" href="{% url "store:staff-approve-seller" pk=seller_request.id %}">Approve</a>
+          <a class="btn btn-primary" href="{% url "store:staff-seller-request" pk=seller_request.id %}">View</a>
+        </td>
       </tr>
       {% endfor %}
     </table>

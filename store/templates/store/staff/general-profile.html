@@ -1,0 +1,107 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{block.super}} | Dashboard - Profile {{obj.id}}{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Profile {{obj.id}}
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li class="active">Profile {{obj.id}}</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+<div class="box">
+  <div class="box-header">
+    <h3 class="box-title">{{obj}}</h3>
+  </div><!-- /.box-header -->
+  <div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+      <tr>
+        <td colspan=2><h3>User</h3></td>
+      </tr>
+      <tr>
+        <th>ID</th>
+        <td>{{obj.id}}</td>
+      </tr>
+      <tr>
+        <th>Username</th>
+        <td>{{obj.username}}</td>
+      </tr>
+      <tr>
+        <th>E-mail</th>
+        <td>{{obj.email}}</td>
+      </tr>
+      <tr>
+        <td colspan=2><h3>Profile</h3></td>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <td>{{obj.profile.full_name}}</td>
+      </tr>
+      <tr>
+        <th>Gender</th>
+        <td>{{obj.profile.gender}}</td>
+      </tr>
+      <tr>
+        <th>Address</th>
+        <td>{{obj.profile.address}}</td>
+      </tr>
+      <tr>
+        <th>E-mail</th>
+        <td>{{obj.profile.email}}</td>
+      </tr>
+      <tr>
+        <th>Phone</th>
+        <td>{{obj.profile.phone}}</td>
+      </tr>
+      <tr>
+        <th>Whatsapp</th>
+        <td>{{obj.profile.whatsapp}}</td>
+      </tr>
+      <tr>
+        <th>Facebook</th>
+        <td>{{obj.profile.facebook}}</td>
+      </tr>
+      <tr>
+        <th>Reseller</th>
+        <td>{{obj.profile.is_reseller}}</td>
+      </tr>
+      {% if obj.store %}
+      <tr>
+        <td colspan=2><h3>Store</h3></td>
+      </tr>
+      <tr>
+        <th>Store Name</th>
+        <td>{{obj.store.name}}</td>
+      </tr>
+      <tr>
+        <th>Store Description</th>
+        <td>{{obj.store.description}}</td>
+      </tr>
+      <tr>
+        <th>Store Address</th>
+        <td>{{obj.store.address}}</td>
+      </tr>
+      <tr>
+        <th>Store Trade licence</th>
+        <td>{{obj.store.trade_licence}}</td>
+      </tr>
+      {% endif %}
+    </table>
+  </div><!-- /.box-body -->
+</div><!-- /.box -->
+{% if user.is_staff %}
+{% if obj.becomeseller %}
+<a class="btn btn-success" href="{% url "store:staff-approve-seller" pk=obj.becomeseller.id %}">Approve Seller</a>
+{% endif %}
+{% if obj.becomereseller %}
+<a class="btn btn-success" href="{% url "store:staff-approve-reseller" pk=obj.becomereseller.id %}">Approve Reseller</a>
+{% endif %}
+{% endif %}
+
+{{ obj.becomereseller.get }}
+
+{% endblock content %}

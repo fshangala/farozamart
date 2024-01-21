@@ -2,13 +2,39 @@ from django.shortcuts import render, reverse, redirect
 from django.views.generic import View
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth import authenticate, login
 from django.conf import settings
 from accounts import forms
 from django.contrib import messages
 
 # Create your views here.
-class Login(LoginView):
+class Login(View):
   template_name='registration/login.html'
+  def get(self,request):
+    context={
+      'get_parameters':request.GET,
+      'form':forms.LoginForm()
+    }
+    messages.info(request,'Please login or sign up')
+    return render(request,self.template_name,context)
+  def post(self,request):
+    context={
+      'get_parameters':request.GET
+    }
+    nextPage = request.GET.get('next')
+    if not nextPage:
+      nextPage = reverse('home:home')
+    form = forms.LoginForm(data=request.POST)
+    if form.is_valid():
+      user = authenticate(request,username=form.cleaned_data['username'],password=form.cleaned_data['password'])
+      if user is not None:
+        login(request,user)
+        messages.success(request,'Login successful!')
+        return redirect(nextPage)
+      else:
+        messages.error(request, 'invalid credentials!')
+    context['form']=form
+    return render(request,self.template_name,context)
 
 class Logout(LoginRequiredMixin,LogoutView):
   pass
@@ -25,9 +51,19 @@ class Register(View):
   def post(self,request):
     form = forms.RegistrationForm(data=request.POST)
     
+    nextPage = request.GET.get('next')
+    if not nextPage:
+      nextPage = reverse('home:home')
     if form.is_valid():
       form.save()
-      return redirect(reverse('accounts:login'))
+      messages.success(request,'Registration successful!')
+      user = authenticate(request,username=form.cleaned_data['username'],password=form.cleaned_data['password'])
+      if user is not None:
+        login(request,user)
+        messages.success(request,'Login successful!')
+        return redirect(nextPage)
+      else:
+        messages.error(request, 'invalid credentials!')
     
     context={
       'form':form

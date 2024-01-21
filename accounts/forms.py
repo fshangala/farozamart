@@ -63,6 +63,15 @@ class RegistrationForm(forms.Form):
     user.profile.address = self.cleaned_data['address']
     user.save()
 
+class LoginForm(forms.Form):
+  username=forms.CharField(max_length=200,widget=forms.TextInput(attrs={
+    'class':'form-control'
+  }))
+  password=forms.CharField(max_length=200,widget=forms.PasswordInput(attrs={
+    'class':'form-control',
+    'placeholder':'********'
+  }))
+
 class BecomeSellerForm(forms.Form):
   def save(self,user:User):
     user.profile.is_seller = True
