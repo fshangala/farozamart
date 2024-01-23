@@ -16,6 +16,9 @@ from django.utils import timezone
 class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
   template_name='store/become-seller.html'
   
+  def get_login_url(self):
+    return reverse('accounts:register')
+  
   def test_func(self):
     return not (self.request.user.profile.is_seller and self.request.method == 'GET')
   
@@ -39,6 +42,10 @@ class BecomeSeller(LoginRequiredMixin,UserPassesTestMixin,View):
 
 class BecomeReseller(LoginRequiredMixin,View):
   template_name='store/become-reseller.html'
+  
+  def get_login_url(self):
+    return reverse('accounts:register')
+  
   def get(self,request):
     context={}
     form = forms.BecomeResellerRequestForm(user=request.user)

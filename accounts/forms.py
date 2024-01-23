@@ -2,6 +2,8 @@ from django import forms
 from accounts.models import gender_options
 from django.contrib.auth.models import User
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.core.mail import send_mail
+from dashboard.function import getOptions
 
 class RegistrationForm(forms.Form):
   username=forms.CharField(max_length=200,widget=forms.TextInput(attrs={
@@ -12,8 +14,8 @@ class RegistrationForm(forms.Form):
   }))
   phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={
     'class':'form-control',
-    'placeholder':'+1 (234) 567890'
-  }))
+    'placeholder':'+000 (000) 000000'
+  }),help_text='Please enter phone with country code.')
   first_name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={
     'class':'form-control'
   }))
@@ -34,6 +36,15 @@ class RegistrationForm(forms.Form):
     'class':'form-control',
     'placeholder':'********'
   }))
+  
+  def clean_phone(self):
+    """Check for country code"""
+    phone = self.cleaned_data.get("phone")
+    if phone and phone[0] != "+":
+      print(phone[0])
+      self.add_error('phone','Please enter phone with country code')
+    
+    return phone
   
   def clean_username(self):
     """Reject usernames that differ only in case."""
@@ -62,6 +73,14 @@ class RegistrationForm(forms.Form):
     user.profile.gender = self.cleaned_data['gender']
     user.profile.address = self.cleaned_data['address']
     user.save()
+    
+    options = getOptions()
+    send_mail(
+      f"{options['name']} - User registration",
+      f"Thank you for your registration to {options['name']}. You may login anytime with the username {user.username}.",
+      options['site_mail'],
+      [user.email]
+    )
 
 class LoginForm(forms.Form):
   username=forms.CharField(max_length=200,widget=forms.TextInput(attrs={

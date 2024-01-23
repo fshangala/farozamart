@@ -44,7 +44,8 @@ class Register(View):
   def get(self,request):
     form = forms.RegistrationForm()
     context={
-      'form':form
+      'form':form,
+      'get_parameters':request.GET
     }
     return render(request,self.template_name,context)
   
@@ -66,7 +67,8 @@ class Register(View):
         messages.error(request, 'invalid credentials!')
     
     context={
-      'form':form
+      'form':form,
+      'get_parameters':request.GET
     }
     return render(request,self.template_name,context)
 

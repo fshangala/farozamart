@@ -2,9 +2,11 @@ from django import forms
 from store import models
 from store import validators
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from store import functions
 from paymentgateway.models import Transaction
 from dropshipping.functions import steadfastCreateOrder, steadfastCreateOrderManual
+from dashboard.function import getOptions
 
 class BecomeSellerRequestForm(forms.Form):
   name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
@@ -38,6 +40,20 @@ class BecomeSellerRequestForm(forms.Form):
       facebook_url=self.cleaned_data['facebook_url'],
       trade_licence=self.cleaned_data['trade_licence']
     )
+    
+    options = getOptions()
+    send_mail(
+      f"{options['name']} - Seller request",
+      f"Thank you for your request to become a seller at {options['name']}. Your request is under review. We will notify you through this email when it has been accepted or denied.",
+      options['site_mail'],
+      [self.user.email]
+    )
+    send_mail(
+      f"{options['name']} - Seller request",
+      f"{self.user.profile.full_name} has requested to become a seller, please review the request in the dashboard.",
+      options['site_mail'],
+      [options['site_mail']]
+    )
 
 class BecomeSellerForm(forms.Form):
   name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
@@ -67,6 +83,14 @@ class BecomeSellerForm(forms.Form):
     self.user.profile.is_seller = True
     self.user.save()
     
+    options = getOptions()
+    send_mail(
+      f"{options['name']} - Seller approved",
+      f"Your request to become a seller at {options['name']} has been approved. Login with username {self.user.username} and head over to the dashboard.",
+      options['site_mail'],
+      [self.user.email]
+    )
+    
 class BecomeResellerRequestForm(forms.Form):
   address=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The physical address of your store e.g EStore')
   email=forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}),help_text='Business email')
@@ -93,6 +117,20 @@ class BecomeResellerRequestForm(forms.Form):
       whatsapp=self.cleaned_data['whatsapp'],
       facebook_url=self.cleaned_data['facebook_url']
     )
+    
+    options = getOptions()
+    send_mail(
+      f"{options['name']} - Reseller request",
+      f"Thank you for your request to become a reseller at {options['name']}. Your request is under review. We will notify you through this email when it has been accepted or denied.",
+      options['site_mail'],
+      [self.user.email]
+    )
+    send_mail(
+      f"{options['name']} - Reseller request",
+      f"{self.user.profile.full_name} has requested to become a reseller, please review the request in the dashboard.",
+      options['site_mail'],
+      [options['site_mail']]
+    )
 
 class BecomeResellerForm(forms.Form):
   address=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The physical address of your store e.g EStore')
@@ -109,6 +147,14 @@ class BecomeResellerForm(forms.Form):
     self.user.profile.facebook_url=self.cleaned_data['facebook_url']
     self.user.profile.is_reseller = True
     self.user.save()
+    
+    options = getOptions()
+    send_mail(
+      f"{options['name']} - Reseller approved",
+      f"Your request to become a reseller at {options['name']} has been approved. Login with username {self.user.username} and head over to the dashboard.",
+      options['site_mail'],
+      [self.user.email]
+    )
     
   def __init__(self,*args,user:User,**kwargs):
     super().__init__(*args,**kwargs)
