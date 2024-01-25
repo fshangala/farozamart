@@ -586,7 +586,7 @@ class Cart(LoginRequiredMixin,View):
   
   def get(self,request):
     context=cart_context
-    order = request.user.orders.get(draft=True).first()
+    order = request.user.orders.get(draft=True)
     if order:
       context['order']=order
       if order.sales.all().count() > 0:
