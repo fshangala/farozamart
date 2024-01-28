@@ -546,7 +546,9 @@ class WithdrawRequest(forms.Form):
     self.wallet=wallet
   
   def save(self):
-    models.Withdraw.objects.create(
+    withdraw = models.Withdraw.objects.create(
       wallet=self.wallet,
       amount=self.cleaned_data['amount']
     )
+    
+    signals.withdraw_request_submitted.send(models.Withdraw,withdraw=withdraw)

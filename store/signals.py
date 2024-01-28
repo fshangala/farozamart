@@ -24,3 +24,20 @@ def catch_order_processed(sender,order:models.Order,**kwargs):
         options['site_mail'],
         [order.user.email]
     )
+
+withdraw_request_submitted = Signal()
+
+def catch_withdraw_request_submitted(sender,withdraw:models.Withdraw,**kwargs):
+    options = getOptions()
+    send_mail(
+        f"{withdraw.wallet.store.name} at {options['name']} - Withdraw requested",
+        f"A withdraw from {withdraw.wallet.store.name} has been requested, Please review in the dashboard",
+        options['site_mail'],
+        [options['site_mail']]
+    )
+    send_mail(
+        f"{withdraw.wallet.store.name} at {options['name']} - Withdraw requested",
+        f"A withdraw from {withdraw.wallet.store.name} has been requested, you will be notified when it is proceseed!",
+        options['site_mail'],
+        [withdraw.wallet.store.email]
+    )
