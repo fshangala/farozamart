@@ -45,12 +45,31 @@
       </div>
     </div>
     <div class="container">
-      <center><h3>Payment Method</h3></center>
-      {% if options.cod_status == 'ACTIVATED' %}
-      <hr>
-      <h4>Cash On Delivery</h4>
-      <a href="{% url "store:checkout-cod" order=order.id %}" class="btn btn-primary">Checkout</a>
+      {% if options.steadfast_status == 'ACTIVATED' %}
+      <center><h4>Steadfast Delivery - charges</h4></center>
+      <p>{{options.steadfast_delivery_charge}}</p>
       {% endif %}
+      <center><h4>Payment Method</h4></center>
+      <div class="accordion" id="paymentMethodAccordion">
+        {% if options.cod_status == 'ACTIVATED' %}
+        <div class="card">
+          <div class="card-header" id="cashOnDelivery">
+            <h2 class="mb-0">
+              <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#cashOnDeliveryCollapse" aria-expanded="true" aria-controls="cashOnDeliveryCollapse">
+                Cash On Delivery
+              </button>
+            </h2>
+          </div>
+      
+          <div id="cashOnDeliveryCollapse" class="collapse show" aria-labelledby="cashOnDelivery" data-parent="#paymentMethodAccordion">
+            <div class="card-body">
+              <h4>Shipping information</h4>
+              {% include "includes/form.html" with form=cod_checkout_form method='post' action=cod_checkout_form_action submitText='Proceed' %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
     </div>
   </div>
 </section>

@@ -4,7 +4,7 @@
     <th>Name</th>
     <th>Quantity</th>
     <th>Unit price</th>
-    <th>Approved</th>
+    <th>Order status</th>
   </thead>
   <tbody>
     {% for item in order.sales.all %}
@@ -12,7 +12,7 @@
       <td>{{item.purchase.inventory.name}}</td>
       <td>{{item.quantity}}</td>
       <td>{{item.sale_price}}</td>
-      <td>{{item.approved}}</td>
+      <td>{% if item.approved == False %}Processing {% else %} Approved{% endif %}</td>
     </tr>
     {% endfor %}
   </tbody>

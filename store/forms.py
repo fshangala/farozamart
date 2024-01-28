@@ -7,6 +7,7 @@ from store import functions
 from paymentgateway.models import Transaction
 from dropshipping.functions import steadfastCreateOrder, steadfastCreateOrderManual
 from dashboard.function import getOptions
+from store import signals
 
 class BecomeSellerRequestForm(forms.Form):
   name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
@@ -422,7 +423,7 @@ class ResellerCODCheckout(forms.Form):
     for item in self.order.sales.all():
       item.cart = False
       item.save()
-    steadfastCreateOrderManual(self.order)
+    steadfastCreateOrderManual(self.order,self.cleaned_data['customer_name'],self.cleaned_data['customer_phone'],self.cleaned_data['customer_address'])
 
 class ListingForm(forms.Form):
   quantity=forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
@@ -452,6 +453,35 @@ class ListingForm(forms.Form):
         cart=True,
         approved=False
       )
+
+class CODCheckoutForm(forms.Form):
+  name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  address=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  
+  def __init__(self,*args,user:User,order:models.Order,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.user = user
+    self.order = order
+    
+    self.initial['name']=self.user.profile.full_name
+    self.initial['phone']=self.user.profile.phone
+    self.initial['address']=self.user.profile.address
+  
+  def save(self):
+    self.order.customer_name = self.cleaned_data['name']
+    self.order.customer_phone = self.cleaned_data['phone']
+    self.order.customer_address = self.cleaned_data['address']
+
+    for item in self.order.sales.all():
+      item.cart = False
+      item.save()
+        
+    self.order.draft = False
+    self.order.save()
+    
+    steadfastCreateOrder(self.order)
+    signals.order_submitted.send(models.Order,order=self.order)
 
 class CheckoutForm(forms.Form):
   transaction_id=forms.CharField(max_length=200)
@@ -506,7 +536,7 @@ class ApproveOrderForm(forms.Form):
     self.order.draft = False
     self.order.save()
     
-    steadfastCreateOrder(self.order)
+    signals.order_processed.send(sender=models.Order,order=self.order)
 
 class WithdrawRequest(forms.Form):
   amount=forms.FloatField(widget=forms.NumberInput(attrs={'class':'form-control'}))

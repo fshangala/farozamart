@@ -623,6 +623,8 @@ class CheckoutPayment(LoginRequiredMixin,View):
         context['transaction_id']=timezone.now().timestamp()
         context['cart_total']=self.cartTotal(order.sales.all())
         context['cart_currency']=self.cartCurrency(order.sales.all())
+        context['cod_checkout_form']=forms.CODCheckoutForm(user=request.user,order=order)
+        context['cod_checkout_form_action']=reverse('store:checkout-cod',kwargs={'order':order.id})
     return render(request,self.template_name,context)
 
 class Checkout(LoginRequiredMixin,View):
@@ -643,6 +645,15 @@ class CheckoutCOD(LoginRequiredMixin,View):
     context=cart_context
     order = functions.CODPayment(order)
     return redirect(reverse('store:customer-order',kwargs={'id':order.id}))
+  def post(self,request,order):
+    order = models.Order.objects.get(pk=order)
+    form = forms.CODCheckoutForm(user=request.user,order=order,data=request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'Your order has been received. you will be notified by mail when your order is processed!')
+      return redirect(reverse('store:customer-order',kwargs={'id':order.id}))
+    messages.error(request,form.errors.as_text())
+    return redirect(reverse('store:checkout-payment'))
 
 # settings currency
 class Currencies(LoginRequiredMixin,View):
