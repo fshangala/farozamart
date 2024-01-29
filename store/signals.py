@@ -4,7 +4,6 @@ from django.core.mail import send_mail
 from dashboard.function import getOptions
 
 order_submitted = Signal()
-
 def catch_order_submitted(sender,order:models.Order,**kwargs):
     options = getOptions()
     send_mail(
@@ -15,7 +14,6 @@ def catch_order_submitted(sender,order:models.Order,**kwargs):
     )
 
 order_processed = Signal()
-
 def catch_order_processed(sender,order:models.Order,**kwargs):
     options = getOptions()
     send_mail(
@@ -26,7 +24,6 @@ def catch_order_processed(sender,order:models.Order,**kwargs):
     )
 
 withdraw_request_submitted = Signal()
-
 def catch_withdraw_request_submitted(sender,withdraw:models.Withdraw,**kwargs):
     options = getOptions()
     send_mail(
@@ -38,6 +35,16 @@ def catch_withdraw_request_submitted(sender,withdraw:models.Withdraw,**kwargs):
     send_mail(
         f"{withdraw.wallet.store.name} at {options['name']} - Withdraw requested",
         f"A withdraw from {withdraw.wallet.store.name} has been requested, you will be notified when it is proceseed!",
+        options['site_mail'],
+        [withdraw.wallet.store.email]
+    )
+
+withdraw_request_approved = Signal()
+def catch_withdraw_request_approved(sender,withdraw:models.Withdraw,**kwargs):
+    options = getOptions()
+    send_mail(
+        f"{withdraw.wallet.store.name} at {options['name']} - Withdraw approved",
+        f"A withdraw from {withdraw.wallet.store.name} has been approved.",
         options['site_mail'],
         [withdraw.wallet.store.email]
     )

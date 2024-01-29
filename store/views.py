@@ -6,6 +6,7 @@ from django.views.generic import View
 from store import forms
 from store import models
 from store import functions
+from store import signals
 from dropshipping.functions import steadfastCreateOrder
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
@@ -765,6 +766,26 @@ class StaffOrder(LoginRequiredMixin,View):
     order = get_object_or_404(models.Order,pk=id)
     context['order']=order
     return render(request,self.template_name,context)
+  
+# Staff orders
+staff_withdraws_context={
+  'sidebar_menu_staff_withdraws_class':'active'
+}
+class StaffWithdraws(LoginRequiredMixin,View):
+  template_name='store/staff/withdraws.html'
+  def get(self,request):
+    context=staff_withdraws_context
+    context['withdraws']=models.Withdraw.objects.all()
+    return render(request,self.template_name,context)
+
+class StaffApproveWithdraw(LoginRequiredMixin,View):
+  def get(self,request,pk):
+    withdraw = models.Withdraw.objects.get(pk=pk)
+    withdraw.approved = True
+    withdraw.save()
+    signals.withdraw_request_approved.send(models.Withdraw,withdraw=withdraw)
+    messages.success(request,'Withdraw request approved')
+    return redirect(reverse('store:staff-withdraws'))
 
 #Staff sellers
 staff_sellers_context={

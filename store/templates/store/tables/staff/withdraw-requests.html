@@ -1,0 +1,25 @@
+<div class="box">
+  <div class="box-header">
+    <h3 class="box-title">Withdraw requests</h3>
+  </div><!-- /.box-header -->
+  <div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+      <tr>
+        <th>ID</th>
+        <th>Amount</th>
+        <th>Currency</th>
+        <th></th>
+      </tr>
+      {% for withdraw in withdraws %}
+      {% if not withdraw.approved %}
+      <tr>
+        <td>{{withdraw.id}}</td>
+        <td>{{withdraw.amount}}</td>
+        <td>{{withdraw.wallet.currency.code}}</td>
+        <td><a href="{% url "store:staff-approve-withdraws" pk=withdraw.id %}">Approve</a></td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </table>
+  </div><!-- /.box-body -->
+</div><!-- /.box -->
