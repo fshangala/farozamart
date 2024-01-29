@@ -9,3 +9,4 @@ class StoreConfig(AppConfig):
         signals.order_submitted.connect(signals.catch_order_submitted)
         signals.order_processed.connect(signals.catch_order_processed)
         signals.withdraw_request_submitted.connect(signals.catch_withdraw_request_submitted)
+        signals.withdraw_request_approved.connect(signals.catch_withdraw_request_approved)
