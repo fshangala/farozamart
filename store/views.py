@@ -831,7 +831,15 @@ class StaffApproveSeller(LoginRequiredMixin,View):
     
     return redirect(reverse('store:staff-sellers'))
 
-#Staff sellers
+class StaffDeclineSellerRequest(LoginRequiredMixin,View):
+  def get(self,request,pk):
+    sellerRequest = models.Becomeseller.objects.get(pk=pk)
+    signals.become_seller_request_declined.send(models.Becomeseller,becomeseller=sellerRequest)
+    sellerRequest.delete()
+    messages.info(request, 'Request declined successfully!')
+    return redirect(reverse('store:staff-sellers'))
+
+#Staff resellers
 staff_resellers_context={
   'sidebar_menu_staff_resellers_class':'active'
 }
@@ -862,4 +870,12 @@ class StaffApproveReseller(LoginRequiredMixin,View):
     else:
       messages.error(request,form.errors.as_text)
     
+    return redirect(reverse('store:staff-resellers'))
+
+class StaffDeclineResellerRequest(LoginRequiredMixin,View):
+  def get(self,request,pk):
+    resellerRequest = models.Becomereseller.objects.get(pk=pk)
+    signals.become_reseller_request_declined.send(models.Becomereseller,becomereseller=resellerRequest)
+    resellerRequest.delete()
+    messages.info(request, 'Request declined successfully!')
     return redirect(reverse('store:staff-resellers'))

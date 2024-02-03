@@ -23,6 +23,7 @@
         <td>{{reseller_request.id}}</td>
         <td>{{reseller_request.user.profile.full_name}}</td>
         <td><a class="btn btn-primary" href="{% url "store:staff-approve-reseller" pk=reseller_request.id %}">Approve</a></td>
+        <td><a class="btn btn-primary" href="{% url "store:staff-danger-reseller" pk=reseller_request.id %}">Decline</a></td>
       </tr>
       {% endfor %}
     </table>

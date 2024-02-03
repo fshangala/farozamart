@@ -48,3 +48,44 @@ def catch_withdraw_request_approved(sender,withdraw:models.Withdraw,**kwargs):
         options['site_mail'],
         [withdraw.wallet.store.email]
     )
+
+become_seller_request_approved = Signal()
+def catch_become_seller_request_approved(sender,becomeseller:models.Becomeseller,**kwargs):
+    options = getOptions()
+    send_mail(
+        f"{options['name']} - Become seller request approved",
+        f"Congratulations, your request to become a seller at {options['name']} has been approved. Please login and visit the dashboard to begin selling.",
+        options['site_mail'],
+        [becomeseller.user.email]
+    )
+
+become_seller_request_declined = Signal()
+def catch_become_seller_request_declined(sender,becomeseller:models.Becomeseller,**kwargs):
+    options = getOptions()
+    send_mail(
+        f"{options['name']} - Become seller request declined",
+        f"We are sorry to inform you that your request to become a seller at {options['name']} has been declined.",
+        options['site_mail'],
+        [becomeseller.user.email]
+    )
+
+become_reseller_request_approved = Signal()
+def catch_become_reseller_request_approved(sender,becomereseller:models.Becomereseller,**kwargs):
+    options = getOptions()
+    send_mail(
+        f"{options['name']} - Become reseller request approved",
+        f"Congratulations, your request to become a reseller at {options['name']} has been approved. Please login and visit the dashboard to begin reselling.",
+        options['site_mail'],
+        [becomereseller.user.email]
+    )
+
+become_reseller_request_declined = Signal()
+def catch_become_reseller_request_declined(sender,becomereseller:models.Becomereseller,**kwargs):
+    options = getOptions()
+    send_mail(
+        f"{options['name']} - Become reseller request declined",
+        f"We are sorry to inform you that your request to become a reseller at {options['name']} has been declined.",
+        options['site_mail'],
+        [becomereseller.user.email]
+    )
+    
