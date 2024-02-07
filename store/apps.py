@@ -21,3 +21,6 @@ class StoreConfig(AppConfig):
         # reseller
         signals.become_reseller_request_approved.connect(signals.catch_become_reseller_request_approved)
         signals.become_reseller_request_declined.connect(signals.catch_become_reseller_request_declined)
+        
+        # staff
+        signals.order_canceled.connect(signals.catch_order_canceled)

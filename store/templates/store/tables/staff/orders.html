@@ -26,7 +26,8 @@
         <td>{{order.total_cost}}</td>
         <td>
           {% if not order.transaction %}
-          <a href="{% url "store:staff-approve-order" id=order.id %}" class="btn btn-primary">Approve</a>
+          <a href="{% url "store:staff-approve-order" id=order.id %}" class="btn btn-success">Approve</a>
+          <a href="{% url "store:staff-cancel-order" id=order.id %}" class="btn btn-danger">Cancel</a>
           {% endif %}
           <a href="{% url "store:staff-order" id=order.id %}" class="btn btn-primary">View Order</a>
         </td>

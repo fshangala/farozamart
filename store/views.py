@@ -759,6 +759,16 @@ class StaffApproveOrder(LoginRequiredMixin,View):
     context['form']=form
     return render(request,self.template_name,context)
 
+class StaffCancelOrder(LoginRequiredMixin,View):
+  def get(self,request,id):
+    context=staff_orders_context
+    order=get_object_or_404(models.Order,pk=id)
+    order.delete()
+    messages.success(request,'Order successfully canceled!')
+    signals.order_canceled.send(models.Order,order=order)
+    return redirect(reverse('store:staff-orders'))
+    
+
 class StaffOrder(LoginRequiredMixin,View):
   template_name='store/staff/staff-order.html'
   def get(self,request,id):

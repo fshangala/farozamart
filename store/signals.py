@@ -88,4 +88,13 @@ def catch_become_reseller_request_declined(sender,becomereseller:models.Becomere
         options['site_mail'],
         [becomereseller.user.email]
     )
-    
+
+order_canceled=Signal()
+def catch_order_canceled(sender,order:models.Order,**kwargs):
+    options = getOptions()
+    send_mail(
+        f"{options['name']} - Order canceled",
+        f"We are sorry to inform you that your order canceled by admin.",
+        options['site_mail'],
+        [order.user.email]
+    )
