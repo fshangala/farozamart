@@ -1,0 +1,17 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{block.super}} | Dashboard - Users{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Users
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li class="active">Users</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+{% include "store/tables/staff/users.html" %}
+{% endblock content %}

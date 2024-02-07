@@ -879,3 +879,28 @@ class StaffDeclineResellerRequest(LoginRequiredMixin,View):
     resellerRequest.delete()
     messages.info(request, 'Request declined successfully!')
     return redirect(reverse('store:staff-resellers'))
+
+#Staff users
+staff_users_context={
+  'sidebar_menu_users_class':'active'
+}
+class StaffUsers(LoginRequiredMixin,View):
+  template_name='store/staff/users.html'
+  def get(self,request):
+    context=staff_resellers_context
+    users = User.objects.all()
+    context['users']=users
+    return render(request,self.template_name,context)
+
+class StaffBlocOrUnblockUser(LoginRequiredMixin,View):
+  def get(self,request,user_id):
+    user = User.objects.get(pk=user_id)
+    if user.is_active:
+      user.is_active = False
+      user.save()
+      messages.success(request,'User blocked!')
+    else:
+      user.is_active = True
+      user.save()
+      messages.success(request,'User unblocked!')
+    return redirect(reverse('store:staff-users'))

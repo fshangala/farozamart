@@ -1,0 +1,25 @@
+<div class="box">
+  <div class="box-header">
+    <h3 class="box-title">Users</h3>
+  </div><!-- /.box-header -->
+  <div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Full Name</th>
+        <th>Active</th>
+        <th></th>
+      </tr>
+      {% for u in users %}
+      <tr>
+        <td>{{u.id}}</td>
+        <td>{{u.username}}</td>
+        <td>{{u.profile.full_name}}</td>
+        <td>{{u.is_active}}</td>
+        <td><a href="{% url "store:staff-block-unblock-user" user_id=u.id %}" {% if u.is_active %}class="btn btn-danger">Block {% else %} class="btn btn-success"> Unblock {% endif %}</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div><!-- /.box-body -->
+</div><!-- /.box -->
