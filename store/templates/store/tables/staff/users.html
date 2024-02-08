@@ -17,9 +17,12 @@
         <td>{{u.id}}</td>
         <td>{{u.username}}</td>
         <td>{{u.profile.full_name}}</td>
-        <td>{% if user.profile.is_seller %}Seller {% elif user.profile.is_reseller %}Reseller {% else %}Customer{% endif %}</td>
+        <td>{% if u.profile.is_seller %}Seller {% elif u.profile.is_reseller %}Reseller {% else %}Customer{% endif %}</td>
         <td>{{u.is_active}}</td>
-        <td><a href="{% url "store:staff-block-unblock-user" user_id=u.id %}" {% if u.is_active %}class="btn btn-danger">Block {% else %} class="btn btn-success"> Unblock {% endif %}</a></td>
+        <td>
+          <a href="{% url "store:staff-user" user_id=u.id %}" class="btn btn-primary">View</a>
+          <a href="{% url "store:staff-block-unblock-user" user_id=u.id %}" {% if u.is_active %}class="btn btn-danger">Block {% else %} class="btn btn-success"> Unblock {% endif %}</a>
+        </td>
       </tr>
       {% endfor %}
     </table>

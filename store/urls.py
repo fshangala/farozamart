@@ -43,6 +43,7 @@ urlpatterns = [
   path('dashboard/currencies/<id>/delete/',views.DeleteCurrency.as_view(),name='delete-currency'),
   
   path('dashboard/users/',views.StaffUsers.as_view(),name='staff-users'),
+  path('dashboard/users/id/<user_id>/',views.StaffGeneralProfile.as_view(),name='staff-user'),
   path('dashboard/users/id/<user_id>/block-unblock/',views.StaffBlocOrUnblockUser.as_view(),name='staff-block-unblock-user'),
   
   # seller

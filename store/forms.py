@@ -408,16 +408,29 @@ class ResellerCODCheckout(forms.Form):
   customer_name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
   customer_phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
   customer_address=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  delivery_area=forms.ChoiceField(widget=forms.Select(attrs={'class':'form-control'}))
+  own_delivery_charge=forms.FloatField(widget=forms.NumberInput(attrs={'class':'form-control'}),help_text='Put 0 if you dont have your own delivery charge.')
+  advance_payment=forms.FloatField(widget=forms.NumberInput(attrs={'class':'form-control'}),help_text='Put 0 if you did not take any advance payment.')
   
   def __init__(self,*args,reseller:User,order:models.Order,**kwargs):
     super().__init__(*args,**kwargs)
     self.order=order
     self.reseller=reseller
+    
+    options=getOptions()
+    self.fields['delivery_area'].choices = (
+      ('OUTSIDE_DHAKA',f"Outside Dhaka (+{options['steadfast_delivery_outside_dhaka']} BDT)"),
+      ('INSIDE_DHAKA',f"Inside Dhaka (+{options['steadfast_delivery_inside_dhaka']} BDT)")
+    )
+    
   
   def save(self):
     self.order.customer_name=self.cleaned_data['customer_name']
     self.order.customer_phone=self.cleaned_data['customer_phone']
     self.order.customer_address=self.cleaned_data['customer_address']
+    self.delivery_area=self.cleaned_data['delivery_area']
+    self.own_delivery_charge=self.cleaned_data['own_delivery_charge']
+    self.advance_payment=self.cleaned_data['advance_payment']
     self.order.draft=False
     self.order.save()
     for item in self.order.sales.all():

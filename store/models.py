@@ -136,8 +136,21 @@ class Order(models.Model):
   customer_phone=models.CharField(max_length=200,null=True)
   customer_address=models.CharField(max_length=200,null=True)
   transaction=models.ForeignKey(Transaction,on_delete=models.CASCADE,related_name='orders',null=True)
+  delivery_area=models.CharField(max_length=200,null=True)
   is_reseller=models.BooleanField(default=False)
+  own_delivery_charge=models.FloatField(default=0)
+  advance_payment=models.FloatField(default=0)
   draft=models.BooleanField()
+  
+  def reseller_profit_percentage(self):
+    return (self.total_reseller_profit() / self.total_cost_number())*100
+  
+  def total_reseller_profit(self):
+    total=0.0
+    if self.sales.all():
+      for sale in self.sales.all():
+        total+=sale.reseller_profit()
+    return total
   
   def total_cost_number(self):
     amount=0.0
@@ -176,8 +189,14 @@ class Sale(models.Model):
   cart=models.BooleanField(default=True)
   approved=models.BooleanField(default=False)
   
-  def get_sale_price(self):
-    return f"{self.sale_price} {self.purchase.currency.code}"
+  def profit(self)->float:
+    return (self.sale_price*self.quantity) - (self.purchase.purchase_price*self.quantity)
+  
+  def seller_profit(self):
+    return (self.purchase.resale_price*self.quantity) - (self.purchase.purchase_price*self.quantity)
+  
+  def reseller_profit(self):
+    return self.profit() - self.seller_profit()
   
   def approve(self):
     self.purchase.stock -= self.quantity
@@ -209,6 +228,15 @@ class Resale(models.Model):
   sale_price=models.FloatField()
   order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='resales')
   approved=models.BooleanField(default=False)
+  
+  def profit(self)->float:
+    return (self.sale_price*self.quantity) - (self.purchase.purchase_price*self.quantity)
+  
+  def seller_profit(self):
+    return (self.purchase.resale_price*self.quantity) - (self.purchase.purchase_price*self.quantity)
+  
+  def reseller_profit(self):
+    return self.profit() - self.seller_profit()
   
   def get_sale_price(self):
     return f"{self.sale_price} {self.purchase.currency.code}"

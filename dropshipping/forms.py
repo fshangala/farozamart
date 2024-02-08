@@ -7,10 +7,11 @@ class SteadfastConfiguration(forms.Form):
   steadfast_status=forms.ChoiceField(choices=(('ACTIVATED','Activated'),('DEACTIVATED','Deactivated')), widget=forms.Select(attrs={'class':'form-control'}))
   steadfast_api_key=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
   steadfast_api_secrete=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
-  steadfast_delivery_charge=forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
+  steadfast_delivery_outside_dhaka=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Amount in BDT')
+  steadfast_delivery_inside_dhaka=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Amount in BDT')
   
   def save(self):
-    for x in ['steadfast_status','steadfast_api_key','steadfast_api_secrete','steadfast_delivery_charge']:
+    for x in ['steadfast_status','steadfast_api_key','steadfast_api_secrete','steadfast_delivery_outside_dhaka','steadfast_delivery_inside_dhaka']:
       saveOption(x,self.cleaned_data[x])
 
 class SteadfastCreateDeliveryOrder(forms.Form):

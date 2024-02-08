@@ -17,12 +17,14 @@
         <th>ID</th>
         <th>Seller</th>
         <th>Store</th>
+        <th></th>
       </tr>
       {% for seller in sellers %}
       <tr>
         <td>{{seller.id}}</td>
         <td>{{seller.profile.full_name}}</td>
         <td>{{seller.store.name}}</td>
+        <td><a href="{% url "store:staff-user" user_id=seller.id %}" class="btn btn-primary">View</a></td>
       </tr>
       {% endfor %}
     </table>

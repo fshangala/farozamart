@@ -25,7 +25,7 @@
         <td>{{seller_request.user.profile.full_name}}</td>
         <td>{{seller_request.name}}</td>
         <td>
-          <a class="btn btn-primary" href="{% url "store:staff-seller-request" pk=seller_request.id %}">View</a>
+          <a href="{% url "store:staff-user" user_id=seller_request.user.id %}" class="btn btn-primary">View</a>
           <a class="btn btn-success" href="{% url "store:staff-approve-seller" pk=seller_request.id %}">Approve</a>
           <a class="btn btn-danger" href="{% url "store:staff-decline-seller" pk=seller_request.id %}">Decline</a>
         </td>

@@ -16,11 +16,13 @@
       <tr>
         <th>ID</th>
         <th>Reseller</th>
+        <th></th>
       </tr>
       {% for reseller in resellers %}
       <tr>
         <td>{{reseller.id}}</td>
         <td>{{reseller.profile.full_name}}</td>
+        <td><a href="{% url "store:staff-user" user_id=reseller.id %}" class="btn btn-primary">View</a></td>
       </tr>
       {% endfor %}
     </table>

@@ -819,6 +819,14 @@ class StaffSellerRequest(LoginRequiredMixin,View):
     context['obj'] = seller
     return render(request,self.template_name,context)
 
+class StaffGeneralProfile(LoginRequiredMixin,View):
+  template_name='store/staff/general-profile.html'
+  def get(self,request,user_id):
+    context=staff_sellers_context
+    seller = User.objects.get(pk=user_id)
+    context['obj'] = seller
+    return render(request,self.template_name,context)
+
 class StaffApproveSeller(LoginRequiredMixin,View):
   def get(self,request,pk):
     sellerRequest = models.Becomeseller.objects.get(pk=pk)

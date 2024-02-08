@@ -1,5 +1,3 @@
-2. When a reseller logs in he will only see reseller price not customer price in the homepage
-
 5. automated invoice
 
 6. In Cheak Out page
@@ -9,12 +7,12 @@ Customer Address:
 Inside Dhaka /Outside Dhaka: Drop-down
 Delivery Charge: ( admin will put)
 
-7. Reseller & Seller both details should appear on Admin Panel.
-
 8. Seller & Reseller request e Payment method (Bkash No.), NID card image (optional)
 
-9. Email verification using otp
-
-10. Reseller will mention how much money he has taken from his customer & according to that he will print the shipping label.
-
 11. In Order details product url & product image should appear
+
+12. steadfast
+
+13. order processing 3 stages
+
+14. dashboard button mobile view
