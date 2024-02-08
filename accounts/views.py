@@ -6,6 +6,9 @@ from django.contrib.auth import authenticate, login
 from django.conf import settings
 from accounts import forms
 from django.contrib import messages
+from dashboard.function import saveOption, getOptions
+import random
+from django.core.mail import send_mail
 
 # Create your views here.
 class Login(View):
@@ -150,4 +153,30 @@ class BecomeReseller(LoginRequiredMixin,View):
       'form':form
     }
     return redirect(reverse('dashboard:dashboard'))
-    
+
+class VerifyUserEmail(LoginRequiredMixin,View):
+  template_name='accounts/verify-user-email.html'
+  def get(self,request):
+    context={
+      'form':forms.VerifyUserEmailForm(user=request.user)
+    }
+    otp=random.randint(1000,9999)
+    options=getOptions()
+    send_mail(
+        f"{options['name']} - Email verification",
+        f"{otp} is your email verification code.",
+        options['site_mail'],
+        [request.user.email]
+    )
+    messages.info(request,f"A new verification code has been sent to your email address {request.user.email}. Use it to verify your email.")
+    saveOption('otp',otp)
+    return render(request,self.template_name,context)
+  def post(self,request):
+    context={}
+    form = forms.VerifyUserEmailForm(user=request.user,data=request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'Email successfully verified!')
+      return redirect(reverse('accounts:profile'))
+    context['form']=form
+    return render(request,self.template_name,context)

@@ -165,7 +165,7 @@
                                         <label>Email</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <p>{{user.email}}</p>
+                                        <p>{{user.email}} {% if user.profile.user_email_verified %}<i class="fa fa-check" style="color:green;"></i> {% else %}<a class="btn btn-warning" href="{% url "accounts:verify-user-email" %}">Verify E-mail</a>{% endif %}</p>
                                     </div>
                                 </div>
                                 <div class="row">

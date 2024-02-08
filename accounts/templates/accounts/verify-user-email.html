@@ -1,0 +1,14 @@
+{% extends "home/base.html" %}
+{% block title %}Farozamart | Verify User Email{% endblock title %}
+
+{% block content %}
+
+<section class="layout_padding">
+  <div class="container">
+  {% include "home/includes/form.html" with method='POST' action='' submitText='Verify' %}
+  <hr>
+  <a href="" class="btn btn-primary">Resend Code</a>
+  </div>
+</section>
+
+{% endblock content %}

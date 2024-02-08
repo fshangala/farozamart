@@ -154,4 +154,22 @@ class UpdatePictureForm(forms.Form):
     self.user=user
     
     self.initial['picture']=self.user.profile.picture
+
+class VerifyUserEmailForm(forms.Form):
+  code=forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
   
+  def __init__(self,user:User,*args,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.user=user
+    
+  def clean_code(self):
+    data = self.cleaned_data.get('code')
+    options=getOptions()
+    if options['otp'] != str(data):
+      self.add_error('code','Invalid OTP Code')
+    
+    return data
+  
+  def save(self):
+    self.user.profile.user_email_verified=True
+    self.user.profile.save()

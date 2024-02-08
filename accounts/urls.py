@@ -11,4 +11,6 @@ urlpatterns = [
     path('profile/update-picture/', views.UpdateProfilePicture.as_view(), name='update-picture'),
     path('become-seller/',views.BecomeSeller.as_view(), name='become-seller'),
     path('become-reseller/',views.BecomeReseller.as_view(), name='become-reseller'),
+    
+    path('profile/verify-user-email/',views.VerifyUserEmail.as_view(),name='verify-user-email'),
 ]

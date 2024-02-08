@@ -46,6 +46,7 @@ class Store(models.Model):
   description=models.TextField()
   address=models.CharField(max_length=200)
   email=models.EmailField()
+  email_verified=models.BooleanField(default=False)
   phone=models.CharField(max_length=200)
   whatsapp=models.CharField(max_length=200,null=True)
   facebook_url=models.URLField(null=True)

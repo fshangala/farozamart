@@ -15,6 +15,8 @@ class Profile(models.Model):
   gender=models.CharField(max_length=200,choices=gender_options,default='Male')
   address=models.CharField(max_length=200,null=True)
   email=models.EmailField()
+  user_email_verified=models.BooleanField(default=False)
+  profile_email_verified=models.BooleanField(default=False)
   phone=models.CharField(max_length=200,null=True)
   whatsapp=models.CharField(max_length=200,null=True)
   facebook_url=models.URLField(null=True)
