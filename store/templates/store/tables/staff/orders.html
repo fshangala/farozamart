@@ -11,28 +11,32 @@
       </div>
     </div>
   </div><!-- /.box-header -->
-  <div class="box-body table-responsive no-padding">
-    <table class="table table-hover">
-      <tr>
-        <th>ID</th>
-        <th>Customer</th>
-        <th>Cost</th>
-        <th></th>
-      </tr>
-      {% for order in orders %}
-      <tr>
-        <td>{{order.id}}</td>
-        <td>{{order.user.profile.full_name}}</td>
-        <td>{{order.total_cost}}</td>
-        <td>
-          {% if not order.transaction %}
-          <a href="{% url "store:staff-approve-order" id=order.id %}" class="btn btn-success">Approve</a>
-          <a href="{% url "store:staff-cancel-order" id=order.id %}" class="btn btn-danger">Cancel</a>
-          {% endif %}
-          <a href="{% url "store:staff-order" id=order.id %}" class="btn btn-primary">View Order</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div><!-- /.box-body -->
+  <div class="box-body">
+    <div class="table-responsive no-padding">
+      <table class="table table-hover">
+        <tr>
+          <th>ID</th>
+          <th>Customer</th>
+          <th>Cost</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+        {% for order in orders %}
+        <tr>
+          <td>{{order.id}}</td>
+          <td>{{order.user.profile.full_name}}</td>
+          <td>{{order.total_cost}}</td>
+          <td>{{order.status}}</td>
+          <td>
+            {% if order.status == 'PENDING' %}
+            <a href="{% url "store:staff-comfirm-order" id=order.id %}" class="btn btn-success">Comfirm</a>
+            <a href="{% url "store:staff-decline-order" id=order.id %}" class="btn btn-danger">Decline</a>
+            {% endif %}
+            <a href="{% url "store:staff-order" id=order.id %}" class="btn btn-primary">View Order</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div><!-- /.box-body -->
+  </div>
 </div><!-- /.box -->

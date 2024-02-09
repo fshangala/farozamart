@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from paymentgateway.models import Transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 # Create your models here.
     
@@ -130,6 +131,13 @@ def _post_save_receiver(sender, instance, created, **kwargs):
     instance.sku = instance.generateSKU()
     instance.save()
 
+order_status=(
+  ('DRAFT','Draft'),
+  ('PENDING','Pending'),
+  ('COMFIRMED','Comfirmed'),
+  ('COMPLETE','Complete'),
+  ('DECLINED','Declined'),
+)
 class Order(models.Model):
   user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='orders')
   customer_name=models.CharField(max_length=200,null=True)
@@ -140,7 +148,10 @@ class Order(models.Model):
   is_reseller=models.BooleanField(default=False)
   own_delivery_charge=models.FloatField(default=0)
   advance_payment=models.FloatField(default=0)
-  draft=models.BooleanField()
+  draft=models.BooleanField(default=False)
+  status=models.CharField(max_length=200,default='DRAFT')
+  created_at=models.DateTimeField(default=timezone.now())
+  updated_at=models.DateTimeField(default=timezone.now())
   
   def reseller_profit_percentage(self):
     return (self.total_reseller_profit() / self.total_cost_number())*100
@@ -155,7 +166,7 @@ class Order(models.Model):
   def total_cost_number(self):
     amount=0.0
     for sale in self.sales.all():
-      amount += sale.sale_price*sale.quantity
+      amount += sale.cost()
     
     return amount
   
@@ -188,6 +199,9 @@ class Sale(models.Model):
   order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='sales')
   cart=models.BooleanField(default=True)
   approved=models.BooleanField(default=False)
+  
+  def cost(self)->float:
+    return self.quantity*self.sale_price
   
   def profit(self)->float:
     return (self.sale_price*self.quantity) - (self.purchase.purchase_price*self.quantity)

@@ -447,12 +447,11 @@ class ListingForm(forms.Form):
     self.listing=listing
 
   def cart(self):
-    try:
-      order=self.user.orders.get(draft=True)
-    except Exception as e:
-      order=models.Order.objects.create(user=self.user,draft=True)
-      
-    current = models.Sale.objects.filter(user=self.user,purchase=self.listing,cart=True).first()
+    order=self.user.orders.filter(status='DRAFT').first()
+    if not order:
+      order=models.Order.objects.create(user=self.user,status='DRAFT')
+    
+    current=order.sales.filter(purchase=self.listing).first()
     if current:
       current.quantity += self.cleaned_data['quantity']
       current.save()
@@ -491,9 +490,9 @@ class CODCheckoutForm(forms.Form):
       item.save()
         
     self.order.draft = False
+    self.order.status = 'PENDING'
     self.order.save()
     
-    steadfastCreateOrder(self.order)
     signals.order_submitted.send(models.Order,order=self.order)
 
 class CheckoutForm(forms.Form):

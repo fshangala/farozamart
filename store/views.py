@@ -572,7 +572,6 @@ class Listing(LoginRequiredMixin,View):
 
 # cart
 cart_context={}
-@method_decorator(never_cache,name='dispatch')
 class Cart(LoginRequiredMixin,View):
   template_name='store/cart.html'
   
@@ -587,7 +586,7 @@ class Cart(LoginRequiredMixin,View):
   
   def get(self,request):
     context=cart_context
-    order = request.user.orders.get(draft=True)
+    order = request.user.orders.filter(status='DRAFT').first()
     if order:
       context['order']=order
       if order.sales.all().count() > 0:
@@ -617,7 +616,7 @@ class CheckoutPayment(LoginRequiredMixin,View):
     return cart_total
   def get(self,request):
     context=cart_context
-    order = request.user.orders.filter(draft=True).first()
+    order = request.user.orders.filter(status='DRAFT').first()
     if order:
       context['order']=order
       if order.sales.all().count() > 0:
@@ -733,9 +732,27 @@ class StaffOrders(LoginRequiredMixin,View):
   template_name='store/staff/orders.html'
   def get(self,request):
     context=staff_orders_context
-    orders = models.Order.objects.filter(draft=False)
+    orders = models.Order.objects.all()
     context['orders']=orders
     return render(request,self.template_name,context)
+
+class StaffComfirmOrder(LoginRequiredMixin,View):
+  def get(self,request,id):
+    order=models.Order.objects.get(pk=id)
+    order.status='COMFIRMED'
+    order.save()
+    signals.order_comfirmed.send(models.Order,order=order)
+    messages.success(request,'Order comfirmed!')
+    return redirect(reverse('store:staff-orders'))
+
+class StaffDeclineOrder(LoginRequiredMixin,View):
+  def get(self,request,id):
+    order=models.Order.objects.get(pk=id)
+    order.status='DECLINED'
+    order.save()
+    signals.order_declined.send(models.Order,order=order)
+    messages.info(request,'Order declined!')
+    return redirect(reverse('store:staff-orders'))
 
 class StaffApproveOrder(LoginRequiredMixin,View):
   template_name='store/staff/approve-order.html'

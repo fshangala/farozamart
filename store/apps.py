@@ -24,3 +24,6 @@ class StoreConfig(AppConfig):
         
         # staff
         signals.order_canceled.connect(signals.catch_order_canceled)
+        signals.order_comfirmed.connect(signals.catch_order_comfirmed)
+        signals.order_declined.connect(signals.catch_order_declined)
+        

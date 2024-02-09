@@ -3,50 +3,112 @@
   <div class="box-header">
     <h3 class="box-title">Order</h3>
   </div><!-- /.box-header -->
-  <table class="table table-hover">
-    <tr>
-      <th>Order ID</th>
-      <td>{{order.id}}</td>
-    </tr>
-    <tr>
-      <th>Order Cost</th>
-      <td>{{order.total_cost}}</td>
-    </tr>
-    {% if order.transaction %}
-    <tr>
-      <th>Transaction</th>
-      <td>{{order.transaction}}</td>
-    </tr>
-    {% endif %}
-  </table>
-  <div class="box-body table-responsive no-padding">
+  <div class="box-body">
+    <div class="text-right">
+      <h3>INVOICE</h3>
+    </div>
+    <div>
+      <h4>{{options.name}}</h4>
+      <p>
+        {{options.business_address}}<br>
+        {{options.site_mail}}<br>
+        {{options.site_phone}}
+      </p>
+    </div>
+    <div>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>BILL TO</th>
+            <th class="text-right">SHIP TO</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{order.user.profile.full_name}}</td>
+            <td class="text-right">{{order.customer_name}}</td>
+          </tr>
+          <tr>
+            <td>{{order.user.profile.address}}</td>
+            <td class="text-right">{{order.customer_address}}</td>
+          </tr>
+          <tr>
+            <td>{{order.user.profile.phone}}</td>
+            <td class="text-right">{{order.customer_phone}}</td>
+          </tr>
+          <tr>
+            <td>{{order.user.email}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <table class="table table-hover">
       <tr>
-        <th>ID</th>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Sale Price</th>
+        <th>Order ID</th>
+        <td class="text-right">{{order.id}}</td>
       </tr>
-      {% if order.sales.all %}
-      {% for sale in order.sales.all %}
       <tr>
-        <td>{{sale.id}}</td>
-        <td>{{sale.purchase.inventory.name}}</td>
-        <td>{{sale.quantity}}</td>
-        <td>{{sale.get_sale_price}}</td>
+        <th>Created at</th>
+        <td class="text-right">{{order.created_at}}</td>
       </tr>
-      {% endfor %}
-      {% endif %}
-      {% if order.resales.all %}
-      {% for sale in order.resales.all %}
       <tr>
-        <td>{{sale.id}}</td>
-        <td>{{sale.purchase.inventory.name}}</td>
-        <td>{{sale.quantity}}</td>
-        <td>{{sale.get_sale_price}}</td>
+        <th>Updated at</th>
+        <td class="text-right">{{order.updated_at}}</td>
       </tr>
-      {% endfor %}
+      {% if order.transaction %}
+      <tr>
+        <th>Transaction</th>
+        <td>{{order.transaction}}</td>
+      </tr>
       {% endif %}
     </table>
-  </div><!-- /.box-body -->
+    <div class="table-responsive no-padding">
+      <table class="table table-hover">
+        <tr>
+          <th>ID</th>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Sale Price</th>
+        </tr>
+        {% if order.sales.all %}
+        {% for sale in order.sales.all %}
+        <tr>
+          <td>{{sale.id}}</td>
+          <td>{{sale.purchase.inventory.name}}</td>
+          <td>{{sale.quantity}}</td>
+          <td>{{sale.cost}}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        {% if order.resales.all %}
+        {% for sale in order.resales.all %}
+        <tr>
+          <td>{{sale.id}}</td>
+          <td>{{sale.purchase.inventory.name}}</td>
+          <td>{{sale.quantity}}</td>
+          <td>{{sale.get_sale_price}}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+          <td>---</td>
+          <td>---</td>
+          <td>---</td>
+          <td>---</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <th>Subtotal</th>
+          <td>{{order.total_cost_number}}</td>
+        </tr>
+      </table>
+    </div><!-- /.box-body -->
+    <div class="box-footer">
+      {% if order.status == 'PENDING' %}
+      <a href="{% url "store:staff-comfirm-order" id=order.id %}" class="btn btn-success">Comfirm</a>
+      <a href="{% url "store:staff-decline-order" id=order.id %}" class="btn btn-danger">Decline</a>
+      {% endif %}
+    </div>
+  </div>
 </div><!-- /.box -->

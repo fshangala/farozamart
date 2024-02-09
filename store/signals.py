@@ -98,3 +98,11 @@ def catch_order_canceled(sender,order:models.Order,**kwargs):
         options['site_mail'],
         [order.user.email]
     )
+
+order_comfirmed=Signal()
+def catch_order_comfirmed(sender,order:models.Order,**kwargs):
+    pass
+
+order_declined=Signal()
+def catch_order_declined(sender,order:models.Order,**kwargs):
+    pass
