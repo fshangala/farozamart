@@ -31,6 +31,8 @@
             {% if order.status == 'PENDING' %}
             <a href="{% url "store:staff-comfirm-order" id=order.id %}" class="btn btn-success">Comfirm</a>
             <a href="{% url "store:staff-decline-order" id=order.id %}" class="btn btn-danger">Decline</a>
+            {% elif order.status == 'COMFIRMED' %}
+            <a href="{% url "store:staff-approve-order" id=order.id %}" class="btn btn-success">Complete</a>
             {% endif %}
             <a href="{% url "store:staff-order" id=order.id %}" class="btn btn-primary">View Order</a>
           </td>

@@ -535,8 +535,8 @@ class ApproveOrderForm(forms.Form):
     self.order=order
   
   def save(self):
-    for item in self.order.sales.all():
-      item.approve()
+    """for item in self.order.sales.all():
+      item.approve()"""
     
     if not self.order.transaction:
       transaction = Transaction.objects.create(
@@ -545,7 +545,7 @@ class ApproveOrderForm(forms.Form):
       )
       self.order.transaction = transaction
     
-    self.order.draft = False
+    self.order.status='COMPLETE'
     self.order.save()
     
     signals.order_processed.send(sender=models.Order,order=self.order)

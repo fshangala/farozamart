@@ -61,7 +61,7 @@
       {% if order.transaction %}
       <tr>
         <th>Transaction</th>
-        <td>{{order.transaction}}</td>
+        <td class="text-right">{{order.transaction}}</td>
       </tr>
       {% endif %}
     </table>
@@ -111,6 +111,8 @@
       {% if order.status == 'PENDING' %}
       <a href="{% url "store:staff-comfirm-order" id=order.id %}" class="btn btn-success">Comfirm</a>
       <a href="{% url "store:staff-decline-order" id=order.id %}" class="btn btn-danger">Decline</a>
+      {% elif order.status == 'COMFIRMED' %}
+      <a href="{% url "store:staff-approve-order" id=order.id %}" class="btn btn-success">Complete</a>
       {% endif %}
     </div>
   </div>

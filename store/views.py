@@ -736,6 +736,14 @@ class StaffOrders(LoginRequiredMixin,View):
     context['orders']=orders
     return render(request,self.template_name,context)
 
+class StaffOrder(LoginRequiredMixin,View):
+  template_name='store/staff/staff-order.html'
+  def get(self,request,id):
+    context=staff_orders_context
+    order = get_object_or_404(models.Order,pk=id)
+    context['order']=order
+    return render(request,self.template_name,context)
+
 class StaffComfirmOrder(LoginRequiredMixin,View):
   def get(self,request,id):
     order=models.Order.objects.get(pk=id)
@@ -785,16 +793,8 @@ class StaffCancelOrder(LoginRequiredMixin,View):
     signals.order_canceled.send(models.Order,order=order)
     return redirect(reverse('store:staff-orders'))
     
-
-class StaffOrder(LoginRequiredMixin,View):
-  template_name='store/staff/staff-order.html'
-  def get(self,request,id):
-    context=staff_orders_context
-    order = get_object_or_404(models.Order,pk=id)
-    context['order']=order
-    return render(request,self.template_name,context)
   
-# Staff orders
+# Staff withdraws
 staff_withdraws_context={
   'sidebar_menu_staff_withdraws_class':'active'
 }
