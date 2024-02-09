@@ -97,7 +97,7 @@
         {% for sale in order.sales.all %}
         <tr>
           <td>{{sale.id}}</td>
-          <td>{{sale.purchase.inventory.name}}</td>
+          <td><a href="{% url "store:listing" id=sale.purchase.id %}">{{sale.purchase.inventory.name}}</a> <img src="{{sale.purchase.inventory.picture.url}}" height=50/></td>
           <td>{{sale.quantity}}</td>
           <td>{{sale.sale_price}}</td>
           <td>{{sale.cost}}</td>

@@ -67,6 +67,8 @@ class Wallet(models.Model):
 class Withdraw(models.Model):
   wallet=models.ForeignKey(Wallet,on_delete=models.CASCADE,related_name='withdraws')
   amount=models.FloatField()
+  bkash_number=models.CharField(max_length=200,null=True)
+  nid_card=models.ImageField(upload_to='kyc/',null=True)
   transaction=models.ForeignKey(Transaction,on_delete=models.CASCADE,related_name='withdraws',null=True)
   approved=models.BooleanField(default=False)
   
@@ -158,7 +160,10 @@ class Order(models.Model):
     fee = 0.0
     if self.delivery_area:
       options=getOptions()
-      fee = float(options[self.delivery_area])
+      if self.delivery_area == 'OUTSIDE_DHAKA':
+        fee = float(options['steadfast_delivery_outside_dhaka'])
+      elif self.delivery_area == 'INSIDE_DHAKA':
+        fee = float(options['steadfast_delivery_inside_dhaka'])
     
     return fee
   

@@ -89,6 +89,15 @@ def catch_order_processed(sender,order:models.Order,**kwargs):
         options['site_mail'],
         [order.user.email]
     )
+    
+    for sale in order.sales.all():
+        wallet = sale.purchase.inventory.store.wallets.filter(currency=sale.purchase.currency).first()
+        if not wallet:
+            wallet = models.Wallet.objects.create(
+                store=sale.purchase.inventory.store,
+                currency=sale.purchase.currency
+            )
+        wallet.balance += sale.cost()
 
 order_canceled=Signal()
 def catch_order_canceled(sender,order:models.Order,**kwargs):

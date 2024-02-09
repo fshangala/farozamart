@@ -492,8 +492,7 @@ class CODCheckoutForm(forms.Form):
     self.order.customer_name = self.cleaned_data['name']
     self.order.customer_phone = self.cleaned_data['phone']
     self.order.customer_address = self.cleaned_data['address']
-    if self.cleaned_data['delivery_area'] != 'NONE':
-      self.delivery_area = self.cleaned_data['delivery_area']
+    self.order.delivery_area = self.cleaned_data['delivery_area']
 
     for item in self.order.sales.all():
       item.cart = False
@@ -562,6 +561,8 @@ class ApproveOrderForm(forms.Form):
 
 class WithdrawRequest(forms.Form):
   amount=forms.FloatField(widget=forms.NumberInput(attrs={'class':'form-control'}))
+  bkash_number=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Number attached to bkash')
+  nid_card=forms.ImageField(help_text='National ID Card')
   
   def __init__(self,*args,wallet:models.Wallet,**kwargs):
     super().__init__(*args,**kwargs)
@@ -570,7 +571,9 @@ class WithdrawRequest(forms.Form):
   def save(self):
     withdraw = models.Withdraw.objects.create(
       wallet=self.wallet,
-      amount=self.cleaned_data['amount']
+      amount=self.cleaned_data['amount'],
+      bkash_number=self.cleaned_data['_bkash_number'],
+      nid_card=self.cleaned_data['nid_card'],
     )
     
     signals.withdraw_request_submitted.send(models.Withdraw,withdraw=withdraw)
