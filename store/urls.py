@@ -26,6 +26,7 @@ urlpatterns = [
   path('dashboard/orders/<id>/decline/',views.StaffDeclineOrder.as_view(),name='staff-decline-order'),
   path('dashboard/orders/<id>/approve/',views.StaffApproveOrder.as_view(),name='staff-approve-order'),
   path('dashboard/orders/<id>/cancel/',views.StaffCancelOrder.as_view(),name='staff-cancel-order'),
+  path('dashboard/orders/<id>/deliver/',views.StaffDeliverOrder.as_view(),name='staff-deliver-order'),
   
   path('dashboard/withdraws/',views.StaffWithdraws.as_view(),name='staff-withdraws'),
   path('dashboard/withdraws/<pk>/approve/',views.StaffApproveWithdraw.as_view(),name='staff-approve-withdraws'),

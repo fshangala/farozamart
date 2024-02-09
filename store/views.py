@@ -641,10 +641,6 @@ class Checkout(LoginRequiredMixin,View):
     return redirect(reverse('store:cart'))
 
 class CheckoutCOD(LoginRequiredMixin,View):
-  def get(self,request,order):
-    context=cart_context
-    order = functions.CODPayment(order)
-    return redirect(reverse('store:customer-order',kwargs={'id':order.id}))
   def post(self,request,order):
     order = models.Order.objects.get(pk=order)
     form = forms.CODCheckoutForm(user=request.user,order=order,data=request.POST)
@@ -742,6 +738,7 @@ class StaffOrder(LoginRequiredMixin,View):
     context=staff_orders_context
     order = get_object_or_404(models.Order,pk=id)
     context['order']=order
+    context['delivery']=SteadFastDelivery.objects.filter(invoice=order.id).first()
     return render(request,self.template_name,context)
 
 class StaffComfirmOrder(LoginRequiredMixin,View):
@@ -792,7 +789,16 @@ class StaffCancelOrder(LoginRequiredMixin,View):
     messages.success(request,'Order successfully canceled!')
     signals.order_canceled.send(models.Order,order=order)
     return redirect(reverse('store:staff-orders'))
-    
+
+class StaffDeliverOrder(LoginRequiredMixin,View):
+  def get(self,request,id):
+    context=staff_orders_context
+    order=get_object_or_404(models.Order,pk=id)
+    success,response_text = steadfastCreateOrder(order=order)
+    messages.success(request,response_text)
+    if success:
+      signals.order_submitted_for_delivery.send(models.Order,order=order)
+    return redirect(reverse('store:staff-orders'))
   
 # Staff withdraws
 staff_withdraws_context={

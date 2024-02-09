@@ -470,6 +470,7 @@ class CODCheckoutForm(forms.Form):
   name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
   phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
   address=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  delivery_area=forms.ChoiceField(widget=forms.Select(attrs={'class':'form-control'}))
   
   def __init__(self,*args,user:User,order:models.Order,**kwargs):
     super().__init__(*args,**kwargs)
@@ -479,11 +480,20 @@ class CODCheckoutForm(forms.Form):
     self.initial['name']=self.user.profile.full_name
     self.initial['phone']=self.user.profile.phone
     self.initial['address']=self.user.profile.address
+    
+    options=getOptions()
+    self.fields['delivery_area'].choices = (
+      ('OUTSIDE_DHAKA',f"Outside Dhaka (+{options['steadfast_delivery_outside_dhaka']} BDT)"),
+      ('INSIDE_DHAKA',f"Inside Dhaka (+{options['steadfast_delivery_inside_dhaka']} BDT)"),
+      ('NONE','None'),
+    )
   
   def save(self):
     self.order.customer_name = self.cleaned_data['name']
     self.order.customer_phone = self.cleaned_data['phone']
     self.order.customer_address = self.cleaned_data['address']
+    if self.cleaned_data['delivery_area'] != 'NONE':
+      self.delivery_area = self.cleaned_data['delivery_area']
 
     for item in self.order.sales.all():
       item.cart = False

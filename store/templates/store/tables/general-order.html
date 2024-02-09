@@ -1,8 +1,9 @@
+{% load static %}
 <div class="box">
   <div class="box-header">
-    <h3 class="box-title">Order</h3>
+    <h3 class="box-title">Order {{order.id}}</h3>
   </div><!-- /.box-header -->
-  <div class="box-body">
+  <div class="box-body" id="invoice">
     <div class="text-right">
       <h3>INVOICE</h3>
     </div>
@@ -64,6 +65,24 @@
         <td class="text-right">{{order.transaction}}</td>
       </tr>
       {% endif %}
+      {% if delivery %}
+      <tr>
+        <th>Delivery Tracking Code</th>
+        <td class="text-right">{{delivery.tracking_code}}</td>
+      </tr>
+      <tr>
+        <th>Delivery Status</th>
+        <td class="text-right">{{delivery.status}}</td>
+      </tr>
+      <tr>
+        <th>Created At</th>
+        <td class="text-right">{{delivery.created_at}}</td>
+      </tr>
+      <tr>
+        <th>Updated At</th>
+        <td class="text-right">{{delivery.updated_at}}</td>
+      </tr>
+      {% endif %}
     </table>
     <div class="table-responsive no-padding">
       <table class="table table-hover">
@@ -72,6 +91,7 @@
           <th>Product</th>
           <th>Quantity</th>
           <th>Sale Price</th>
+          <th>Sub total</th>
         </tr>
         {% if order.sales.all %}
         {% for sale in order.sales.all %}
@@ -79,21 +99,13 @@
           <td>{{sale.id}}</td>
           <td>{{sale.purchase.inventory.name}}</td>
           <td>{{sale.quantity}}</td>
+          <td>{{sale.sale_price}}</td>
           <td>{{sale.cost}}</td>
         </tr>
         {% endfor %}
         {% endif %}
-        {% if order.resales.all %}
-        {% for sale in order.resales.all %}
         <tr>
-          <td>{{sale.id}}</td>
-          <td>{{sale.purchase.inventory.name}}</td>
-          <td>{{sale.quantity}}</td>
-          <td>{{sale.get_sale_price}}</td>
-        </tr>
-        {% endfor %}
-        {% endif %}
-        <tr>
+          <td>---</td>
           <td>---</td>
           <td>---</td>
           <td>---</td>
@@ -102,18 +114,46 @@
         <tr>
           <td></td>
           <td></td>
-          <th>Subtotal</th>
+          <td></td>
+          <th>Delivery fee</th>
+          <td>{{order.delivery_fee}}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <th>Total</th>
           <td>{{order.total_cost_number}}</td>
         </tr>
       </table>
-    </div><!-- /.box-body -->
-    <div class="box-footer">
-      {% if order.status == 'PENDING' %}
-      <a href="{% url "store:staff-comfirm-order" id=order.id %}" class="btn btn-success">Comfirm</a>
-      <a href="{% url "store:staff-decline-order" id=order.id %}" class="btn btn-danger">Decline</a>
-      {% elif order.status == 'COMFIRMED' %}
-      <a href="{% url "store:staff-approve-order" id=order.id %}" class="btn btn-success">Complete</a>
-      {% endif %}
     </div>
   </div>
+  <div class="box-footer">
+    {% if user.is_staff %}
+      {% if not delivery %}
+        <a href="{% url "store:staff-deliver-order" id=order.id %}" class="btn btn-warning">Deliver</a>
+      {% endif %}
+      {% if order.status == 'PENDING' %}
+        <a href="{% url "store:staff-comfirm-order" id=order.id %}" class="btn btn-success">Comfirm</a>
+        <a href="{% url "store:staff-decline-order" id=order.id %}" class="btn btn-danger">Decline</a>
+      {% elif order.status == 'COMFIRMED' %}
+        <a href="{% url "store:staff-approve-order" id=order.id %}" class="btn btn-success">Complete</a>
+      {% endif %}
+    {% endif %}
+    <button onclick="printInvoice()" class="btn btn-primary">Print Invoince</button>
+  </div>
 </div><!-- /.box -->
+<script>
+  function printInvoice() {
+    var divContents = document.querySelector("#invoice").innerHTML;
+    var printWindow = window.open('', '', 'height=400,width=800');
+    printWindow.document.write('<html><head>');
+    printWindow.document.write('<html><head><title>DIV Contents</title>');
+    printWindow.document.write('<link href="{% static "dashboard/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet" type="text/css" />');
+    printWindow.document.write('</head><body >');
+    printWindow.document.write(divContents);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+  }
+</script>

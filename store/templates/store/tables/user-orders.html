@@ -2,15 +2,19 @@
 <table class="table">
   <thead>
     <th>ID</th>
-    <th>Items</th>
-    <th>In progress</th>
+    <th>Items Count</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+    <th>Status</th>
   </thead>
   <tbody>
     {% for order in user.orders.all %}
     <tr>
       <td><a href="{% url "store:customer-order" id=order.id %}">{{order.id}}</a></td>
       <td>{{order.sales.all.count}}</td>
-      <td>{{order.draft}}</td>
+      <td>{{order.created_at}}</td>
+      <td>{{order.updated_at}}</td>
+      <td>{{order.status}}</td>
     </tr>
     {% endfor %}
   </tbody>

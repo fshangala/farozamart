@@ -45,10 +45,6 @@
       </div>
     </div>
     <div class="container">
-      {% if options.steadfast_status == 'ACTIVATED' %}
-      <center><h4>Steadfast Delivery - charges</h4></center>
-      <p>{{options.steadfast_delivery_charge}}</p>
-      {% endif %}
       <center><h4>Payment Method</h4></center>
       <div class="accordion" id="paymentMethodAccordion">
         {% if options.cod_status == 'ACTIVATED' %}

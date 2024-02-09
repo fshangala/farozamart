@@ -93,6 +93,7 @@ def steadfastCreateOrder(order:Order):
         created_at=resulte['created_at'],
         updated_at=resulte['updated_at']
       )
+      return True,'Test delivery created. This will not appear in steadfast dashboard.'
     else:
       header={
         'Api-Key':option.get('steadfast_api_key'),
@@ -106,7 +107,7 @@ def steadfastCreateOrder(order:Order):
         'recipient_address':order.user.profile.address,
         'cod_amount':0
       }
-      response = requests.post(settings.STEADFAST_BASEURL+'/create-order',data=data,headers=header)
+      response = requests.post('https://portal.steadfast.com.bd/api/v1/create-order',data=data,headers=header)
       if response.status_code == 200:
         resulte = response.json()['consignment']
         models.SteadFastDelivery.objects.create(
@@ -117,4 +118,9 @@ def steadfastCreateOrder(order:Order):
           created_at=resulte['created_at'],
           updated_at=resulte['updated_at']
         )
+        return True,'Order successfully submitted for delivery!'
+      else:
+        return False,f"status_code:{response.status_code}; response_text:{response.text}"
+  else:
+    return False,'Steadfast is deactivated, order not submitted for delivery!'
       

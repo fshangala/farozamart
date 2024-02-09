@@ -4,6 +4,7 @@ from paymentgateway.models import Transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from dashboard.function import getOptions
 
 # Create your models here.
     
@@ -153,6 +154,14 @@ class Order(models.Model):
   created_at=models.DateTimeField(default=timezone.now())
   updated_at=models.DateTimeField(default=timezone.now())
   
+  def delivery_fee(self):
+    fee = 0.0
+    if self.delivery_area:
+      options=getOptions()
+      fee = float(options[self.delivery_area])
+    
+    return fee
+  
   def reseller_profit_percentage(self):
     return (self.total_reseller_profit() / self.total_cost_number())*100
   
@@ -167,6 +176,8 @@ class Order(models.Model):
     amount=0.0
     for sale in self.sales.all():
       amount += sale.cost()
+    
+    amount += self.delivery_fee()
     
     return amount
   

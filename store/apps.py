@@ -9,6 +9,10 @@ class StoreConfig(AppConfig):
         # order
         signals.order_submitted.connect(signals.catch_order_submitted)
         signals.order_processed.connect(signals.catch_order_processed)
+        signals.order_canceled.connect(signals.catch_order_canceled)
+        signals.order_comfirmed.connect(signals.catch_order_comfirmed)
+        signals.order_declined.connect(signals.catch_order_declined)
+        signals.order_submitted_for_delivery.connect(signals.catch_order_submitted_for_delivery)
         
         # withdraw
         signals.withdraw_request_submitted.connect(signals.catch_withdraw_request_submitted)
