@@ -301,7 +301,16 @@ class Resales(LoginRequiredMixin,View):
   def get(self,request):
     context=resales_context
     resales = functions.getUserResalePurchases(request.user)
+    currencies = models.Currency.objects.all()
+    
+    user_wallets=[]
+    for currency in currencies:
+      wallet=currency.user_wallets.filter(user=request.user).last()
+      if wallet:
+        user_wallets.append(wallet)
+        
     context['resales']=resales
+    context['user_wallets']=user_wallets
     return render(request,self.template_name,context)
 
 # dashboard resale purchases
@@ -445,7 +454,15 @@ class Sales(LoginRequiredMixin,View):
   
   def get(self,request):
     context=sales_context
+    currencies = models.Currency.objects.all()
+    
+    store_wallets=[]
+    for currency in currencies:
+      wallet=currency.store_wallets.filter(store=request.user.store).last()
+      if wallet:
+        store_wallets.append(wallet)
       
+    context['store_wallets']=store_wallets
     context['sales']=functions.getUserSales(request.user)
     
     return render(request,self.template_name,context)
@@ -745,6 +762,7 @@ class StaffComfirmOrder(LoginRequiredMixin,View):
   def get(self,request,id):
     order=models.Order.objects.get(pk=id)
     order.status='COMFIRMED'
+    order.updated_at=timezone.now()
     order.save()
     signals.order_comfirmed.send(models.Order,order=order)
     messages.success(request,'Order comfirmed!')
@@ -754,6 +772,7 @@ class StaffDeclineOrder(LoginRequiredMixin,View):
   def get(self,request,id):
     order=models.Order.objects.get(pk=id)
     order.status='DECLINED'
+    order.updated_at=timezone.now()
     order.save()
     signals.order_declined.send(models.Order,order=order)
     messages.info(request,'Order declined!')

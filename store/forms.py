@@ -8,6 +8,7 @@ from paymentgateway.models import Transaction
 from dropshipping.functions import steadfastCreateOrder, steadfastCreateOrderManual
 from dashboard.function import getOptions
 from store import signals
+from django.utils import timezone
 
 class BecomeSellerRequestForm(forms.Form):
   name=forms.CharField(validators=[validators.unique_store_name],widget=forms.TextInput(attrs={'class':'form-control'}),help_text='The name of your store e.g EStore')
@@ -555,6 +556,7 @@ class ApproveOrderForm(forms.Form):
       self.order.transaction = transaction
     
     self.order.status='COMPLETE'
+    self.order.updated_at=timezone.now()
     self.order.save()
     
     signals.order_processed.send(sender=models.Order,order=self.order)

@@ -11,10 +11,10 @@
         <th>Currency</th>
         <th></th>
       </tr>
-      {% for wallet in user.store.wallets.all %}
+      {% for wallet in store_wallets %}
       <tr>
         <td>{{wallet.id}}</td>
-        <td>{{wallet.balance}}</td>
+        <td>{{wallet.balance_after}}</td>
         <td>{{wallet.currency.code}}</td>
         <td>
           <a href="{% url "store:sales-withdraw-request" id=wallet.id %}" class="btn btn-primary">Withdraw</a>

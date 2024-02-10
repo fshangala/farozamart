@@ -1,0 +1,24 @@
+
+<div class="box">
+  <div class="box-header">
+    <h3 class="box-title">Store Wallets</h3>
+  </div><!-- /.box-header -->
+  <div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+      <tr>
+        <th>Balance</th>
+        <th>Currency</th>
+        <th></th>
+      </tr>
+      {% for wallet in store_wallets %}
+      <tr>
+        <td>{{wallet.balance_after}}</td>
+        <td>{{wallet.currency.code}}</td>
+        <td>
+          <a href="" class="btn btn-primary">Withdraw</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div><!-- /.box-body -->
+</div><!-- /.box -->

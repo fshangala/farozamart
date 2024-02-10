@@ -83,21 +83,16 @@ def catch_order_submitted(sender,order:models.Order,**kwargs):
 order_processed = Signal()
 def catch_order_processed(sender,order:models.Order,**kwargs):
     options = getOptions()
+    
+    for sale in order.sales.all():
+        sale.sale()
+        
     send_mail(
         f"{options['name']} - Order processed",
         f"Your order with ID:{order.id} has been processed, Thanks for shopping with {options['name']}.",
         options['site_mail'],
         [order.user.email]
     )
-    
-    for sale in order.sales.all():
-        wallet = sale.purchase.inventory.store.wallets.filter(currency=sale.purchase.currency).first()
-        if not wallet:
-            wallet = models.Wallet.objects.create(
-                store=sale.purchase.inventory.store,
-                currency=sale.purchase.currency
-            )
-        wallet.balance += sale.cost()
 
 order_canceled=Signal()
 def catch_order_canceled(sender,order:models.Order,**kwargs):

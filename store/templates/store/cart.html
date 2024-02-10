@@ -14,6 +14,7 @@
             <th>Product</th>
             <th>Quantity</th>
             <th>Unit Price</th>
+            <th>Subtotal</th>
             <th></th>
           </thead>
           <tbody>
@@ -21,7 +22,8 @@
             <tr>
               <td><a href="{% url "store:listing" id=cart_item.purchase.id %}">{{cart_item.purchase.inventory.name}}</a></td>
               <td>{{cart_item.quantity}}</td>
-              <td>{{cart_item.get_sale_price}}</td>
+              <td>{{cart_item.sale_price}}</td>
+              <td>{{cart_item.cost}}</td>
               <td><a href='{% url "store:delete-cart-item" id=cart_item.id %}' class='mx-2 btn btn-danger'>Delete</a></td>
             </tr>
             {% endfor %}

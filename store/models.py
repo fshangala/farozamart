@@ -64,6 +64,28 @@ class Wallet(models.Model):
   def __str__(self):
       return f"{self.store.name}#{self.id}: {self.balance} {self.currency.code}"
 
+class StoreWallet(models.Model):
+  store=models.ForeignKey(Store,related_name='store_wallets',on_delete=models.CASCADE)
+  currency=models.ForeignKey(Currency,related_name='store_wallets',on_delete=models.CASCADE)
+  balance_before=models.FloatField(default=0.0)
+  balance_after=models.FloatField(default=0.0)
+  transaction_reference=models.CharField(max_length=200)
+  timestamp=models.DateTimeField(default=timezone.now())
+  
+  def __str__(self):
+      return f"{self.store.name}#{self.id}: {self.balance_after} {self.currency.code}"
+
+class UserWallet(models.Model):
+  user=models.OneToOneField(User,related_name='user_wallets',on_delete=models.CASCADE)
+  currency=models.ForeignKey(Currency,related_name='user_wallets',on_delete=models.CASCADE)
+  balance_before=models.FloatField(default=0.0)
+  balance_after=models.FloatField(default=0.0)
+  transaction_reference=models.CharField(max_length=200)
+  timestamp=models.DateTimeField(default=timezone.now())
+  
+  def __str__(self):
+      return f"{self.user.username}#{self.id}: {self.balance_after} {self.currency.code}"
+
 class Withdraw(models.Model):
   wallet=models.ForeignKey(Wallet,on_delete=models.CASCADE,related_name='withdraws')
   amount=models.FloatField()
@@ -214,18 +236,35 @@ class Sale(models.Model):
   sale_price=models.FloatField()
   order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='sales')
   cart=models.BooleanField(default=True)
+  resale=models.BooleanField(default=False)
   approved=models.BooleanField(default=False)
   
+  def purchase_cost(self)->float:
+    """Cost according to sale quantity and purchase price"""
+    return self.quantity*self.purchase.purchase_price
+  
   def cost(self)->float:
+    """Total cost according to sale quantity and sale price"""
     return self.quantity*self.sale_price
   
+  def seller_cost(self)->float:
+    """Cost according to sale quantity and resale price"""
+    return self.quantity*self.purchase.resale_price
+  
+  def reseller_cost(self)->float:
+    """Cost that the reseller adds for a resale"""
+    return self.cost() - self.seller_cost()
+  
   def profit(self)->float:
-    return (self.sale_price*self.quantity) - (self.purchase.purchase_price*self.quantity)
+    """Total profit on the sale"""
+    return self.cost() - self.purchase_cost()
   
   def seller_profit(self):
-    return (self.purchase.resale_price*self.quantity) - (self.purchase.purchase_price*self.quantity)
+    """Profit for the seller in a resale"""
+    return self.seller_cost() - self.purchase_cost()
   
   def reseller_profit(self):
+    """Profit for the reseller in a resale"""
     return self.profit() - self.seller_profit()
   
   def approve(self):
@@ -244,6 +283,42 @@ class Sale(models.Model):
       wallet = Wallet.objects.create(store=self.purchase.inventory.store,currency=self.purchase.currency)
       wallet.balance += self.sale_price*self.quantity
       wallet.save()
+  
+  def sale(self):
+    storeWallet=self.purchase.inventory.store.store_wallets.filter(currency=self.purchase.currency).first()
+    storeAfter=storeWallet.balance_after if storeWallet != None else 0.0
+    if self.resale:
+      userWallet=self.order.user.user_wallets.filter(currency=self.purchase.currency).first()
+      userAfter=userWallet.balance_after if userWallet != None else 0.0
+      
+      StoreWallet.objects.create(
+        store=self.purchase.inventory.store,
+        currency=self.purchase.currency,
+        balance_before=storeAfter,
+        balance_after=storeAfter+self.seller_cost(),
+        transaction_reference=f"Resold listing {self.purchase.id} from order {self.order.id}"
+      )
+      UserWallet.objects.create(
+        store=self.purchase.inventory.store,
+        currency=self.purchase.currency,
+        balance_before=userAfter,
+        balance_after=userAfter+self.reseller_cost(),
+        transaction_reference=f"Resold listing {self.purchase.id} from order {self.order.id}"
+      )
+    else:
+      StoreWallet.objects.create(
+        store=self.purchase.inventory.store,
+        currency=self.purchase.currency,
+        balance_before=storeAfter,
+        balance_after=storeAfter+self.cost(),
+        transaction_reference=f"Sold listing {self.purchase.id} from order {self.order.id}"
+      )
+      
+    self.purchase.stock -= self.quantity
+    self.purchase.save()
+    
+    self.approve=True
+    self.save()
 
   def __str__(self):
       return f"{self.purchase.inventory.name} -> Sale {self.sale_price}x{self.quantity}"
