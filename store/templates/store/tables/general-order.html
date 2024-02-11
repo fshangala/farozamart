@@ -59,6 +59,12 @@
         <th>Status</th>
         <td class="text-right">{{order.status}}</td>
       </tr>
+      {% if order.tracking_id %}
+      <tr>
+        <th>Redx Tracking ID</th>
+        <td class="text-right">{{order.tracking_id}}</td>
+      </tr>
+      {% endif %}
       {% if order.transaction %}
       <tr>
         <th>Transaction</th>

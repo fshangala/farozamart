@@ -123,4 +123,31 @@ def steadfastCreateOrder(order:Order):
         return False,f"status_code:{response.status_code}; response_text:{response.text}"
   else:
     return False,'Steadfast is deactivated, order not submitted for delivery!'
-      
+
+def redxCreateParcel(order:Order):
+  headers={
+    'API-ACCESS-TOKEN': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NDgxMDQiLCJpYXQiOjE3MDY1OTg3MDIsImlzcyI6IllDTWJHdGM4eWpnRTRJQ1dWQm9nSWVJZUM4V0dDNUFRIiwic2hvcF9pZCI6ODQ4MTA0LCJ1c2VyX2lkIjoyNTYzMTkzfQ.MfWXh7ebg9HVrji8VkXgAfWfOcOG30NGBU52vdTqSdw',
+    'Content-Type': 'application/json',
+  }
+  payload={
+    "customer_name": order.customer_name,
+    "customer_phone": order.customer_phone,
+    "delivery_area": order.delivery_area,
+    "delivery_area_id": 1,
+    "customer_address": order.customer_address,
+    "merchant_invoice_id": order.id,
+    "cash_collection_amount": order.total_cost_number(),
+    "parcel_weight": 500,
+    "instruction": "",
+    "value": 100,
+    "is_closed_box": false,
+    "parcel_details_json": []
+  }
+  response=requests.post('https://sandbox.redx.com.bd/v1.0.0-beta/parcel',data=payload,headers=headers)
+  if response.status_code == 201:
+    tracking_id = response.json()['tracking_id']
+    order.tracking_id=tracking_id
+    return True,'Order successfully submitted for delivery!'
+  else:
+    return False,f"status_code:{response.status_code}; response_text:{response.text}"
+  

@@ -231,6 +231,7 @@ class Order(models.Model):
   is_reseller=models.BooleanField(default=False)
   own_delivery_charge=models.FloatField(default=0)
   advance_payment=models.FloatField(default=0)
+  tracking_id=models.CharField(max_length=200,null=True)
   draft=models.BooleanField(default=False)
   status=models.CharField(max_length=200,default='DRAFT')
   created_at=models.DateTimeField(default=timezone.now)

@@ -2,7 +2,7 @@ from django.dispatch import Signal
 from store import models
 from django.core.mail import send_mail
 from dashboard.function import getOptions
-from dropshipping.functions import steadfastCreateOrder, steadfastCreateOrderManual
+from dropshipping.functions import steadfastCreateOrder, steadfastCreateOrderManual, redxCreateParcel
 
 withdraw_request_submitted = Signal()
 def catch_withdraw_request_submitted(sender,withdraw:models.Withdraw,**kwargs):
@@ -132,7 +132,8 @@ def catch_order_canceled(sender,order:models.Order,**kwargs):
 
 order_comfirmed=Signal()
 def catch_order_comfirmed(sender,order:models.Order,**kwargs):
-    steadfastCreateOrder(order=order)
+    #steadfastCreateOrder(order=order)
+    success,response_text=redxCreateParcel(order=order)
     options = getOptions()
     send_mail(
         f"{options['name']} - Order comfirmed",
