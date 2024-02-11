@@ -7,9 +7,9 @@
       <tr>
         <th>ID</th>
         <th>Amount</th>
-        <th>Currency</th>
         <th>BKASH</th>
         <th>NID Card</th>
+        <th>Status</th>
         <th></th>
       </tr>
       {% for withdraw in withdraws %}
@@ -17,9 +17,9 @@
       <tr>
         <td>{{withdraw.id}}</td>
         <td>{{withdraw.amount}}</td>
-        <td>{{withdraw.wallet.currency.code}}</td>
         <td>{{withdraw.bkash_number}}</td>
         <td><a href="{{withdraw.nid_card.url}}"><img src="{{withdraw.nid_card.url}}" height=50 /></a></td>
+        <td>{{withdraw.status}}</td>
         <td><a href="{% url "store:staff-approve-withdraws" pk=withdraw.id %}">Approve</a></td>
       </tr>
       {% endif %}

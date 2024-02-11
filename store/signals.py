@@ -7,28 +7,48 @@ from dropshipping.functions import steadfastCreateOrder, steadfastCreateOrderMan
 withdraw_request_submitted = Signal()
 def catch_withdraw_request_submitted(sender,withdraw:models.Withdraw,**kwargs):
     options = getOptions()
+    if withdraw.wallet_type == 'STORE':
+      wallet=models.StoreWallet.objects.get(pk=withdraw.transaction_id)
+      email=wallet.store.user.email
+    elif withdraw.wallet_type == 'USER':
+      wallet=models.UserWallet.objects.get(pk=withdraw.transaction_id)
+      email=wallet.user.email
+    else:
+      wallet=None
+    
     send_mail(
-        f"{withdraw.wallet.store.name} at {options['name']} - Withdraw requested",
-        f"A withdraw from {withdraw.wallet.store.name} has been requested, Please review in the dashboard",
+        f"{options['name']} - Withdraw requested",
+        f"A withdraw of {withdraw.amount} has been requested, Please review in the dashboard",
         options['site_mail'],
         [options['site_mail']]
     )
-    send_mail(
-        f"{withdraw.wallet.store.name} at {options['name']} - Withdraw requested",
-        f"A withdraw from {withdraw.wallet.store.name} has been requested, you will be notified when it is proceseed!",
-        options['site_mail'],
-        [withdraw.wallet.store.email]
-    )
+    if wallet:
+        send_mail(
+            f"{options['name']} - Withdraw requested",
+            f"A withdraw of {withdraw.amount} has been requested, you will be notified when it is proceseed!",
+            options['site_mail'],
+            [email]
+        )
 
 withdraw_request_approved = Signal()
 def catch_withdraw_request_approved(sender,withdraw:models.Withdraw,**kwargs):
     options = getOptions()
-    send_mail(
-        f"{withdraw.wallet.store.name} at {options['name']} - Withdraw approved",
-        f"A withdraw from {withdraw.wallet.store.name} has been approved.",
-        options['site_mail'],
-        [withdraw.wallet.store.email]
-    )
+    if withdraw.wallet_type == 'STORE':
+      wallet=models.StoreWallet.objects.get(pk=withdraw.transaction_id)
+      email=wallet.store.user.email
+    elif withdraw.wallet_type == 'USER':
+      wallet=models.UserWallet.objects.get(pk=withdraw.transaction_id)
+      email=wallet.user.email
+    else:
+      wallet=None
+    
+    if wallet:
+        send_mail(
+            f"{options['name']} - Withdraw approved",
+            f"A withdraw of {withdraw.amount} has been approved.",
+            options['site_mail'],
+            [email]
+        )
 
 become_seller_request_approved = Signal()
 def catch_become_seller_request_approved(sender,becomeseller:models.Becomeseller,**kwargs):
@@ -78,6 +98,12 @@ def catch_order_submitted(sender,order:models.Order,**kwargs):
         f"Your order with ID:{order.id} has been received, you will be notified by mail, when your order has been processed! Our sales team will contact you on {order.customer_phone} concerning delivery.",
         options['site_mail'],
         [order.user.email]
+    )
+    send_mail(
+        f"{options['name']} - Order received",
+        f"Order with ID:{order.id} has been received, Please login to the dashboard to comfirm this order.",
+        options['site_mail'],
+        [options['site_mail']]
     )
 
 order_processed = Signal()

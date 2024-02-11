@@ -15,7 +15,7 @@
         <td>{{wallet.balance_after}}</td>
         <td>{{wallet.currency.code}}</td>
         <td>
-          <a href="" class="btn btn-primary">Withdraw</a>
+          <a href="{% url "store:sales-withdraw-request" currency_id=wallet.currency.id %}" class="btn btn-primary">Withdraw</a>
         </td>
       </tr>
       {% endfor %}

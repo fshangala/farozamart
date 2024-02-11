@@ -21,10 +21,10 @@
   <div class='box-body'>
     <div class='row'>
       <div class='col-sm-4'>
-        <img src="{{resale_purchase.inventory.picture.url}}" alt="{{resale_purchase.inventory.name}}"/>
+        <img src="{{resale_purchase.inventory.picture.url}}" alt="{{resale_purchase.inventory.name}}" style="width:100%;"/>
       </div>
       <div class='col-sm-8'>
-        {% include "includes/form.html" with method='post' action='' submitText='Add To Cart' %}
+        {% include "store/forms/listing.html" with listing=resale_purchase %}
       </div>
     </div>
   </div>

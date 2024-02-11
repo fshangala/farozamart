@@ -308,8 +308,11 @@ class Resales(LoginRequiredMixin,View):
       wallet=currency.user_wallets.filter(user=request.user).last()
       if wallet:
         user_wallets.append(wallet)
+    
+    orders=request.user.orders.filter(is_reseller=True)
         
     context['resales']=resales
+    context['orders']=orders
     context['user_wallets']=user_wallets
     return render(request,self.template_name,context)
 
@@ -340,8 +343,12 @@ class ResalePurchase(LoginRequiredMixin,View):
     form=forms.AddToResaleCartForm(user=request.user,listing=listing,data=request.POST)
     if form.is_valid():
       form.cart()
-      messages.success(request,'Added to cart!')
-      return redirect(reverse('store:resale-purchase',kwargs={'id':listing.id}))
+      if request.POST['submit_type'] == 'buy':
+        return redirect(reverse('store:reseller-cart'))
+      elif request.POST['submit_type'] == 'cart':
+        messages.success(request,'Added to cart!')
+      else:
+        form.add_error(field=None,error='Invalid request')
 
     context['listing']=listing
     context['form']=form
@@ -393,7 +400,7 @@ class ResellerCart(LoginRequiredMixin,View):
   def get(self,request):
     context=reseller_cart_context
     try:
-      order = request.user.orders.get(draft=True)
+      order = request.user.orders.get(status='DRAFT',is_reseller=True)
     except Exception as e:
       pass
     else:
@@ -404,6 +411,15 @@ class ResellerCart(LoginRequiredMixin,View):
         context['cart_currency']=self.cartCurrency(order.sales.all())
 
     return render(request,self.template_name,context)
+
+class ClearResellerCart(LoginRequiredMixin,View):
+  def get(self,request):
+    order=request.user.orders.get(status='DRAFT',is_reseller=True)
+    if order:
+      order.delete()
+      messages.success(request,'Cart cleared!')
+    return redirect(reverse('store:reseller-cart'))
+    
 
 class ResellerCODCheckout(LoginRequiredMixin,View):
   template_name='store/reseller-cod-checkout.html'
@@ -419,7 +435,7 @@ class ResellerCODCheckout(LoginRequiredMixin,View):
   
   def get(self,request):
     context=reseller_cart_context
-    order = request.user.orders.get(draft=True)
+    order = request.user.orders.get(status='DRAFT',is_reseller=True)
     if order:
       context['order']=order
       if order.sales.all().count() > 0:
@@ -431,7 +447,7 @@ class ResellerCODCheckout(LoginRequiredMixin,View):
   
   def post(self,request):
     context=reseller_cart_context
-    order = request.user.orders.get(draft=True)
+    order = request.user.orders.get(status='DRAFT',is_reseller=True)
     if order:
       form=forms.ResellerCODCheckout(reseller=request.user,order=order,data=request.POST)
       if form.is_valid():
@@ -457,12 +473,25 @@ class Sales(LoginRequiredMixin,View):
     currencies = models.Currency.objects.all()
     
     store_wallets=[]
+    all_store_wallets=[]
     for currency in currencies:
-      wallet=currency.store_wallets.filter(store=request.user.store).last()
+      wallet=currency.store_wallets.filter(store=request.user.store,status='APPROVED').last()
+      all_wallet=currency.store_wallets.filter(store=request.user.store)
+      if all_wallet:
+        for single_wallet in all_wallet:
+          all_store_wallets.append(single_wallet)
       if wallet:
         store_wallets.append(wallet)
+    
+    withdraws=[]
+    for store_wallet in all_store_wallets:
+      withdraws1=models.Withdraw.objects.filter(wallet_type='STORE',transaction_id=store_wallet.id)
+      if withdraws1:
+        for wd in withdraws1:
+          withdraws.append(wd)
       
     context['store_wallets']=store_wallets
+    context['withdraws']=withdraws
     context['sales']=functions.getUserSales(request.user)
     
     return render(request,self.template_name,context)
@@ -525,6 +554,29 @@ class SalesOrder(LoginRequiredMixin,View):
     context['order']=order
     return render(request,self.template_name,context)
 
+class StoreWithdraw(LoginRequiredMixin,View):
+  template_name='store/withdraw.html'
+  def get(self,request,currency_id):
+    context=sales_context
+    currency=models.Currency.objects.get(pk=currency_id)
+    form=forms.WithdrawRequestForm(wallet_type='STORE',wallet_obj=request.user.store,currency=currency)
+    context['form']=form
+    return render(request,self.template_name,context)
+  def post(self,request,currency_id):
+    context=sales_context
+    currency=models.Currency.objects.get(pk=currency_id)
+    form=forms.WithdrawRequestForm(wallet_type='STORE',wallet_obj=request.user.store,currency=currency,data=request.POST,files=request.FILES)
+    if form.is_valid():
+      success,response_text = form.save()
+      if success:
+        messages.success(request,response_text)
+        return redirect(reverse('store:sales'))
+      else:
+        messages.error(request,response_text)
+    context['form']=form
+    return render(request,self.template_name,context)
+    
+
 class WithdrawRequest(LoginRequiredMixin,View):
   template_name='store/withdraw.html'
   def get(self,request,id):
@@ -542,6 +594,13 @@ class WithdrawRequest(LoginRequiredMixin,View):
       messages.info(request,'Withdraw request successfully submitted!')
       return redirect(reverse('store:sales'))
     return render(request,self.template_name,context)
+
+class CancelWithdraw(LoginRequiredMixin,View):
+  def get(self,request,id):
+    withdraw=models.Withdraw.objects.get(pk=id)
+    withdraw.delete()
+    messages.info(request,'Withdraw canceled!')
+    return redirect(reverse('store:sales'))
 
 # shop
 shop_context={
@@ -589,6 +648,7 @@ class Listing(LoginRequiredMixin,View):
 
 # cart
 cart_context={}
+@method_decorator(never_cache,'dispatch')
 class Cart(LoginRequiredMixin,View):
   template_name='store/cart.html'
   
@@ -745,7 +805,10 @@ class StaffOrders(LoginRequiredMixin,View):
   template_name='store/staff/orders.html'
   def get(self,request):
     context=staff_orders_context
-    orders = models.Order.objects.all()
+    if not request.user.is_staff:
+      orders = models.Order.objects.all()
+    else:
+      orders = request.user.orders.all()
     context['orders']=orders
     return render(request,self.template_name,context)
 
@@ -833,8 +896,7 @@ class StaffWithdraws(LoginRequiredMixin,View):
 class StaffApproveWithdraw(LoginRequiredMixin,View):
   def get(self,request,pk):
     withdraw = models.Withdraw.objects.get(pk=pk)
-    withdraw.approved = True
-    withdraw.save()
+    withdraw.approve()
     signals.withdraw_request_approved.send(models.Withdraw,withdraw=withdraw)
     messages.success(request,'Withdraw request approved')
     return redirect(reverse('store:staff-withdraws'))

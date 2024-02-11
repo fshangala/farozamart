@@ -14,9 +14,9 @@
   <div class="box-body table-responsive no-padding">
     <table class="table table-hover">
       <tr>
-        <th>ID</th>
         <th>Order ID</th>
         <th>Customer</th>
+        <th>Resale</th>
         <th>Inventory</th>
         <th>Quantity</th>
         <th>Sale Price</th>
@@ -24,12 +24,12 @@
       </tr>
       {% for sale in sales %}
       <tr>
-        <td>{{sale.id}}</td>
         <td>{{sale.order.id}}</td>
         <td>{{sale.user.profile.full_name}}</td>
+        <td>{{sale.resale}}</td>
         <td>{{sale.purchase.inventory.name}}</td>
         <td>{{sale.quantity}}</td>
-        <td>{{sale.get_sale_price}}</td>
+        <td>{{sale.sale_price}}</td>
         <td>
           <a href="{% url "store:sales-order" id=sale.order.id %}" class="btn btn-primary">View Order</a>
         </td>

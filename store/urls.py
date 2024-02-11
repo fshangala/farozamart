@@ -71,7 +71,8 @@ urlpatterns = [
   path('dashboard/sales/<id>/edit/',views.EditSale.as_view(),name='edit-sale'),
   path('dashboard/sales/<id>/delete/',views.DeleteSale.as_view(),name='delete-sale'),
   path('dashboard/sales/order/<id>/',views.SalesOrder.as_view(),name='sales-order'),
-  path('dashboard/sales/wallet/<id>/',views.WithdrawRequest.as_view(),name='sales-withdraw-request'),
+  path('dashboard/sales/withdraw/<currency_id>/',views.StoreWithdraw.as_view(),name='sales-withdraw-request'),
+  path('dashboard/sales/withdraw/cancel/<id>/',views.CancelWithdraw.as_view(),name='sales-cancel-withdraw-request'),
   
   # reseller
   path('dashboard/resale/',views.Resales.as_view(),name='resales'),
@@ -81,5 +82,6 @@ urlpatterns = [
   path('dahsboard/resale/purchases/<id>/resale/',views.NewResale.as_view(),name='new-resale'),
   
   path('dashboard/reseller/cart/',views.ResellerCart.as_view(),name='reseller-cart'),
+  path('dashboard/reseller/cart/clear/',views.ClearResellerCart.as_view(),name='clear-reseller-cart'),
   path('dashboard/reseller/cart/cod-checkout/',views.ResellerCODCheckout.as_view(),name='reseller-cod-checkout'),
 ]

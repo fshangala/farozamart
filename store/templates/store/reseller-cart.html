@@ -61,6 +61,7 @@
           </tr>
         </table>
       </div>
+      <a href="{% url "store:clear-reseller-cart" %}" class="btn btn-danger">Clear</a>
     </div><!-- /.col -->
     <!-- accepted payments column -->
     <div class="col-sm-6">
@@ -71,10 +72,10 @@
       <a href="{% url "store:reseller-cod-checkout" %}" class="btn btn-primary">Checkout</a>
       {% endif %}
     </div><!-- /.col -->
+
     {% else %}
     <p class="lead">Cart is empty!</p>
     {% endif %}
   </div><!-- /.row -->
 </section><!-- /.content -->
-<div class="clearfix"></div>
 {% endblock content %}

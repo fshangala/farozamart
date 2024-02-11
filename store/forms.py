@@ -348,19 +348,35 @@ class SaleForm(forms.Form):
       
 class AddToResaleCartForm(forms.Form):
   quantity=forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
+  unit_price=forms.FloatField(widget=forms.NumberInput(attrs={'class':'form-control'}))
 
   def __init__(self,user:User,listing:models.Purchase,*args,**kwargs):
     super().__init__(*args,**kwargs)
     self.user=user
     self.listing=listing
+    
+    self.fields['unit_price'].help_text=f"Resale price: {self.listing.resale_price}"
+  
+  def clean_unit_price(self):
+    unit_price=self.cleaned_data['unit_price']
+    if self.listing.resale_price >= unit_price:
+      self.add_error('unit_price','The unit price cannot be less than the resale price!')
+    
+    return unit_price
+  
+  def clean_quantity(self):
+    quantity=self.cleaned_data['quantity']
+    if quantity > self.listing.stock:
+      self.add_error('quantity','The quantity cannot be more than the available stock!')
+      
+    return quantity
 
   def cart(self):
-    try:
-      order=self.user.orders.get(draft=True,is_reseller=True)
-    except Exception as e:
-      order=models.Order.objects.create(user=self.user,draft=True,is_reseller=True)
+    order=self.user.orders.filter(status='DRAFT',is_reseller=True).first()
+    if not order:
+      order=models.Order.objects.create(user=self.user,is_reseller=True)
       
-    current = models.Sale.objects.filter(user=self.user,purchase=self.listing,cart=True).first()
+    current = models.Sale.objects.filter(user=self.user,purchase=self.listing,resale=True,approved=False).first()
     if current:
       current.quantity += self.cleaned_data['quantity']
       current.save()
@@ -369,9 +385,9 @@ class AddToResaleCartForm(forms.Form):
         user=self.user,
         purchase=self.listing,
         quantity=self.cleaned_data['quantity'],
-        sale_price=self.listing.sale_price,
+        sale_price=self.cleaned_data['unit_price'],
         order=order,
-        cart=True,
+        resale=True,
         approved=False
       )
     
@@ -424,20 +440,19 @@ class ResellerCODCheckout(forms.Form):
       ('INSIDE_DHAKA',f"Inside Dhaka (+{options['steadfast_delivery_inside_dhaka']} BDT)")
     )
     
-  
   def save(self):
     self.order.customer_name=self.cleaned_data['customer_name']
     self.order.customer_phone=self.cleaned_data['customer_phone']
     self.order.customer_address=self.cleaned_data['customer_address']
-    self.delivery_area=self.cleaned_data['delivery_area']
-    self.own_delivery_charge=self.cleaned_data['own_delivery_charge']
-    self.advance_payment=self.cleaned_data['advance_payment']
-    self.order.draft=False
+    self.order.delivery_area=self.cleaned_data['delivery_area']
+    self.order.own_delivery_charge=self.cleaned_data['own_delivery_charge']
+    self.order.advance_payment=self.cleaned_data['advance_payment']
+    self.order.status='PENDING'
     self.order.save()
     for item in self.order.sales.all():
       item.cart = False
       item.save()
-    steadfastCreateOrderManual(self.order,self.cleaned_data['customer_name'],self.cleaned_data['customer_phone'],self.cleaned_data['customer_address'])
+    signals.order_submitted.send(models.Order,order=self.order)
 
 class ListingForm(forms.Form):
   quantity=forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
@@ -579,3 +594,70 @@ class WithdrawRequest(forms.Form):
     )
     
     signals.withdraw_request_submitted.send(models.Withdraw,withdraw=withdraw)
+
+class WithdrawRequestForm(forms.Form):
+  amount=forms.FloatField(widget=forms.NumberInput(attrs={'class':'form-control'}))
+  bkash_number=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text='Number attached to bkash')
+  nid_card=forms.ImageField(help_text='National ID Card')
+  
+  def __init__(self,wallet_type:str,wallet_obj,currency:models.Currency,*args,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.wallet_type=wallet_type
+    self.currency=currency
+    
+    if wallet_type == 'STORE':
+      self.pre_transaction=models.StoreWallet.objects.filter(store=wallet_obj,currency=self.currency,status='APPROVED').last()
+      print(self.pre_transaction)
+    elif wallet_type == 'USER':
+      self.pre_transaction=models.UserWallet.objects.filter(user=wallet_obj,currency=self.currency,status='APPROVED').last()
+    else:
+      self.pre_transaction=None
+    
+    if self.pre_transaction:
+      self.fields['amount'].help_text=f"Wallet balance: {self.pre_transaction.balance_after}"
+    else:
+      self.fields['amount'].help_text="Wallet balance: 0.0"
+  
+  def save(self):
+    if self.wallet_type == 'STORE':
+      if self.pre_transaction:
+        balance=self.pre_transaction.balance_after
+        transaction=models.StoreWallet.objects.create(
+          store=self.pre_transaction.store,
+          currency=self.currency,
+          balance_before=balance,
+          balance_after=balance-self.cleaned_data['amount'],
+          transaction_reference=f"WITHDRAW {self.cleaned_data['amount']} to BKASH {self.cleaned_data['bkash_number']}"
+        )
+        models.Withdraw.objects.create(
+          wallet_type='STORE',
+          transaction_id=transaction.id,
+          amount=self.cleaned_data['amount'],
+          bkash_number=self.cleaned_data['bkash_number'],
+          nid_card=self.cleaned_data['nid_card']
+        )
+        return True,'Withdraw requested successfully!'
+      else:
+        return False,'Wallet is empty'
+    elif self.wallet_type == 'USER':
+      if self.pre_transaction:
+        balance=pre_transaction.balance_after
+        transaction=models.UserWallet.objects.create(
+          user=self.pre_transaction.user,
+          currency=self.currency,
+          balance_before=balance,
+          balance_after=balance-self.cleaned_data['amount'],
+          transaction_reference=f"WITHDRAW {self.cleaned_data['amount']} to BKASH {self.cleaned_data['bkash_number']}"
+        )
+        models.Withdraw.objects.create(
+          wallet_type='USER',
+          transaction_id=transaction.id,
+          amount=self.cleaned_data['amount'],
+          bkash_number=self.cleaned_data['bkash_number'],
+          nid_card=self.cleaned_data['nid_card']
+        )
+        return True,'Withdraw requested successfully!'
+      else:
+        return False,'Wallet is empty'
+    else:
+      return False,'Invalid wallet type'

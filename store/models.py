@@ -64,13 +64,29 @@ class Wallet(models.Model):
   def __str__(self):
       return f"{self.store.name}#{self.id}: {self.balance} {self.currency.code}"
 
+wallet_status=(
+  ('PENDING','Pending'),
+  ('APPROVED','Approved'),
+  ('DECLINED','Declined'),
+)
+
 class StoreWallet(models.Model):
   store=models.ForeignKey(Store,related_name='store_wallets',on_delete=models.CASCADE)
   currency=models.ForeignKey(Currency,related_name='store_wallets',on_delete=models.CASCADE)
   balance_before=models.FloatField(default=0.0)
   balance_after=models.FloatField(default=0.0)
   transaction_reference=models.CharField(max_length=200)
-  timestamp=models.DateTimeField(default=timezone.now())
+  status=models.CharField(max_length=200,choices=wallet_status,default='PENDING')
+  created_at=models.DateTimeField(default=timezone.now)
+  updated_at=models.DateTimeField(default=timezone.now)
+  
+  def approve(self):
+    self.status='APPROVED'
+    self.save()
+  
+  def decline(self):
+    self.status='DECLINED'
+    self.save()
   
   def __str__(self):
       return f"{self.store.name}#{self.id}: {self.balance_after} {self.currency.code}"
@@ -81,21 +97,63 @@ class UserWallet(models.Model):
   balance_before=models.FloatField(default=0.0)
   balance_after=models.FloatField(default=0.0)
   transaction_reference=models.CharField(max_length=200)
-  timestamp=models.DateTimeField(default=timezone.now())
+  status=models.CharField(max_length=200,choices=wallet_status,default='PENDING')
+  created_at=models.DateTimeField(default=timezone.now)
+  updated_at=models.DateTimeField(default=timezone.now)
+  
+  def approve(self):
+    self.status='APPROVED'
+    self.save()
+  
+  def decline(self):
+    self.status='DECLINED'
+    self.save()
   
   def __str__(self):
       return f"{self.user.username}#{self.id}: {self.balance_after} {self.currency.code}"
 
+wallet_types=(
+  ('STORE','Store'),
+  ('USER','User'),
+)
 class Withdraw(models.Model):
-  wallet=models.ForeignKey(Wallet,on_delete=models.CASCADE,related_name='withdraws')
+  wallet_type=models.CharField(max_length=200,choices=wallet_types)
+  transaction_id=models.IntegerField()
   amount=models.FloatField()
   bkash_number=models.CharField(max_length=200,null=True)
   nid_card=models.ImageField(upload_to='kyc/',null=True)
-  transaction=models.ForeignKey(Transaction,on_delete=models.CASCADE,related_name='withdraws',null=True)
-  approved=models.BooleanField(default=False)
+  status=models.CharField(max_length=200,choices=wallet_status,default='PENDING')
+  created_at=models.DateTimeField(default=timezone.now)
+  updated_at=models.DateTimeField(default=timezone.now)
+  
+  def approve(self):
+    if self.wallet_type == 'STORE':
+      wallet=StoreWallet.objects.get(pk=self.transaction_id)
+    elif self.wallet_type == 'USER':
+      wallet=UserWallet.objects.get(pk=self.transaction_id)
+    else:
+      wallet=None
+    
+    if wallet:
+      wallet.approve()
+      self.status='APPROVED'
+      self.save()
+  
+  def decline(self):
+    if self.wallet_type == 'STORE':
+      wallet=StoreWallet.objects.get(pk=self.transaction_id)
+    elif self.wallet_type == 'USER':
+      wallet=UserWallet.objects.get(pk=self.transaction_id)
+    else:
+      wallet=None
+    
+    if wallet:
+      wallet.decline()
+      self.status='DECLINED'
+      self.save()
   
   def __str__(self):
-      return f"Withdraw {self.amount}"  
+      return f"Withdraw {self.amount}"
 
 class Category(models.Model):
   user=models.ForeignKey(User,related_name='categories',on_delete=models.CASCADE)
@@ -175,8 +233,8 @@ class Order(models.Model):
   advance_payment=models.FloatField(default=0)
   draft=models.BooleanField(default=False)
   status=models.CharField(max_length=200,default='DRAFT')
-  created_at=models.DateTimeField(default=timezone.now())
-  updated_at=models.DateTimeField(default=timezone.now())
+  created_at=models.DateTimeField(default=timezone.now)
+  updated_at=models.DateTimeField(default=timezone.now)
   
   def delivery_fee(self):
     fee = 0.0
@@ -190,7 +248,7 @@ class Order(models.Model):
     return fee
   
   def reseller_profit_percentage(self):
-    return (self.total_reseller_profit() / self.total_cost_number())*100
+    return round((self.total_reseller_profit() / self.total_cost_number())*100,2)
   
   def total_reseller_profit(self):
     total=0.0
@@ -216,13 +274,8 @@ class Order(models.Model):
     
     if sales.count() > 0:
       for sale in sales:
-        amount += sale.sale_price*sale.quantity
+        amount += sale.cost()
         currency = sale.purchase.currency
-    
-    elif resales.count() > 0:
-      for resale in resales:
-        amount += resale.sale_price*resale.quantity
-        currency = resale.purchase.currency
     
     return f"{amount} {currency.code}"
   
@@ -285,10 +338,11 @@ class Sale(models.Model):
       wallet.save()
   
   def sale(self):
-    storeWallet=self.purchase.inventory.store.store_wallets.filter(currency=self.purchase.currency).first()
+    storeWallet=self.purchase.inventory.store.store_wallets.filter(currency=self.purchase.currency).last()
     storeAfter=storeWallet.balance_after if storeWallet != None else 0.0
     if self.resale:
-      userWallet=self.order.user.user_wallets.filter(currency=self.purchase.currency).first()
+      userWallet=UserWallet.objects.filter(user=self.order.user,currency=self.purchase.currency).last()
+      #userWallet=self.order.user.user_wallets.filter(currency=self.purchase.currency).last()
       userAfter=userWallet.balance_after if userWallet != None else 0.0
       
       StoreWallet.objects.create(
@@ -296,14 +350,16 @@ class Sale(models.Model):
         currency=self.purchase.currency,
         balance_before=storeAfter,
         balance_after=storeAfter+self.seller_cost(),
-        transaction_reference=f"Resold listing {self.purchase.id} from order {self.order.id}"
+        transaction_reference=f"Resold listing {self.purchase.id} from order {self.order.id}",
+        status='APPROVED'
       )
       UserWallet.objects.create(
-        store=self.purchase.inventory.store,
+        user=self.order.user,
         currency=self.purchase.currency,
         balance_before=userAfter,
         balance_after=userAfter+self.reseller_cost(),
-        transaction_reference=f"Resold listing {self.purchase.id} from order {self.order.id}"
+        transaction_reference=f"Resold listing {self.purchase.id} from order {self.order.id}",
+        status='APPROVED'
       )
     else:
       StoreWallet.objects.create(
@@ -311,7 +367,8 @@ class Sale(models.Model):
         currency=self.purchase.currency,
         balance_before=storeAfter,
         balance_after=storeAfter+self.cost(),
-        transaction_reference=f"Sold listing {self.purchase.id} from order {self.order.id}"
+        transaction_reference=f"Sold listing {self.purchase.id} from order {self.order.id}",
+        status='APPROVED'
       )
       
     self.purchase.stock -= self.quantity
