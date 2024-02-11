@@ -4,6 +4,7 @@ from dashboard.function import getOptions
 from store.models import Order
 from dropshipping import models
 from django.utils import timezone
+import json
 
 def steadfastCreateOrderManual(order:Order,recipient_name:str,recipient_phone:str,recipient_address:str):
   option=getOptions()
@@ -135,19 +136,19 @@ def redxCreateParcel(order:Order):
     "delivery_area": order.delivery_area,
     "delivery_area_id": 1,
     "customer_address": order.customer_address,
-    "merchant_invoice_id": order.id,
+    "merchant_invoice_id": str(order.id),
     "cash_collection_amount": order.total_cost_number(),
     "parcel_weight": 500,
     "instruction": "",
     "value": 100,
-    "is_closed_box": false,
+    "is_closed_box": False,
     "parcel_details_json": []
   }
-  response=requests.post('https://sandbox.redx.com.bd/v1.0.0-beta/parcel',data=payload,headers=headers)
+  response=requests.post('https://sandbox.redx.com.bd/v1.0.0-beta/parcel',data=json.dumps(payload),headers=headers)
   if response.status_code == 201:
     tracking_id = response.json()['tracking_id']
     order.tracking_id=tracking_id
-    return True,'Order successfully submitted for delivery!'
+    return True,f'Order successfully submitted for delivery! {response.text}'
   else:
     return False,f"status_code:{response.status_code}; response_text:{response.text}"
   

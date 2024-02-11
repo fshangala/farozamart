@@ -376,10 +376,11 @@ class AddToResaleCartForm(forms.Form):
     if not order:
       order=models.Order.objects.create(user=self.user,is_reseller=True)
       
-    current = models.Sale.objects.filter(user=self.user,purchase=self.listing,resale=True,approved=False).first()
+    current = models.Sale.objects.filter(user=self.user,purchase=self.listing,order=order,resale=True,approved=False).first()
     if current:
       current.quantity += self.cleaned_data['quantity']
       current.save()
+      print('current',current)
     else:
       sale = models.Sale.objects.create(
         user=self.user,
@@ -390,6 +391,7 @@ class AddToResaleCartForm(forms.Form):
         resale=True,
         approved=False
       )
+      print('new',sale)
     
 
 class ResaleForm(forms.Form):

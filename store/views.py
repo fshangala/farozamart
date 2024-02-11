@@ -7,7 +7,7 @@ from store import forms
 from store import models
 from store import functions
 from store import signals
-from dropshipping.functions import steadfastCreateOrder
+from dropshipping.functions import steadfastCreateOrder, redxCreateParcel
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from dropshipping.models import SteadFastDelivery
@@ -385,6 +385,7 @@ class DeleteResale(LoginRequiredMixin,View):
 
 # dashboard reseller cart
 reseller_cart_context = {}
+@method_decorator(never_cache,'dispatch')
 class ResellerCart(LoginRequiredMixin,View):
   template_name='store/reseller-cart.html'
   
@@ -876,7 +877,8 @@ class StaffDeliverOrder(LoginRequiredMixin,View):
   def get(self,request,id):
     context=staff_orders_context
     order=get_object_or_404(models.Order,pk=id)
-    success,response_text = steadfastCreateOrder(order=order)
+    #success,response_text = steadfastCreateOrder(order=order)
+    success,response_text=redxCreateParcel(order=order)
     messages.success(request,response_text)
     if success:
       signals.order_submitted_for_delivery.send(models.Order,order=order)
