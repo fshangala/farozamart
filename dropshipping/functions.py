@@ -108,7 +108,7 @@ def steadfastCreateOrder(order:Order):
         'recipient_address':order.user.profile.address,
         'cod_amount':0
       }
-      response = requests.post('https://portal.steadfast.com.bd/api/v1/create-order',data=data,headers=header)
+      response = requests.post('https://portal.steadfast.com.bd/api/v1/create-order',data=json.dumps(data),headers=header)
       if response.status_code == 200:
         resulte = response.json()['consignment']
         models.SteadFastDelivery.objects.create(
