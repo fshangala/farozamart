@@ -101,14 +101,15 @@ def steadfastCreateOrder(order:Order):
         'Api-Secrete':option.get('steadfast_api_secrete'),
         'Content-Type':'application/json'
       }
+      #print(header)
       data={
-        'invoice':order.id,
+        'invoice':str(order.id),
         'recipient_name':order.user.profile.full_name(),
         'recipient_phone':order.user.profile.phone,
         'recipient_address':order.user.profile.address,
-        'cod_amount':0
+        'cod_amount':order.total_cost_number()
       }
-      response = requests.post('https://portal.steadfast.com.bd/api/v1/create-order',data=json.dumps(data),headers=header)
+      response = requests.post('https://portal.steadfast.com.bd/api/v1/create_order',json=data,headers=header)
       if response.status_code == 200:
         resulte = response.json()['consignment']
         models.SteadFastDelivery.objects.create(

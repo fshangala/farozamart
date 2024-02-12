@@ -877,8 +877,8 @@ class StaffDeliverOrder(LoginRequiredMixin,View):
   def get(self,request,id):
     context=staff_orders_context
     order=get_object_or_404(models.Order,pk=id)
-    #success,response_text = steadfastCreateOrder(order=order)
-    success,response_text=redxCreateParcel(order=order)
+    success,response_text = steadfastCreateOrder(order=order)
+    #success,response_text=redxCreateParcel(order=order)
     messages.success(request,response_text)
     if success:
       signals.order_submitted_for_delivery.send(models.Order,order=order)
