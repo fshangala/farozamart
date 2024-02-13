@@ -92,7 +92,7 @@ class StoreWallet(models.Model):
       return f"{self.store.name}#{self.id}: {self.balance_after} {self.currency.code}"
 
 class UserWallet(models.Model):
-  user=models.OneToOneField(User,related_name='user_wallets',on_delete=models.CASCADE)
+  user=models.ForeignKey(User,related_name='user_wallets',on_delete=models.CASCADE)
   currency=models.ForeignKey(Currency,related_name='user_wallets',on_delete=models.CASCADE)
   balance_before=models.FloatField(default=0.0)
   balance_after=models.FloatField(default=0.0)

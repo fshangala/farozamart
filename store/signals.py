@@ -134,6 +134,7 @@ order_comfirmed=Signal()
 def catch_order_comfirmed(sender,order:models.Order,**kwargs):
     steadfastCreateOrder(order=order)
     #success,response_text=redxCreateParcel(order=order)
+    
     options = getOptions()
     send_mail(
         f"{options['name']} - Order comfirmed",

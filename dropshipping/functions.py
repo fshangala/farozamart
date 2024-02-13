@@ -98,16 +98,15 @@ def steadfastCreateOrder(order:Order):
     else:
       header={
         'Api-Key':option.get('steadfast_api_key'),
-        'Api-Secrete':option.get('steadfast_api_secrete'),
+        'Secret-Key':option.get('steadfast_api_secrete'),
         'Content-Type':'application/json'
       }
-      #print(header)
       data={
-        'invoice':str(order.id),
-        'recipient_name':order.user.profile.full_name(),
-        'recipient_phone':order.user.profile.phone,
-        'recipient_address':order.user.profile.address,
-        'cod_amount':order.total_cost_number()
+        "invoice":str(order.id),
+        "recipient_name":order.customer_name,
+        "recipient_phone":order.customer_phone,
+        "recipient_address":order.customer_address,
+        "cod_amount":order.total_cost_number()
       }
       response = requests.post('https://portal.steadfast.com.bd/api/v1/create_order',json=data,headers=header)
       if response.status_code == 200:
