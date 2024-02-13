@@ -806,7 +806,7 @@ class StaffOrders(LoginRequiredMixin,View):
   template_name='store/staff/orders.html'
   def get(self,request):
     context=staff_orders_context
-    if not request.user.is_staff:
+    if request.user.is_staff:
       orders = models.Order.objects.all()
     else:
       orders = request.user.orders.all()

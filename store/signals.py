@@ -3,6 +3,7 @@ from store import models
 from django.core.mail import send_mail
 from dashboard.function import getOptions
 from dropshipping.functions import steadfastCreateOrder, steadfastCreateOrderManual, redxCreateParcel
+from dropshipping.models import SteadFastDelivery
 
 withdraw_request_submitted = Signal()
 def catch_withdraw_request_submitted(sender,withdraw:models.Withdraw,**kwargs):
@@ -136,9 +137,11 @@ def catch_order_comfirmed(sender,order:models.Order,**kwargs):
     #success,response_text=redxCreateParcel(order=order)
     
     options = getOptions()
+    delivery=SteadFastDelivery.objects.filter(invoice=order.id).first()
+    message = f"Your order with ID {order.id} and Tracking ID {delivery.tracking_code} has been comfirmed and will be delivered to you, you can log in to your profile and check the progess." if delivery else f"Your order with ID {order.id} has been comfirmed and will be delivered to you, you can log in to your profile and check the progess."
     send_mail(
         f"{options['name']} - Order comfirmed",
-        f"Your order with ID {order.id} has been comfirmed and will be delivered to you, you can log in to your profile and check the progess.",
+        message,
         options['site_mail'],
         [order.user.email]
     )
@@ -156,9 +159,11 @@ def catch_order_declined(sender,order:models.Order,**kwargs):
 order_submitted_for_delivery=Signal()
 def catch_order_submitted_for_delivery(sender,order:models.Order,**kwargs):
     options = getOptions()
+    delivery=SteadFastDelivery.objects.filter(invoice=order.id).first()
+    message=f"Your order with ID {order.id} and tracking ID {delivery.tracking_code} has been submitted for delivery, you will receive it soon." if delivery else f"Your order with ID {order.id} has been submitted for delivery, you will receive it soon."
     send_mail(
         f"{options['name']} - Order submitted for delivery",
-        f"Your order with ID {order.id} has been submitted for delivery, you will receive it soon.",
+        message,
         options['site_mail'],
         [order.user.email]
     )

@@ -52,3 +52,12 @@ def CODPayment(pk) -> models.Order:
   steadfastCreateOrder(order)
   
   return order
+
+def HTMLInvoice(order:models.Order):
+  html='<html><head>'
+  html+=f'<title>Invoice #{order.id}</title>'
+  html+='<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">'
+  html+='</head></html>'
+  html+='</head></html>'
+  
+  return html
