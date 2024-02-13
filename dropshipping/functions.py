@@ -110,16 +110,21 @@ def steadfastCreateOrder(order:Order):
       }
       response = requests.post('https://portal.steadfast.com.bd/api/v1/create_order',json=data,headers=header)
       if response.status_code == 200:
-        resulte = response.json()['consignment']
-        models.SteadFastDelivery.objects.create(
-          consignment_id=resulte['consignment_id'],
-          invoice=resulte['invoice'],
-          tracking_code=resulte['tracking_code'],
-          status=resulte['status'],
-          created_at=resulte['created_at'],
-          updated_at=resulte['updated_at']
-        )
-        return True,'Order successfully submitted for delivery!'
+        print(response.json())
+        output_data = response.json()
+        if output_data.get('consignment'):
+          resulte=output_data['consignment']
+          models.SteadFastDelivery.objects.create(
+            consignment_id=resulte['consignment_id'],
+            invoice=resulte['invoice'],
+            tracking_code=resulte['tracking_code'],
+            status=resulte['status'],
+            created_at=resulte['created_at'],
+            updated_at=resulte['updated_at']
+          )
+          return True,'Order successfully submitted for delivery!'
+        else:
+          return False,str(response.json())
       else:
         return False,f"status_code:{response.status_code}; response_text:{response.text}"
   else:
