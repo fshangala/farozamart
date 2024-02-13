@@ -486,7 +486,7 @@ class ListingForm(forms.Form):
 
 class CODCheckoutForm(forms.Form):
   name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
-  phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  phone=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),help_text="Phone number should start with country code i.e +880")
   address=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
   delivery_area=forms.ChoiceField(widget=forms.Select(attrs={'class':'form-control'}))
   
@@ -505,6 +505,14 @@ class CODCheckoutForm(forms.Form):
       ('INSIDE_DHAKA',f"Inside Dhaka (+{options['steadfast_delivery_inside_dhaka']} BDT)"),
       ('NONE','None'),
     )
+  
+  def clean_phone(self):
+    """Check for country code"""
+    phone = self.cleaned_data.get("phone")
+    if phone and phone[0] != "+":
+      self.add_error('phone','Please enter phone with country code')
+    
+    return phone
   
   def save(self):
     self.order.customer_name = self.cleaned_data['name']

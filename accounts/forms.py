@@ -37,11 +37,15 @@ class RegistrationForm(forms.Form):
     'placeholder':'********'
   }))
   
+  def __init__(self,*args,**kwargs):
+    super().__init__(*args,**kwargs)
+    
+    self.initial['phone']="+880"
+  
   def clean_phone(self):
     """Check for country code"""
     phone = self.cleaned_data.get("phone")
     if phone and phone[0] != "+":
-      print(phone[0])
       self.add_error('phone','Please enter phone with country code')
     
     return phone
