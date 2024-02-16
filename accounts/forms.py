@@ -3,7 +3,8 @@ from accounts.models import gender_options
 from django.contrib.auth.models import User
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.mail import send_mail
-from dashboard.function import getOptions
+from dashboard.function import getOptions, saveOption
+import random
 
 class RegistrationForm(forms.Form):
   username=forms.CharField(max_length=200,widget=forms.TextInput(attrs={
@@ -177,3 +178,63 @@ class VerifyUserEmailForm(forms.Form):
   def save(self):
     self.user.profile.user_email_verified=True
     self.user.profile.save()
+
+class GetPasswordResetCode(forms.Form):
+  email=forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}))
+  
+  def clean_email(self):
+    data=self.cleaned_data['email']
+    if not User.objects.filter(email=data).exists():
+      self.add_error('email','This email is not associated with any account!')
+    
+    return data
+  
+  def save(self):
+    otp=random.randint(1000,9999)
+    saveOption('otp',otp)
+    options = getOptions()
+    send_mail(
+      f"{options['name']} - User password reset code",
+      f"{otp} is your password reset code.",
+      options['site_mail'],
+      [self.cleaned_data['email']]
+    )
+
+class ResetPassword(forms.Form):
+  reset_code=forms.CharField(widget=forms.NumberInput(attrs={'class':'form-control'}))
+  password=forms.CharField(max_length=200,widget=forms.PasswordInput(attrs={
+    'class':'form-control',
+    'placeholder':'********'
+  }))
+  repeat_password=forms.CharField(max_length=200,widget=forms.PasswordInput(attrs={
+    'class':'form-control',
+    'placeholder':'********'
+  }))
+  
+  def __init__(self,email:str,*args,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.email=email
+  
+  def clean_reset_code(self):
+    code=self.cleaned_data['reset_code']
+    options=getOptions()
+    if code != int(options['otp']):
+      self.add_error('reset_code','Invalid code.')
+    
+    return code
+  
+  def clean(self):
+    cleaned_data = super().clean()
+    
+    if not User.objects.filter(email=self.email).exists():
+      self.add_error(error='User email not associated with any account.')
+      
+    if(cleaned_data.get('password') != cleaned_data.get('repeat_password') and cleaned_data.get('password')):
+      self.add_error(error='Password and Repeat password must match')
+    
+    return cleaned_data
+  
+  def save(self):
+    user=User.objects.filter(email=self.email).first()
+    self.user.set_password(self.cleaned_data['password'])
+    self.save()

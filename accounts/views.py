@@ -180,3 +180,57 @@ class VerifyUserEmail(LoginRequiredMixin,View):
       return redirect(reverse('accounts:profile'))
     context['form']=form
     return render(request,self.template_name,context)
+
+class ForgotPassword(View):
+  template_name='registration/forgot-password.html'
+  def get(self,request):
+    form = forms.GetPasswordResetCode()
+    context={
+      'form':form,
+      'get_parameters':request.GET
+    }
+    return render(request,self.template_name,context)
+  
+  def post(self,request):
+    form = forms.GetPasswordResetCode(data=request.POST)
+    
+    nextPage = request.GET.get('next')
+    if not nextPage:
+      nextPage = reverse('home:home')
+    if form.is_valid():
+      form.save()
+      messages.success(request,'The password reset code has been sent to your email.')
+      return redirect(reverse('accounts:forgot-password-reset',kwargs={'email':request.POST['email']})) # TODO: redirect to reset password
+    
+    context={
+      'form':form,
+      'get_parameters':request.GET
+    }
+    return render(request,self.template_name,context)
+
+class ForgotPasswordReset(View):
+  template_name='registration/forgot-password.html'
+  def get(self,request,email):
+    form = forms.ResetPassword(email=email)
+    context={
+      'form':form,
+      'get_parameters':request.GET
+    }
+    return render(request,self.template_name,context)
+  
+  def post(self,request,email):
+    form = forms.ResetPassword(email=email,data=request.POST)
+    
+    nextPage = request.GET.get('next')
+    if not nextPage:
+      nextPage = reverse('home:home')
+    if form.is_valid():
+      form.save()
+      messages.success(request,'The password reset was successfull, you can login with your new password.')
+      return redirect(nextPage)
+    
+    context={
+      'form':form,
+      'get_parameters':request.GET
+    }
+    return render(request,self.template_name,context)
