@@ -218,7 +218,7 @@ class ResetPassword(forms.Form):
   def clean_reset_code(self):
     code=self.cleaned_data['reset_code']
     options=getOptions()
-    if code != int(options['otp']):
+    if code != options['otp']:
       self.add_error('reset_code','Invalid code.')
     
     return code
