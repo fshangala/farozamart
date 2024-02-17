@@ -236,5 +236,5 @@ class ResetPassword(forms.Form):
   
   def save(self):
     user=User.objects.filter(email=self.email).first()
-    self.user.set_password(self.cleaned_data['password'])
-    self.save()
+    user.set_password(self.cleaned_data['password'])
+    save()
