@@ -24,7 +24,10 @@
               <td>{{cart_item.quantity}}</td>
               <td>{{cart_item.sale_price}}</td>
               <td>{{cart_item.cost}}</td>
-              <td><a href='{% url "store:delete-cart-item" id=cart_item.id %}' class='mx-2 btn btn-danger'>Delete</a></td>
+              <td>
+                <button class="btn btn-primary">Update</button>
+                <a href='{% url "store:delete-cart-item" id=cart_item.id %}' class='mx-2 btn btn-danger'>Delete</a>
+              </td>
             </tr>
             {% endfor %}
           </tbody>

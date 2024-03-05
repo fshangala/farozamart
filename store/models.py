@@ -142,7 +142,29 @@ class Withdraw(models.Model):
     if wallet:
       wallet.approve()
       self.status='APPROVED'
+      self.updated_at=timezone.now()
       self.save()
+    
+      if self.wallet_type == 'STORE':
+        pre_transaction=StoreWallet.objects.get(pk=self.transaction_id)
+        transaction=StoreWallet.objects.create(
+          store=pre_transaction.store,
+          currency=pre_transaction.currency,
+          balance_before=pre_transaction.balance_after,
+          balance_after=pre_transaction.balance_after-(pre_transaction.balance_after*0.05),
+          transaction_reference=f"5% Service fee on WITHDRAW of {self.amount} to BKASH {self.bkash_number}"
+        )
+      elif self.wallet_type == 'USER': 
+        pre_transaction=models.UserWallet.objects.get(pk=self.transaction_id)
+        transaction=UserWallet.objects.create(
+          user=pre_transaction.user,
+          currency=pre_transaction.currency,
+          balance_before=pre_transaction.balance_after,
+          balance_after=pre_transaction.balance_after-(pre_transaction.balance_after*0.05),
+          transaction_reference=f"5% Service fee on WITHDRAW of {self.amount} to BKASH {self.bkash_number}"
+        )
+      else:
+        pre_transaction=None
   
   def decline(self):
     if self.wallet_type == 'STORE':
@@ -155,6 +177,7 @@ class Withdraw(models.Model):
     if wallet:
       wallet.decline()
       self.status='DECLINED'
+      self.updated_at=timezone.now()
       self.save()
   
   def __str__(self):
