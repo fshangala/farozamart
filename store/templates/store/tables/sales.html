@@ -14,7 +14,6 @@
   <div class="box-body table-responsive no-padding">
     <table class="table table-hover">
       <tr>
-        <th>Order ID</th>
         <th>Customer</th>
         <th>Resale</th>
         <th>Inventory</th>
@@ -24,14 +23,13 @@
       </tr>
       {% for sale in sales %}
       <tr>
-        <td>{{sale.order.id}}</td>
         <td>{{sale.user.profile.full_name}}</td>
         <td>{{sale.resale}}</td>
-        <td>{{sale.purchase.inventory.name}}</td>
+        <td><a href="{{sale.purchase.listing_url}}">{{sale.purchase.inventory.name}} <img src="/media/{{sale.purchase.inventory.picture}}" width=50 /></a></td>
         <td>{{sale.quantity}}</td>
-        <td>{{sale.sale_price}}</td>
+        <td>{{sale.get_sale_price}}</td>
         <td>
-          <a href="{% url "store:sales-order" id=sale.order.id %}" class="btn btn-primary">View Order</a>
+          <a href="{% url "store:sales-item" id=sale.id %}" class="btn btn-primary">View</a>
         </td>
       </tr>
       {% endfor %}

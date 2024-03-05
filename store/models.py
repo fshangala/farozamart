@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from dashboard.function import getOptions
+from django.shortcuts import reverse
 
 # Create your models here.
     
@@ -82,10 +83,12 @@ class StoreWallet(models.Model):
   
   def approve(self):
     self.status='APPROVED'
+    self.updated_at=timezone.now()
     self.save()
   
   def decline(self):
     self.status='DECLINED'
+    self.updated_at=timezone.now()
     self.save()
   
   def __str__(self):
@@ -103,10 +106,12 @@ class UserWallet(models.Model):
   
   def approve(self):
     self.status='APPROVED'
+    self.updated_at=timezone.now()
     self.save()
   
   def decline(self):
     self.status='DECLINED'
+    self.updated_at=timezone.now()
     self.save()
   
   def __str__(self):
@@ -189,6 +194,9 @@ class Purchase(models.Model):
   resale_price=models.FloatField(default=0.0)
   sku=models.CharField(max_length=100,unique=True,null=True)
   currency=models.ForeignKey(Currency,related_name='purchases',on_delete=models.CASCADE)
+  
+  def listing_url(self)->str:
+    return reverse('store:listing', kwargs={'id':self.id})
   
   def generateSKU(self)->str:
     return f"F{self.inventory.store.id}{self.inventory.id}{self.inventory.category.id}{self.id}"
@@ -293,6 +301,9 @@ class Sale(models.Model):
   resale=models.BooleanField(default=False)
   approved=models.BooleanField(default=False)
   
+  def get_sale_price(self)->str:
+    return f"{self.sale_price} {self.purchase.currency.code}"
+  
   def purchase_cost(self)->float:
     """Cost according to sale quantity and purchase price"""
     return self.quantity*self.purchase.purchase_price
@@ -300,6 +311,9 @@ class Sale(models.Model):
   def cost(self)->float:
     """Total cost according to sale quantity and sale price"""
     return self.quantity*self.sale_price
+  
+  def get_cost(self)->str:
+    return f"{self.cost()} {self.purchase.currency.code}"
   
   def seller_cost(self)->float:
     """Cost according to sale quantity and resale price"""
@@ -313,13 +327,22 @@ class Sale(models.Model):
     """Total profit on the sale"""
     return self.cost() - self.purchase_cost()
   
+  def get_profit(self)->str:
+    return f"{self.profit()} {self.purchase.currency.code}"
+  
   def seller_profit(self):
     """Profit for the seller in a resale"""
     return self.seller_cost() - self.purchase_cost()
   
+  def get_seller_profit(self)->str:
+    return f"{self.seller_profit()} {self.purchase.currency.code}"
+  
   def reseller_profit(self):
     """Profit for the reseller in a resale"""
     return self.profit() - self.seller_profit()
+  
+  def get_reseller_profit(self)->str:
+    return f"{self.reseller_profit()} {self.purchase.currency.code}"
   
   def approve(self):
     self.purchase.stock -= self.quantity
@@ -407,4 +430,26 @@ class Resale(models.Model):
   def __str__(self):
       return f"{self.purchase.inventory.name} -> Resale {self.sale_price}x{self.quantity}"
   
+class StoreAccount(models.Model):
+  store=models.ForeignKey(Store,on_delete=models.CASCADE,related_name='store_accounts')
+  bank_name=models.CharField(max_length=200)
+  bank_address=models.CharField(max_length=200)
+  routing=models.CharField(max_length=200)
+  account_number=models.CharField(max_length=200)
+  account_type=models.CharField(max_length=200)
+  account_name=models.CharField(max_length=200)
   
+  def __str__(self):
+      return self.account_name
+  
+class UserAccount(models.Model):
+  user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='user_accounts')
+  bank_name=models.CharField(max_length=200)
+  bank_address=models.CharField(max_length=200,null=True)
+  routing=models.CharField(max_length=200,null=True)
+  account_number=models.CharField(max_length=200)
+  account_type=models.CharField(max_length=200)
+  account_name=models.CharField(max_length=200)
+  
+  def __str__(self):
+      return self.account_name

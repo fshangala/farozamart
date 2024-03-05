@@ -1,0 +1,61 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{block.super}} | Dashboard - Sale {{sale.id}}{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Sale {{sale.id}}
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li><a href="{% url "store:sales" %}"><i class="fa fa-dashboard"></i> Sales</a></li>
+  <li class="active">Sale {{sale.id}}</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+<div class="box">
+  <div class="box-header">
+    <h3 class="box-title">Sale</h3>
+  </div><!-- /.box-header -->
+  <div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+      <tr>
+        <th>ID</th>
+        <td>{{sale.id}}</td>
+      </tr>
+      <tr>
+        <th>Product</th>
+        <td><a href="{{sale.purchase.listing_url}}">{{sale.purchase.inventory.name}} <img src="/media/{{sale.purchase.inventory.picture}}" width=50 /></a></td>
+      </tr>
+      <tr>
+        <th>Quantity</th>
+        <td>{{sale.quantity}}</td>
+      </tr>
+      <tr>
+        <th>Sale price</th>
+        <td>{{sale.get_sale_price}}</td>
+      </tr>
+      <tr>
+        <th>Total price</th>
+        <td>{{sale.get_cost}}</td>
+      </tr>
+      {% if sale.resale %}
+      <tr>
+        <th>Seller profit</th>
+        <td>{{sale.get_seller_profit}}</td>
+      </tr>
+      <tr>
+        <th>Reseller profit</th>
+        <td>{{sale.get_reseller_profit}}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <th>Profit</th>
+        <td>{{sale.get_profit}}</td>
+      </tr>
+      {% endif %}
+    </table>
+  </div><!-- /.box-body -->
+</div><!-- /.box -->
+{% endblock content %}

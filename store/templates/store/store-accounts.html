@@ -1,0 +1,20 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ block.super }} | Store Accounts{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Store Accounts
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li class="active">Store Accounts</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+<div class=''>
+  <a href="{% url "store:create-store-account" %}" class="btn btn-primary">Add Account</a>
+</div>
+{% include "store/tables/accounts.html" %}
+{% endblock content %}

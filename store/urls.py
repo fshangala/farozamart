@@ -49,6 +49,8 @@ urlpatterns = [
   path('dashboard/users/id/<user_id>/',views.StaffGeneralProfile.as_view(),name='staff-user'),
   path('dashboard/users/id/<user_id>/block-unblock/',views.StaffBlocOrUnblockUser.as_view(),name='staff-block-unblock-user'),
   
+  path('dashboard/receiving-accounts/',views.StaffRecevingAccounts.as_view(),name='staff-receiving-accounts'),
+  
   # seller
   path('dashboard/inventory/',views.Inventory.as_view(),name='inventory'),
   path('dashboard/new-inventory/',views.NewInventory.as_view(),name='new-inventory'),
@@ -67,15 +69,21 @@ urlpatterns = [
   path('dashboard/purchases/<id>/delete/',views.DeletePurchase.as_view(),name='delete-purchase'),
   
   path('dashboard/sales/',views.Sales.as_view(),name='sales'),
+  path('dashboard/sales/wallet/<currency_code>/',views.StoreWallet.as_view(),name='store-wallet'),
   path('dashboard/sales/new/',views.NewSale.as_view(),name='new-sale'),
+  path('dashboard/sales/<id>/',views.SalesItem.as_view(),name='sales-item'),
   path('dashboard/sales/<id>/edit/',views.EditSale.as_view(),name='edit-sale'),
   path('dashboard/sales/<id>/delete/',views.DeleteSale.as_view(),name='delete-sale'),
   path('dashboard/sales/order/<id>/',views.SalesOrder.as_view(),name='sales-order'),
   path('dashboard/sales/withdraw/<currency_id>/',views.StoreWithdraw.as_view(),name='sales-withdraw-request'),
   path('dashboard/sales/withdraw/cancel/<id>/',views.CancelWithdraw.as_view(),name='sales-cancel-withdraw-request'),
   
+  path('dashboard/store-accounts/',views.StoreAccounts.as_view(),name='store-accounts'),
+  path('dashboard/store-accounts/create/',views.CreateStoreAccount.as_view(),name='create-store-account'),
+  
   # reseller
   path('dashboard/resale/',views.Resales.as_view(),name='resales'),
+  path('dashboard/resale/wallet/<currency_code>/',views.UserWallet.as_view(),name='user-wallet'),
   path('dashboard/resale/<id>/delete',views.DeleteResale.as_view(),name='delete-resale'),
   path('dahsboard/resale/purchases/',views.ResalePurchases.as_view(),name='resale-purchases'),
   path('dahsboard/resale/purchases/<id>/',views.ResalePurchase.as_view(),name='resale-purchase'),
@@ -84,4 +92,7 @@ urlpatterns = [
   path('dashboard/reseller/cart/',views.ResellerCart.as_view(),name='reseller-cart'),
   path('dashboard/reseller/cart/clear/',views.ClearResellerCart.as_view(),name='clear-reseller-cart'),
   path('dashboard/reseller/cart/cod-checkout/',views.ResellerCODCheckout.as_view(),name='reseller-cod-checkout'),
+  
+  path('dashboard/user-accounts/',views.UserAccounts.as_view(),name='user-accounts'),
+  path('dashboard/user-accounts/create/',views.CreateUserAccount.as_view(),name='create-user-account'),
 ]

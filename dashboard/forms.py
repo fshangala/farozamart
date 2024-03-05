@@ -12,3 +12,10 @@ class GeneralOptionsForm(forms.Form):
   def save(self):
     for x in ['name','tag_line','description','site_mail','site_phone','business_address']:
       function.saveOption(x,self.cleaned_data[x])
+
+class MailingForm(forms.Form):
+  mailing_status=forms.ChoiceField(choices=(('ACTIVATED','Activated'),('DEACTIVATED','Deactivated')), widget=forms.Select(attrs={'class':'form-control'}))
+  
+  def save(self):
+    for x in ['mailing_status']:
+      function.saveOption(x,self.cleaned_data[x])

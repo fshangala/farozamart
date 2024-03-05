@@ -671,3 +671,49 @@ class WithdrawRequestForm(forms.Form):
         return False,'Wallet is empty'
     else:
       return False,'Invalid wallet type'
+  
+class CreateStoreAccountForm(forms.Form):
+  bank_name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  bank_address=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),required=False)
+  routing=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),required=False)
+  account_number=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  account_type=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  account_name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  
+  def __init__(self,store:models.Store,*args,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.store=store
+  
+  def save(self):
+    models.StoreAccount.objects.create(
+      store=self.store,
+      bank_name=self.cleaned_data['bank_name'],
+      bank_address=self.cleaned_data['bank_address'],
+      routing=self.cleaned_data['routing'],
+      account_number=self.cleaned_data['account_number'],
+      account_type=self.cleaned_data['account_type'],
+      account_name=self.cleaned_data['account_name'],
+    )
+
+class CreateUserAccountForm(forms.Form):
+  bank_name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  bank_address=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),required=False)
+  routing=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}),required=False)
+  account_number=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  account_type=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  account_name=forms.CharField(max_length=200,widget=forms.TextInput(attrs={'class':'form-control'}))
+  
+  def __init__(self,user:User,*args,**kwargs):
+    super().__init__(*args,**kwargs)
+    self.user=user
+  
+  def save(self):
+    models.UserAccount.objects.create(
+      user=self.user,
+      bank_name=self.cleaned_data['bank_name'],
+      bank_address=self.cleaned_data['bank_address'],
+      routing=self.cleaned_data['routing'],
+      account_number=self.cleaned_data['account_number'],
+      account_type=self.cleaned_data['account_type'],
+      account_name=self.cleaned_data['account_name'],
+    )

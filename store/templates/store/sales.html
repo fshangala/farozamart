@@ -13,7 +13,23 @@
 {% endblock contentHeader %}
 
 {% block content %}
-{% include "store/tables/store-wallets.html" %}
+<div class="row">
+  <div class="col-lg-3 col-xs-6">
+    {% for wallet in store_wallets %}
+    <!-- small box -->
+    <div class="small-box bg-aqua-gradient">
+      <div class="inner">
+        <h3>{{wallet.balance_after}}</h3>
+        <p>{{wallet.currency.code}}</p>
+      </div>
+      <div class="icon">
+        <i class="glyphicon glyphicon-card"></i>
+      </div>
+      <a href="{% url "store:store-wallet" currency_code=wallet.currency.code %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+    </div>
+    {% endfor %}
+  </div><!-- ./col -->
+</div>
 {% include "store/tables/sales.html" %}
 {% include "store/tables/withdraws.html" %}
 {% endblock content %}

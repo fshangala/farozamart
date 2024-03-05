@@ -382,6 +382,32 @@ class DeleteResale(LoginRequiredMixin,View):
     resale.delete()
     messages.info(request,'Resale deleted!')
     return redirect(reverse("store:resales"))
+  
+user_accounts_context={
+  'sidebar_user_accounts_class':'active'
+}
+class UserAccounts(LoginRequiredMixin,View):
+  template_name='store/user-accounts.html'
+  def get(self,request):
+    context=user_accounts_context
+    context['accounts']=request.user.user_accounts.all()
+    return render(request,self.template_name,context)
+
+class CreateUserAccount(LoginRequiredMixin,View):
+  template_name='store/create-user-account.html'
+  def get(self,request):
+    context=store_accounts_context
+    context['form']=forms.CreateUserAccountForm(user=request.user)
+    return render(request,self.template_name,context)
+  def post(self,request):
+    context=store_accounts_context
+    form=forms.CreateUserAccountForm(user=request.user,data=request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'Account successfully added!')
+      return redirect(reverse('store:user-accounts'))
+    context['form']=form
+    return render(request,self.template_name,context)
 
 # dashboard reseller cart
 reseller_cart_context = {}
@@ -461,6 +487,15 @@ class ResellerCODCheckout(LoginRequiredMixin,View):
       context['order']=order
       context['form']=form
     return render(request,self.template_name,context)
+
+class UserWallet(LoginRequiredMixin,View):
+  template_name='store/wallet-info.html'
+  def get(self,request,currency_code):
+    context=resales_context
+    currency = models.Currency.objects.get(code=currency_code)
+    context['currency']=currency
+    context['wallet']=currency.user_wallets.filter(user=request.user).order_by('-id')
+    return render(request,self.template_name,context)
   
 # dashboard sales
 sales_context = {
@@ -495,6 +530,14 @@ class Sales(LoginRequiredMixin,View):
     context['withdraws']=withdraws
     context['sales']=functions.getUserSales(request.user)
     
+    return render(request,self.template_name,context)
+
+class SalesItem(LoginRequiredMixin,View):
+  template_name='store/sales-item.html'
+  def get(self,request,id):
+    context=sales_context
+    sale=models.Sale.objects.get(pk=id)
+    context['sale']=sale
     return render(request,self.template_name,context)
 
 class NewSale(LoginRequiredMixin,View):
@@ -555,6 +598,15 @@ class SalesOrder(LoginRequiredMixin,View):
     context['order']=order
     return render(request,self.template_name,context)
 
+class StoreWallet(LoginRequiredMixin,View):
+  template_name='store/wallet-info.html'
+  def get(self,request,currency_code):
+    context=sales_context
+    currency = models.Currency.objects.get(code=currency_code)
+    context['currency']=currency
+    context['wallet']=currency.store_wallets.filter(store=request.user.store).order_by('-id')
+    return render(request,self.template_name,context)
+
 class StoreWithdraw(LoginRequiredMixin,View):
   template_name='store/withdraw.html'
   def get(self,request,currency_id):
@@ -602,6 +654,33 @@ class CancelWithdraw(LoginRequiredMixin,View):
     withdraw.delete()
     messages.info(request,'Withdraw canceled!')
     return redirect(reverse('store:sales'))
+
+# store accounts
+store_accounts_context={
+  'nav_store_accounts_class':'active'
+}
+class StoreAccounts(LoginRequiredMixin,View):
+  template_name='store/store-accounts.html'
+  def get(self,request):
+    context=store_accounts_context
+    context['accounts']=request.user.store.store_accounts.all()
+    return render(request,self.template_name,context)
+
+class CreateStoreAccount(LoginRequiredMixin,View):
+  template_name='store/create-store-account.html'
+  def get(self,request):
+    context=store_accounts_context
+    context['form']=forms.CreateStoreAccountForm(store=request.user.store)
+    return render(request,self.template_name,context)
+  def post(self,request):
+    context=store_accounts_context
+    form=forms.CreateStoreAccountForm(store=request.user.store,data=request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'Account successfully added!')
+      return redirect(reverse('store:store-accounts'))
+    context['form']=form
+    return render(request,self.template_name,context)
 
 # shop
 shop_context={
@@ -902,6 +981,24 @@ class StaffApproveWithdraw(LoginRequiredMixin,View):
     signals.withdraw_request_approved.send(models.Withdraw,withdraw=withdraw)
     messages.success(request,'Withdraw request approved')
     return redirect(reverse('store:staff-withdraws'))
+
+#Staff sellers
+staff_receiving_accounts_context={
+  'sidebar_menu_staff_receiving_accounts_class':'active'
+}
+class StaffRecevingAccounts(LoginRequiredMixin,View):
+  template_name='store/staff/receiving-accounts.html'
+  def get(self,request):
+    context=staff_receiving_accounts_context
+    store_accounts=models.StoreAccount.objects.all()
+    user_accounts=models.UserAccount.objects.all()
+    accounts = []
+    for a in store_accounts:
+      accounts.append(a)
+    for b in user_accounts:
+      accounts.append(b)
+    context['accounts']=accounts
+    return render(request,self.template_name,context)
 
 #Staff sellers
 staff_sellers_context={

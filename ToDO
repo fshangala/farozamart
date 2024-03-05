@@ -1,3 +1,8 @@
-1. email tracking id to order user
-2. reseller withdraw
-3. html email
+TODO:
+  * Payment method for seller and reseller
+  * 5% on withdraws
+  * balance breakdown
+  * order view only seller products
+  * product url and product image
+  * view order listed price
+  - seller and reseller account on their page

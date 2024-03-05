@@ -1,0 +1,55 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{block.super}} | Dashboard - Wallet {{wallet.id}}{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Wallet {{wallet.id}}
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li><a href="{% url "store:sales" %}"><i class="fa fa-dashboard"></i> Sales</a></li>
+  <li class="active">Wallet {{wallet.id}}</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+<div class="box">
+  <div class="box-header">
+    <h3 class="box-title">{{currency.code}} Wallet</h3>
+    <div class="box-tools">
+      <div class="input-group">
+        <input type="text" name="table_search" class="form-control input-sm pull-right" style="width: 150px;" placeholder="Search"/>
+        <div class="input-group-btn">
+          <button class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /.box-header TODO: add withdraw button-->
+  <div class="box-body table-responsive no-padding">
+    <a href="{% url "store:sales-withdraw-request" currency_id=currency.id %}" class="btn btn-primary">Withdraw</a>
+    <table class="table table-hover">
+      <tr>
+        <th>Transaction ID</th>
+        <th>Balance before</th>
+        <th>Balance after</th>
+        <th>Description</th>
+        <th>Approved</th>
+        <th>Created at</th>
+        <th>Updated at</th>
+      </tr>
+      {% for transaction in wallet %}
+      <tr>
+        <td>{{transaction.id}}</td>
+        <td>{{transaction.balance_before}}</td>
+        <td>{{transaction.balance_after}}</td>
+        <td>{{transaction.transaction_reference}}</td>
+        <td>{{transaction.status}}</td>
+        <td>{{transaction.created_at}}</td>
+        <td>{{transaction.updated_at}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div><!-- /.box-body -->
+</div><!-- /.box -->
+{% endblock content %}

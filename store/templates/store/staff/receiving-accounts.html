@@ -1,0 +1,17 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ block.super }} | Receiving Accounts{% endblock title %}
+
+{% block contentHeader %}
+<h1>
+  Receiving Accounts
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{% url "dashboard:dashboard" %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+  <li class="active">Receiving Accounts</li>
+</ol>
+{% endblock contentHeader %}
+
+{% block content %}
+{% include "store/tables/accounts.html" %}
+{% endblock content %}

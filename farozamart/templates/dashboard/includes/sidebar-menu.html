@@ -33,6 +33,11 @@
       <i class="glyphicon glyphicon-credit-card"></i> <span>Sales</span>
     </a>
   </li>
+  <li class="{{sidebar_store_accounts_class}}">
+    <a href="{% url "store:store-accounts" %}">
+      <i class="glyphicon glyphicon-credit-card"></i> <span>Store Accounts</span>
+    </a>
+  </li>
   <!--<li class="{{sidebar_menu_steadfast_class}}">
     <a href="{% url "dropshipping:steadfast-delivery" %}">
       <i class="fa fa-shopping-cart"></i> <span>Steadfast Delivery</span>
@@ -52,6 +57,11 @@
       <i class="glyphicon glyphicon-tags"></i> <span>Resale Purchases</span>
     </a>
   </li>
+  <li class="{{sidebar_user_accounts_class}}">
+    <a href="{% url "store:user-accounts" %}">
+      <i class="glyphicon glyphicon-credit-card"></i> <span>User Accounts</span>
+    </a>
+  </li>
   <!--<li class="{{sidebar_menu_steadfast_class}}">
     <a href="{% url "dropshipping:steadfast-delivery" %}">
       <i class="fa fa-shopping-cart"></i> <span>Steadfast Delivery</span>
@@ -69,6 +79,11 @@
   <li class="{{sidebar_menu_staff_withdraws_class}}">
     <a href="{% url "store:staff-withdraws" %}">
       <i class="fa fa-shopping-cart"></i> <span>Withdraws</span>
+    </a>
+  </li>
+  <li class="{{sidebar_menu_staff_receiving_accounts_class}}">
+    <a href="{% url "store:staff-receiving-accounts" %}">
+      <i class="fa fa-shopping-cart"></i> <span>Receiving Accounts</span>
     </a>
   </li>
   <li class="{{sidebar_menu_staff_sellers_class}}">
@@ -94,6 +109,7 @@
     </a>
     <ul class="treeview-menu">
       <li><a href="{% url "dashboard:general-settings" %}"><i class="fa fa-circle-o"></i> General</a></li>
+      <li><a href="{% url "dashboard:mailing-settings" %}"><i class="fa fa-circle-o"></i> Mailing Settings</a></li>
       <li><a href="{% url "store:currencies" %}"><i class="fa fa-circle-o"></i> Currencies</a></li>
       <li><a href="{% url "dropshipping:steadfast-configuration" %}"><i class="fa fa-circle-o"></i> Steadfast Configuration</a></li>
       <li><a href="{% url "paymentgateway:cod-payment" %}"><i class="fa fa-circle-o"></i> COD Payment</a></li>

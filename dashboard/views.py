@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from dashboard.forms import GeneralOptionsForm
+from dashboard.forms import GeneralOptionsForm, MailingForm
 from dashboard.function import getOptions
 from django.contrib import messages
 from store import models as store_models
@@ -46,6 +46,25 @@ class GeneralSettings(LoginRequiredMixin,View):
       form.save()
       messages.success(request,'General options updated!')
       return redirect(reverse('dashboard:general-settings'))
+    
+    context={'form':form}
+    return render(request,self.template_name,context)
+
+class Mailing(LoginRequiredMixin,View):
+  template_name='dashboard/mailing-settings.html'
+  
+  def get(self,request):
+    context={
+      'form':MailingForm(data=getOptions())
+    }
+    return render(request,self.template_name,context)
+  
+  def post(self,request):
+    form = MailingForm(data=request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request,'Mailing options updated!')
+      return redirect(reverse('dashboard:mailing-settings'))
     
     context={'form':form}
     return render(request,self.template_name,context)
