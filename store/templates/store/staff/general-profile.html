@@ -91,6 +91,14 @@
       </tr>
       {% endif %}
     </table>
+    {% if obj.profile.is_seller %}
+    <h3>Store Accounts</h3>
+    {% include "store/tables/accounts.html" with accounts=obj.store.store_accounts.all %}
+    {% endif %}
+    {% if obj.profile.is_reseller %}
+    <h3>User Accounts</h3>
+    {% include "store/tables/accounts.html" with accounts=obj.user_accounts.all %}
+    {% endif %}
   </div><!-- /.box-body -->
 </div><!-- /.box -->
 {% if user.is_staff %}

@@ -25,7 +25,38 @@
               <td>{{cart_item.sale_price}}</td>
               <td>{{cart_item.cost}}</td>
               <td>
-                <button class="btn btn-primary">Update</button>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cart_item_{{cart_item.id}}">
+                  Edit
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" style="z-index:100000;" id="cart_item_{{cart_item.id}}" tabindex="-1" aria-labelledby="cart_item_{{cart_item.id}}Label" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="cart_item_{{cart_item.id}}Label">{{cart_item.purchase.inventory.name}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form id="form_{{cart_item.id}}" method='post' action="{% url "store:edit-cart-item" id=cart_item.id %}">
+                          {% csrf_token %}
+                          <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" name="quantity" value="{{cart_item.quantity}}" class="form-control" />
+                          </div>
+                        </form>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="document.querySelector('#form_{{cart_item.id}}').submit();">Save changes</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <a href='{% url "store:delete-cart-item" id=cart_item.id %}' class='mx-2 btn btn-danger'>Delete</a>
               </td>
             </tr>

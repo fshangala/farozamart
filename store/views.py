@@ -760,6 +760,13 @@ class DeleteCartItem(LoginRequiredMixin,View):
     item.delete()
     return redirect(reverse('store:cart'))
 
+class EditCartItem(LoginRequiredMixin,View):
+  def post(self,request,id):
+    sale=models.Sale.objects.get(pk=id)
+    sale.quantity=request.POST['quantity']
+    sale.save()
+    return redirect(reverse('store:cart'))
+
 class CheckoutPayment(LoginRequiredMixin,View):
   template_name='store/checkout-payment.html'
   
