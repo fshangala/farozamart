@@ -127,7 +127,11 @@ def catch_order_comfirmed(sender,order:models.Order,**kwargs):
     
     options = getOptions()
     delivery=SteadFastDelivery.objects.filter(invoice=order.id).first()
-    message = f"Your order with ID {order.id} and Tracking ID {delivery.tracking_code} has been comfirmed and will be delivered to you, you can log in to your profile and check the progess." if delivery else f"Your order with ID {order.id} has been comfirmed and will be delivered to you, you can log in to your profile and check the progess."
+    if delivery:
+        message=f"Your order with ID {order.id} and Tracking ID {delivery.tracking_code} has been comfirmed and will be delivered to you, you can log in to your profile and check the progess."
+    else:
+        message =  f"Your order with ID {order.id} has been comfirmed and will be delivered to you, you can log in to your profile and check the progess."
+        
     admin_send_mail(
         f"{options['name']} - Order comfirmed",
         message,
