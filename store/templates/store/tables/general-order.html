@@ -74,7 +74,7 @@
       {% if delivery %}
       <tr>
         <th>Delivery Tracking Code</th>
-        <td class="text-right">{{delivery.tracking_code}} <a href="https://steadfast.com.bd/t/486C5DE4E" class="btn btn-primary">Track Order</a></td>
+        <td class="text-right">{{delivery.tracking_code}} <a href="https://steadfast.com.bd/t/{{delivery.tracking_code}}" class="btn btn-primary">Track Order</a></td>
       </tr>
       <tr>
         <th>Delivery Status</th>
