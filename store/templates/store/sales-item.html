@@ -55,6 +55,12 @@
         <td>{{sale.get_profit}}</td>
       </tr>
       {% endif %}
+      {% if delivery %}
+      <tr>
+        <th>Delivery</th>
+        <td>{{delivery.tracking_code}} <a href="https://steadfast.com.bd/t/{{delivery.tracking_code}}" class="btn btn-primary">Track Order</a></td>
+      </tr>
+      {% endif %}
     </table>
   </div><!-- /.box-body -->
 </div><!-- /.box -->

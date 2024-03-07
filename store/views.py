@@ -538,6 +538,7 @@ class SalesItem(LoginRequiredMixin,View):
     context=sales_context
     sale=models.Sale.objects.get(pk=id)
     context['sale']=sale
+    context['delivery']=SteadFastDelivery.objects.filter(invoice=str(sale.order.id)).first()
     return render(request,self.template_name,context)
 
 class NewSale(LoginRequiredMixin,View):
@@ -880,7 +881,7 @@ class SingleCustomerOrder(LoginRequiredMixin,View):
     order = request.user.orders.get(pk=id)
     context={
       'order':order,
-      'steadfast_delivery':SteadFastDelivery.objects.filter(invoice=str(order.id)).first()
+      'delivery':SteadFastDelivery.objects.filter(invoice=str(order.id)).first()
     }
     return render(request,self.template_name,context)
 
@@ -968,6 +969,16 @@ class StaffDeliverOrder(LoginRequiredMixin,View):
     messages.success(request,response_text)
     if success:
       signals.order_submitted_for_delivery.send(models.Order,order=order)
+    return redirect(reverse('store:staff-orders'))
+
+class StaffDeliveryFailed(LoginRequiredMixin,View):
+  def get(self,request,id):
+    order=models.Order.objects.get(pk=id)
+    order.status='DELIVERY_FAILED'
+    order.updated_at=timezone.now()
+    order.save()
+    #TODO: fshangala create delivery failed signal
+    messages.info(request,'Order declined!')
     return redirect(reverse('store:staff-orders'))
   
 # Staff withdraws

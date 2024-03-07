@@ -33,6 +33,7 @@
             <a href="{% url "store:staff-decline-order" id=order.id %}" class="btn btn-danger">Decline</a>
             {% elif order.status == 'COMFIRMED' %}
             <a href="{% url "store:staff-approve-order" id=order.id %}" class="btn btn-success">Complete</a>
+            <a href="{% url "store:staff-delivery-failed" id=order.id %}" class="btn btn-warning">Delivery failed</a>
             {% endif %}
             <a href="{% url "store:staff-order" id=order.id %}" class="btn btn-primary">View Order</a>
           </td>

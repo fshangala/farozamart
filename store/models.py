@@ -251,6 +251,7 @@ order_status=(
   ('COMFIRMED','Comfirmed'),
   ('COMPLETE','Complete'),
   ('DECLINED','Declined'),
+  ('DELIVERY_FAILED','Delivery failed'),
 )
 class Order(models.Model):
   user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='orders')
